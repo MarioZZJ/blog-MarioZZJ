@@ -1,0 +1,42 @@
+- class_name: 友情链接
+  class_desc: 欢迎互加友链，我们一同进步。
+  link_list:
+    - name: Hexo
+      link: https://hexo.io/zh-tw/
+      avatar: https://d33wubrfki0l68.cloudfront.net/6657ba50e702d84afb32fe846bed54fba1a77add/827ae/logo.svg
+      descr: 快速、简单、强大的博客框架。（本站基于 Hexo ）
+    - name: Butterfly
+      link: https://butterfly.js.org/
+      avatar: https://butterfly.js.org/img/avatar.png
+      descr: 基于 Hexo 的主题模板，美观、延展丰富。（本站基于 Butterfly）
+
+- class_name: 相关网站
+  class_desc: 其他相关网站的我的个人主页，欢迎来访。
+  link_list:
+    - name: 领英 Linkedin
+      link: https://www.linkedin.com/in/mariozzj/
+      avatar: https://static.licdn.cn/sc/h/al2o9zrvru7aqj8e1x2rzsrca
+      descr: 全球知名的职场社交平台
+    - name: Github
+      link: https://github.com/MarioZZJ
+      avatar: https://github.com/fluidicon.png
+      descr: 面向开源及私有软件项目的托管平台
+    - name: 简书
+      link: https://www.jianshu.com/u/a6a7c33ed30c
+      avatar: https://cdn2.jianshu.io/assets/web/misc-logo-805143ddec2e594416e891df316a73a7.png
+      descr: 国内优质原创内容输出平台
+    - name: 知乎
+      link: https://www.zhihu.com/people/MarioZZJ
+      avatar: https://static.zhihu.com/heifetz/assets/apple-touch-icon-152.a53ae37b.png
+      descr: 中文互联网高质量的问答社区和创作者聚集的原创内容平台
+    - name: 豆瓣
+      link: https://www.douban.com/people/mariozzj/
+      avatar: https://img3.doubanio.com/f/frodo/144e6fb7d96701944e7dbb1a9bad51bdb1debe29/pics/app/logo.png
+      descr: 有趣多元的文化生活社区
+    - name: bilibili
+      link: https://space.bilibili.com/28623387
+      avatar: https://static.hdslb.com/mobile/img/app_logo.png
+      descr: 中国年轻人高度聚集的综合性视频社区
+    - name: 网易云音乐
+      link: https://music.163.com/#/user/home?id=88936961
+      avatar: http://s1.music.126.net/style/favicon.ico?v20180823
