@@ -125,7 +125,7 @@ highlight_theme: mac
 highlight_copy: true
 highlight_shrink: false
 code_word_wrap: true
-highlight_height_limit: 200px
+highlight_height_limit: 200
 
 # 社交图标
 ## https://butterfly.js.org/posts/4aa8abbe/#%E7%A4%BE%E4%BA%A4%E5%9C%96%E6%A8%99
@@ -251,8 +251,16 @@ aside:
   button: true
   mobile: false # 手機頁面（ 顯示寬度 < 768px ）是否顯示aside內容
   position: right # left or right
-  card_announcement:
+  card_author:
     enable: true
+    description: '不变的是我迷途未返的执着'
+    button:
+      enable: true
+	    icon: fab fa-github
+      text: Github
+      link: https://github.com/MarioZZJ/
+  card_announcement:
+    enable: false
     content: This is my Blog
   card_recent_post:
     enable: true
