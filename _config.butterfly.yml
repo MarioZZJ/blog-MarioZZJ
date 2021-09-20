@@ -251,14 +251,6 @@ aside:
   button: true
   mobile: false # 手機頁面（ 顯示寬度 < 768px ）是否顯示aside內容
   position: right # left or right
-  card_author:
-    enable: true
-    description:
-    button:
-      enable: true
-	  icon: fab fa-github
-      text: Github
-      link: https://github.com/MarioZZJ/
   card_announcement:
     enable: true
     content: This is my Blog
