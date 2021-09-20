@@ -23,7 +23,7 @@
       descr: 面向开源及私有软件项目的托管平台
     - name: 简书
       link: https://www.jianshu.com/u/a6a7c33ed30c
-      avatar: https://cdn2.jianshu.io/assets/web/misc-logo-805143ddec2e594416e891df316a73a7.png
+      avatar: https://upload.jianshu.io/users/upload_avatars/259/5210859b-fc54-4cf8-908f-830f0237926a.png?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240
       descr: 国内优质原创内容输出平台
     - name: 知乎
       link: https://www.zhihu.com/people/MarioZZJ
@@ -40,3 +40,4 @@
     - name: 网易云音乐
       link: https://music.163.com/#/user/home?id=88936961
       avatar: http://s1.music.126.net/style/favicon.ico?v20180823
+      descr: 专注于发现与分享的音乐产品
