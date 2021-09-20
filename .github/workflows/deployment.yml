@@ -25,6 +25,8 @@ jobs:
       run: |
         node -v
         npm i -g hexo-cli
+        npm i hexo-theme-butterfly
+        npm install hexo-renderer-pug hexo-renderer-stylus --save
         npm i
         hexo clean
         hexo g
