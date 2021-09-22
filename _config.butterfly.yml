@@ -211,7 +211,7 @@ photofigcaption: true
 
 # 头像
 avatar:
-  img: http://download.mariozzj.cn/img/picgo/20210920193818.jpg
+  img: /image/icon.jpg
   effect: false # 頭像會一直轉圈
 
 # 复制配置
@@ -226,7 +226,7 @@ footer:
   owner:
     enable: true
     since: 2020
-  custom_text: <a href="http://beian.miit.gov.cn/"><span>备案号：赣ICP备20002056号-2</span></a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261"><img class="icp-icon" src="http://www.beian.gov.cn/img/new/gongan.png"><span>鄂公网安备 42010602004261号</span></a>
+  custom_text: <a href="http://beian.miit.gov.cn/"><span>备案号：赣ICP备20002056号-2</span></a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261"><img class="icp-icon" src="/image/gongan.png"><span>鄂公网安备 42010602004261号</span></a>
   copyright: true # Copyright of theme and framework
 
 
