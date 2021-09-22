@@ -14,7 +14,7 @@ email: mariozzj@outlook.com
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://blog.mariozzj.cn/
+url: https://blog.mariozzj.cn/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -185,10 +185,10 @@ post_copyright:
 reward:
   enable: true
   QR_code:
-    - img: http://download.mariozzj.cn/img/picgo/20210920193422.jpg
+    - img: /image/wxpay.jpg
       link:
       text: 微信
-    - img: http://download.mariozzj.cn/img/picgo/20210920193431.jpg
+    - img: /image/alipay.jpg
       link:
       text: 支付宝
 
@@ -439,3 +439,8 @@ artitalk:
     color2: "#336666"
     color3: "#CCCC33"
   # front_matter:
+
+# inject
+inject: 
+  head: 
+    - <meta name="referrer" content="no-referrer" />
