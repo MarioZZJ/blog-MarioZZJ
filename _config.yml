@@ -104,3 +104,42 @@ theme: butterfly
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+markdown:
+  plugins:
+    - plugin:
+      name: '@neilsustc/markdown-it-katex'
+      options:
+        strict: false
+
+douban:
+  user: mariozzj
+  builtin: false
+  book:
+    title: '我的阅读'
+    quote: '读书使人明理'
+    meta: true
+    comments: true
+    top_img: /image/bg_15.jpg
+    aside: true
+    path: list/books
+    limit: 100
+  movie:
+    title: '我的观影'
+    quote: '透过荧幕看人生'
+    meta: true
+    comments: true
+    top_img: /image/bg_15.jpg
+    aside: true
+    path: list/movies
+    limit: 100
+  game:
+    title: '我的游戏'
+    quote: '闲来没事做，不如斗地主'
+    meta: true
+    comments: true
+    top_img: /image/bg_15.jpg
+    aside: true
+    path: list/games
+    limit: 100
+  timeout: 10000 

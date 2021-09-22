@@ -24,11 +24,15 @@ jobs:
     - name: Install dependencies & Generate static files
       run: |
         node -v
+        npm un hexo-renderer-marked --save
+        npm un hexo-renderer-kramed --sav
         npm i -g hexo-cli
+        npm i hexo-renderer-markdown-it --save
         npm i hexo-theme-butterfly
-        npm install hexo-renderer-pug hexo-renderer-stylus --save
+        npm install @neilsustc/markdown-it-katex hexo-wordcount hexo-butterfly-douban hexo-renderer-pug hexo-renderer-stylus hexo-generator-search hexo-butterfly-artitalk --save
         npm i
         hexo clean
+        hexo douban
         hexo g
     - name: Deploy to Github Pages
       env:
