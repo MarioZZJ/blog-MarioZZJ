@@ -2,7 +2,7 @@
 title: {{ title }}
 date: {{ date }}
 updated:
-abbrlink: aaaaa
+abbrlink: 
 comments: true
 copyright: true
 tags:
