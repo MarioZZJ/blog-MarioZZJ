@@ -12,7 +12,7 @@ comments: false
 
 MarioZZJ，珞珈山信管在读本科生，正在不断学习和成长中，将继续攻读本专业博士。
 
-关于我的个人基本情况，可以查看我的 [领英](https://www.linkedin.com/in/mariozzj/)，在线 CV 待更新。若需关注我的 coding 实践技能点，可查看我的 [Github](https://github.com/MarioZZJ)
+关于我的个人基本情况，可以查看我的 [领英](https://www.linkedin.com/in/mariozzj/)，或[在线 CV](http://cv.mariozzj.cn/) 。若需关注我的 coding 实践技能点，可查看我的 [Github](https://github.com/MarioZZJ)。
 
 # 关于本站
 

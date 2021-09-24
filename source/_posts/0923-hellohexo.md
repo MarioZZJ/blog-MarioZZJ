@@ -17,12 +17,14 @@ cover: 'https://download.mariozzj.cn/img/picgo/20210923171646.png'
 katex: true
 aside: true
 date: 2021-09-23 12:20:23
-updated:
+updated: 
 copyright_author:
 copyright_author_href:
 copyright_url:
 copyright_info:
 ---
+
+> 原文地址：https://blog.mariozzj.cn/posts/569080df/
 
 # 前言
 
@@ -59,9 +61,7 @@ $ node -v
 $ npm  -v
 ```
 
-如果正常相应对应版本号，则说明安装及环境变量配置成功。
-
-![image-20210923142054607](https://download.mariozzj.cn/img/picgo/20210923142054.png)
+如果正常响应对应版本号，则说明安装及环境变量配置成功。
 
 ### 安装 Hexo
 
@@ -88,7 +88,7 @@ $ hexo server
 
 即可从本地运行博客服务器。浏览器打开终端提示的页面（默认为 `https://localhost:4000/`），即可查看。
 
-![image-20210923150624527](https://download.mariozzj.cn/img/picgo/20210923150624.png)
+![Hexo-landscape demo](https://download.mariozzj.cn/img/picgo/20210923150624.png)
 
 默认页面为内置的 `hello-world.md` 文档。至此我们已经完成了 Hexo 的安装，如要了解更多配置项可参考[Configuration | Hexo](https://hexo.io/docs/configuration)，要了解更多 Hexo 命令可参考 [Commands | Hexo](https://hexo.io/docs/commands)。
 
@@ -169,7 +169,7 @@ waline:
 
 说说系统更像是一个只属于自己的留言板，我可以在上面发表一些想法，但是设置好权限之后只有自己能发，别人不能回复。
 
-![image-20210923154050387](https://download.mariozzj.cn/img/picgo/20210923154050.png)
+![Artitalk 在页面中的详情](https://download.mariozzj.cn/img/picgo/20210923154050.png)
 
 
 
@@ -181,7 +181,7 @@ waline:
 
 每次运行 `hexo douban` 即可运行爬虫并生成静态页面。
 
-![image-20210923154308712](https://download.mariozzj.cn/img/picgo/20210923154308.png)
+![豆瓣列表在页面中的详情](https://download.mariozzj.cn/img/picgo/20210923154308.png)
 
 
 
@@ -193,7 +193,7 @@ waline:
 
 在 Github 仓库的设置页面选择 Pages 选项卡即可对页面进行配置。一般来说，如果仓库名称为 {用户名}.github.io 会自动完成配置，对应的页面部署域名为 `https://{用户名}.github.io`。这里我用了自己的域名，我在服务商那边将域名解析到我的 Github 页面（`https://mariozzj.github.io`），再在这里设置，系统就会自动在目录处生成一个 `CNAME` 文件，之后可以使用原域名直接访问。
 
-![image-20210923161436856](https://download.mariozzj.cn/img/picgo/20210923161436.png)
+![Github Pages 设置页面](https://download.mariozzj.cn/img/picgo/20210923161436.png)
 
 
 
@@ -241,7 +241,7 @@ Github Action 配置后，可以根据行动（如`push`）自动执行持续集
 
 登录 Github，进入个人账户的 [Settings - Developer Settings - Personal Access Tokens](https://github.com/settings/tokens)，点击 `Generate new token` 生成新的 token，注意权限配置添加读写相关权限，将生成的 token 复制下来。
 
-![image-20210923172557816](https://download.mariozzj.cn/img/picgo/20210923172557.png)
+![Access Token 生成页面](https://download.mariozzj.cn/img/picgo/20210923172557.png)
 
 随后，进入项目仓库的 [Settings - Secrets - Actions](https://github.com/#username/#reponame/settings/secrets/actions)，点击 `new repository secret` 添加以下两个参数：
 
@@ -310,15 +310,15 @@ jobs:
 
 将包含该配置文件的项目推送到远程分支，就完成了 action 的配置。这样，每次 push 到指定分支时触发该工作流，可以在 Github 项目仓库的 Action 选项卡查看具体的配置过程。
 
-![image-20210923180233736](https://download.mariozzj.cn/img/picgo/20210923180233.png)
+![仓库 Action 页面](https://download.mariozzj.cn/img/picgo/20210923180233.png)
 
-![image-20210923180255647](https://download.mariozzj.cn/img/picgo/20210923180255.png)
+![Action 执行详情](https://download.mariozzj.cn/img/picgo/20210923180255.png)
 
 
 
 # 想要白嫖
 
-无需代码开发，这可能是建一个自定义博客较为简单的方法了，其中最为关键的一步**【主题配置】**，我没有写下来详细过程，而是直接引用了原作者的教程文档，这一步其实会耗费最多的时间。如果连这一步都懒得去配置，~~那可真是无药可救了~~，**我可以给你一个配置好的模板仓库**！只要你觉得我这个 [博客](https://blog.mariozzj.cn) 看着还可以的话，可以把我配置好的参数直接拿去用！这里只需要修改部分插件的密钥即可，Action 也配置好了只需自行更改 Github Secrets。当然，**本地别忘了安装 node 、hexo 和我用到的插件**（在 package.json 中）
+无需代码开发，这可能是建一个自定义博客较为简单的方法了，其中最为关键的一步 **【主题配置】** ，我没有写下来详细过程，而是直接引用了原作者的教程文档，这一步其实会耗费最多的时间。如果连这一步都懒得去配置，~~那可真是无药可救了~~， **我可以给你一个配置好的模板仓库** ！只要你觉得我这个 [博客](https://blog.mariozzj.cn) 看着还可以的话，可以把我配置好的参数直接拿去用！这里只需要修改部分插件的密钥即可，Action 也配置好了只需自行更改 Github Secrets。当然， **本地别忘了安装 node 、hexo 和我用到的插件** （在 package.json 中）
 
 仓库地址：[MarioStudio/blog-MarioZZJ: Personal blog of MarioZZJ. Source in hexo branch, pages in master branch. Deployed by Github Actions.](https://github.com/MarioStudio/blog-MarioZZJ) 
 
