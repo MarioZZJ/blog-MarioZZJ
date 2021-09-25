@@ -40,10 +40,15 @@ jobs:
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         REPO: github.com/MarioZZJ/blog-MarioZZJ
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        CODING_REPO: e.coding.net/mariostudio/pages/blog-MarioZZJ.git
+        CODING_USERNAME: ${{ secrets.CODING_USERNAME }}
+        CODING_TOKEN: ${{ secrets.CODING_TOKEN }}
       run: |
         cd ./public && git init && git add .
         git config --global user.name $GIT_NAME
         git config --global user.email $GIT_EMAIL
         git commit -m "Site deployed by GitHub Actions"
         git config --global init.defaultBranch master
-        git push --force --quiet "https://$GH_TOKEN@$REPO" master:master
+        git remote add origin "https://$GH_TOKEN@$REPO"
+        git remote add origin "https://$CODING_USERNAME:CODING_TOKEN@$CODING_REPO"
+        git push --force --quiet origin master:master
