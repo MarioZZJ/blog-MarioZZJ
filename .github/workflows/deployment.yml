@@ -50,5 +50,5 @@ jobs:
         git commit -m "Site deployed by GitHub Actions"
         git config --global init.defaultBranch master
         git remote add origin "https://$GH_TOKEN@$REPO"
-        git remote add origin "https://$CODING_USERNAME:CODING_TOKEN@$CODING_REPO"
+        git remote add origin "https://$CODING_USERNAME:$CODING_TOKEN@$CODING_REPO"
         git push --force --quiet origin master:master
