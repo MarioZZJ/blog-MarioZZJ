@@ -64,7 +64,7 @@ petersen = ig.Graph.Famous("petersen")
 ig.plot(petersen)
 ```
 
-![image-20211026112756046](https://download.mariozzj.cn/img/picgo/202110261128175.png)
+![案例 - Petersen 网络图](https://download.mariozzj.cn/img/picgo/202110261128175.png)
 
 如安装无误，展示的是著名的 Petersen 图。
 
@@ -477,20 +477,20 @@ Matrix([[0, 1, 1, 0, 0, 1, 0], [1, 0, 0, 0, 0, 0, 0], [1, 0, 0, 1, 1, 1, 0], [0,
 
 布局方法是 `Graph` 对象的成员方法，一般都以 `layout_` 起头：
 
-| 方法全名                           | 简称                                   | 算法描述                                              |
-| ---------------------------------- | -------------------------------------- | ----------------------------------------------------- |
-| `layout_circle`                    | `circle` , `circular`                  | 将节点放在一个圆环上                                  |
-| `layout_drl`                       | `drl`                                  | 常用于大图，分散递归布局                              |
-| `layout_fruchterman_reingold`      | `fr`                                   | Fruchterman-Reingold 力导向布局                       |
-| `layout_fruchterman_reingold_3d`   | `fr3d` , `fr_3d`                       | Fruchterman-Reingold 力导向布局（3D版）               |
-| `layout_kamada_kawai`              | `kk`                                   | Kamda-Kawai 力导向布局                                |
-| `layout_kamada_kawai_3d`           | `kk3d` , `kk_3d`                       | Kamda-Kawai 力导向布局（3D版）                        |
-| `layout_lgl`                       | `large` , `lgl` , `large_graph`        | 常用于大图，大图布局                                  |
-| `layout_random`                    | `random`                               | 将节点完全随机放置                                    |
-| `layout_random_3d`                 | `random_3d`                            | 将节点完全随机放置在三维空间                          |
-| `layout_reingold_tilford`          | `rt` , `tree`                          | Reingold-Tilford 树状布局，对类树状图有用             |
+|              方法全名              | 简称                                   | 算法描述                                              |
+| :--------------------------------: | -------------------------------------- | ----------------------------------------------------- |
+|          `layout_circle`           | `circle` , `circular`                  | 将节点放在一个圆环上                                  |
+|            `layout_drl`            | `drl`                                  | 常用于大图，分散递归布局                              |
+|   `layout_fruchterman_reingold`    | `fr`                                   | Fruchterman-Reingold 力导向布局                       |
+|  `layout_fruchterman_reingold_3d`  | `fr3d` , `fr_3d`                       | Fruchterman-Reingold 力导向布局（3D版）               |
+|       `layout_kamada_kawai`        | `kk`                                   | Kamda-Kawai 力导向布局                                |
+|      `layout_kamada_kawai_3d`      | `kk3d` , `kk_3d`                       | Kamda-Kawai 力导向布局（3D版）                        |
+|            `layout_lgl`            | `large` , `lgl` , `large_graph`        | 常用于大图，大图布局                                  |
+|          `layout_random`           | `random`                               | 将节点完全随机放置                                    |
+|         `layout_random_3d`         | `random_3d`                            | 将节点完全随机放置在三维空间                          |
+|     `layout_reingold_tilford`      | `rt` , `tree`                          | Reingold-Tilford 树状布局，对类树状图有用             |
 | `layout_reingold_tilford_circular` | `rt_citcular` , `tree`                 | 极坐标转换后Reingold-Tilford 树状布局，对类树状图有用 |
-| `layout_sphere`                    | `sphere` , `spherical` , `circular_3d` | 将节点放在球面                                        |
+|          `layout_sphere`           | `sphere` , `spherical` , `circular_3d` | 将节点放在球面                                        |
 
 布局方法可以直接被调用，也可以使用通用的 `layout()` 方法：
 
@@ -543,7 +543,7 @@ Matrix([[0, 1, 1, 0, 0, 1, 0], [1, 0, 0, 0, 0, 0, 0], [1, 0, 0, 1, 1, 1, 0], [0,
 >>> # ig.plot(g, layout=layout, bbox=(300, 300), margin=20, target=ax) # matplotlib 版本
 ```
 
-![The visual representation of our social network - with names and genders](https://igraph.org/python/tutorial/0.9.7/_images/tutorial_social_network_2.png)
+![美化 - Kamada-Kawai 布局社会网络图](https://igraph.org/python/tutorial/0.9.7/_images/tutorial_social_network_2.png)
 
 我们重用了之前的布局对象，但是我们也注明了我们需要一个较小的画布（300 × 300 像素）和 20 像素的边距使得标签能够完全展示。
 
@@ -568,7 +568,7 @@ color_dict = {"m": "blue", "f": "pink"}
 >>> plot(g, **visual_style)
 ```
 
-![The visual representation of our social network - with names, genders and formal ties](https://igraph.org/python/tutorial/0.9.7/_images/tutorial_social_network_3.png)
+![美化2 - Kamada-Kawai 布局社会网络图](https://igraph.org/python/tutorial/0.9.7/_images/tutorial_social_network_3.png)
 
 
 

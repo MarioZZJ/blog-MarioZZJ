@@ -4,11 +4,11 @@ menu:
   首页: / || fas fa-home
   归档: /archives/ || fas fa-archive
   标签: /tags/ || fas fa-tags
-  分类: /categories/ || fas fa-folder-open
+  # 分类: /categories/ || fas fa-folder-open
   列表||fa fa-heartbeat:
-    阅读: /booklist/ || fas fa-book-open
-    观影: /filmlist/ || fas fa-video
-    游戏: /gamelist/ || fas fa-gamepad
+    阅读: /list/booklist/ || fas fa-book-open
+    观影: /list/filmlist/ || fas fa-video
+    游戏: /list/gamelist/ || fas fa-gamepad
   链接: /link/ || fas fa-link
   说说: /shuoshuo/ || fas fa-comments
   关于: /about/ || fas fa-portrait

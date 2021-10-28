@@ -123,7 +123,7 @@ douban:
     comments: true
     top_img: /image/bg_15.jpg
     aside: true
-    path: booklist
+    path: list/booklist
     limit: 100
   movie:
     title: '我的观影'
@@ -132,7 +132,7 @@ douban:
     comments: true
     top_img: /image/bg_15.jpg
     aside: true
-    path: filmlist
+    path: list/filmlist
     limit: 100
   game:
     title: '我的游戏'
@@ -141,7 +141,7 @@ douban:
     comments: true
     top_img: /image/bg_15.jpg
     aside: true
-    path: gamelist
+    path: list/gamelist
     limit: 100
   timeout: 50000 
 
