@@ -24,13 +24,16 @@ MarioZZJ，珞珈山信管在读本科生，正在不断学习和成长中，将
 
 ## 技术支持
 
-本站基于 [Hexo](https://hexo.io/) 框架搭建，使用 [Butterfly](https://github.com/jerryc127/hexo-theme-butterfly) 主题，使用 Github Pages 部署静态页面。
+本站基于 [Hexo](https://hexo.io/) 框架搭建，使用 [Butterfly](https://github.com/jerryc127/hexo-theme-butterfly) 主题，使用 Github Pages 和 Coding Pages （镜像站）部署静态页面。
 
 本站评论系统基于 [Waline](https://waline.js.org/)，说说基于 [Artitalk](https://artitalk.js.org/)，使用 LeanCloud 国际版部署，使用 [Vercel](https://vercel.com/) 提供的支持。
+
+访客统计采用 [不蒜子](http://busuanzi.ibruce.info/)，访客地图插件采用 [ClustrMap](https://clustrmaps.com/)。
 
 ## 博客更新日志
 
 * 2020.2 建设基础博客界面。
 * 2020.10 换用 Hexo + Butterfly 重构博客，使用 Github Pages 部署。
 * 2021.9 整理个人媒体条线，重新发布博客，下线所有文章；增加 Github Action 自动部署 hexo，使博客编辑记录可追溯，博客可多端编辑。
+* 2021.10 友链新增 2 位友邻，添加访客地图侧边栏插件。
 

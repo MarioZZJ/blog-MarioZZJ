@@ -155,10 +155,10 @@ aside:
     content: 我的博客重新调整，再次上线啦！<br />原文章全部下线，正陆续整理更新。<br />欢迎同步关注我的其他社交平台发布账号，详见<a href='/link/'>链接页面</a>。
   card_recent_post:
     enable: true
-    limit: 5 # if set 0 will show all
+    limit: 3 # if set 0 will show all
     sort: date # date or updated
   card_categories:
-    enable: true
+    enable: false
     limit: 8 # if set 0 will show all
     expand: none # none/true/false
   card_tags:
@@ -166,7 +166,7 @@ aside:
     limit: 40 # if set 0 will show all
     color: true
   card_archives:
-    enable: true
+    enable: false
     type: monthly # yearly or monthly
     format: YYYY-MM # eg: YYYY年MM月
     order: -1 # Sort of order. 1, asc for ascending; -1, desc for descending
@@ -174,7 +174,7 @@ aside:
   card_webinfo:
     enable: true
     post_count: true
-    last_push_date: true
+    last_push_date: false
 
 busuanzi:
   site_uv: true
