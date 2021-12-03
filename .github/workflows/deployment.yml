@@ -3,6 +3,8 @@ name: Deployment
 on:
   push:
     branches: [hexo] # only push events on source branch trigger deployment
+  schedule:
+    - cron: '* 0 * * *'
 
 jobs:
   hexo-deployment:
