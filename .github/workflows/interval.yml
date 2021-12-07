@@ -1,8 +1,8 @@
-name: Deployment
+name: Interval
 
 on:
-  push:
-    branches: [hexo] # only push events on source branch trigger deployment
+  schedule:
+    - cron: '15 1,13 * * *'
 
 jobs:
   hexo-deployment:
@@ -45,7 +45,7 @@ jobs:
         cd ./public && git init && git add .
         git config --global user.name $GIT_NAME
         git config --global user.email $GIT_EMAIL
-        git commit -m "Site deployed by GitHub Actions on push. "
+        git commit -m "Auto Refresh Site by Github Action every 12h."
         git config --global init.defaultBranch master
         git push --force --quiet "https://$GH_TOKEN@$REPO" master:master
         git push --force --quiet "https://$CODING_TOKEN@$CODING_REPO" master:master
