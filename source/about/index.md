@@ -10,9 +10,9 @@ comments: false
 
 ## 基本信息
 
-MarioZZJ，珞珈山信管在读本科生，正在不断学习和成长中，将继续攻读本专业博士。
+MarioZZJ，珞珈山信管在读本科生，正在不断学习和成长中，目前快乐研 0。
 
-关于我的个人基本情况，可以查看我的 [领英](https://www.linkedin.com/in/mariozzj/)，或 [在线 CV](http://cv.mariozzj.cn/) 。若需关注我的 coding 实践技能点，可查看我的 [Github](https://github.com/MarioZZJ)。
+关于我的个人基本情况，可以查看我的 [领英](https://www.linkedin.com/in/mariozzj/)。若需关注我的 coding 实践技能点，可查看我的 [Github](https://github.com/MarioZZJ)。
 
 # 关于本站
 
@@ -36,4 +36,5 @@ MarioZZJ，珞珈山信管在读本科生，正在不断学习和成长中，将
 * 2020.10 换用 Hexo + Butterfly 重构博客，使用 Github Pages 部署。
 * 2021.9 整理个人媒体条线，重新发布博客，下线所有文章；增加 Github Action 自动部署 hexo，使博客编辑记录可追溯，博客可多端编辑。
 * 2021.10 友链新增 2 位友邻，添加访客地图侧边栏插件。
+* 2021.12 增加 Action 定时任务，每 12 小时刷新一次博客静态页面（提升豆瓣时效性）。
 
