@@ -28,7 +28,6 @@ jobs:
         npm un hexo-renderer-kramed --save
         npm i -g hexo-cli
         npm i hexo-renderer-markdown-it --save
-        npm i hexo-theme-butterfly
         npm install @neilsustc/markdown-it-katex hexo-wordcount hexo-butterfly-douban hexo-renderer-pug hexo-renderer-stylus hexo-generator-search hexo-butterfly-artitalk hexo-abbrlink --save
         npm i
         hexo clean
