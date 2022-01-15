@@ -13,7 +13,7 @@ categories: 玩转服务器
 keywords: 
   - 饥荒
   - 联机游戏
-description: 云服务器
+description: 用闲置云服务器和朋友们快乐联机《饥荒》！
 top_img: https://download.mariozzj.cn/img/picgo/202201151235435.png
 cover: https://download.mariozzj.cn/img/picgo/202201151236429.jpeg
 copyright_author:
