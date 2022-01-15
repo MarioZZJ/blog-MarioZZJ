@@ -101,6 +101,16 @@ app_update 343050 validate
 quit
 ```
 
+## 开放端口
+
+如果服务器有防火墙、安全组等，一定要开放指定的端口。默认的端口大概在 10000 - 12000 之间，具体需要开放的端口可以查看存档文件夹下的这几个文件：
+
+* `~/.klei/DoNotStarveTogether/Cluster_1/cluster.ini` 中的 `master_port`。
+* `~/.klei/DoNotStarveTogether/Cluster_1/Master/server.ini` 中的 `server_port`。
+* `~/.klei/DoNotStarveTogether/Cluster_1/Caves/server.ini` 中的 `server_port`、`master_server_port`、`authentication_port`。
+
+最好 TCP、UDP 全部打开。
+
 # 创建世界
 
 ## 在本机完成世界的创建
@@ -283,10 +293,10 @@ tmux new -s dontstarve
 
 **脚本稳定运行创建世界后，即可喊上小伙伴，在游戏选单界面选择【加入游戏】，搜索房间名加入了。**
 
-![image-20220115124649017](https://download.mariozzj.cn/img/picgo/202201151246311.png)
+![查找房间](https://download.mariozzj.cn/img/picgo/202201151246311.png)
 
 之后如果要回到该会话，可以使用 `tmux attach -t dontstarve` 进行操作。
 
 
 
-![image-20220115124805123](https://download.mariozzj.cn/img/picgo/202201151248430.png)
+![快乐游戏](https://download.mariozzj.cn/img/picgo/202201151248430.png)
