@@ -2,7 +2,7 @@ name: Interval
 
 on:
   schedule:
-    - cron: '15 1,13 * * *'
+    - cron: '15 5,17 * * *'
 
 jobs:
   hexo-deployment:
@@ -32,14 +32,25 @@ jobs:
         npm i
         hexo clean
         hexo g
+    
+    - name: Deploy to Tencent COS
+      env:
+        SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+        SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+        BUCKET: ${{ secrets.COS_BUCKET_BLOG }}
+        REGION: ${{ secrets.COS_REGION_BLOG }}
+      run: |
+        pip install coscmd
+        cd ./public
+        coscmd config -a $SECRET_ID -s $SECRET_KEY -b $BUCKET -r $REGION
+        coscmd upload -rs . /
+    
     - name: Deploy to Github Pages
       env:
         GIT_NAME: MarioZZJ
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         REPO: github.com/MarioZZJ/blog-MarioZZJ
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        CODING_REPO: e.coding.net/mariostudio/pages/blog-MarioZZJ.git
-        CODING_TOKEN: ${{ secrets.CODING_TOKEN }}
       run: |
         cd ./public && git init && git add .
         git config --global user.name $GIT_NAME
@@ -47,4 +58,3 @@ jobs:
         git commit -m "Auto Refresh Site by Github Action every 12h."
         git config --global init.defaultBranch master
         git push --force --quiet "https://$GH_TOKEN@$REPO" master:master
-        git push --force --quiet "https://$CODING_TOKEN@$CODING_REPO" master:master
