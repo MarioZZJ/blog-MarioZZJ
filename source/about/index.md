@@ -20,11 +20,11 @@ MarioZZJ，珞珈山信管在读本科生，正在不断学习和成长中，目
 
 本站地址： https://blog.mariozzj.cn/
 
-本站将作为我沉淀知识和记录成长的载体，同时作为主要传播媒介；对于我认为较好的内容我也会在其他平台分发，欢迎关注我的 [知乎](https://www.zhihu.com/people/MarioZZJ)、[简书](https://www.jianshu.com/u/a6a7c33ed30c)、[Bilibili](https://space.bilibili.com/28623387) 以及微信公众号（微信号：mariozzj-blog）。
+本站将作为我沉淀知识和记录成长的载体，同时作为主要传播媒介；对于我认为较好的内容我也会在其他平台分发，欢迎关注我的 [知乎](https://www.zhihu.com/people/MarioZZJ)、[Bilibili](https://space.bilibili.com/28623387) 以及微信公众号（微信号：mariozzj-blog）。
 
 ## 技术支持
 
-本站基于 [Hexo](https://hexo.io/) 框架搭建，使用 [Butterfly](https://github.com/jerryc127/hexo-theme-butterfly) 主题，使用 Github Pages 和 Coding Pages （镜像站）部署静态页面。
+本站基于 [Hexo](https://hexo.io/) 框架搭建，使用 [Butterfly](https://github.com/jerryc127/hexo-theme-butterfly) 主题，使用 [Github Pages](https://pages.github.com/) 和 [腾讯云对象存储 COS](https://cloud.tencent.com/product/cos) 双端部署静态页面。
 
 本站评论系统基于 [Waline](https://waline.js.org/)，说说基于 [Artitalk](https://artitalk.js.org/)，使用 LeanCloud 国际版部署，使用 [Vercel](https://vercel.com/) 提供的支持。
 
@@ -38,4 +38,5 @@ MarioZZJ，珞珈山信管在读本科生，正在不断学习和成长中，目
 * 2021.10 友链新增 2 位友邻，添加访客地图侧边栏插件。
 * 2021.12 增加 Action 定时任务，每 12 小时刷新一次博客静态页面（提升豆瓣时效性）。
 * 2021.12 理解 pug 语法，微调加载动画。
+* 2022.2 友链新增 2 位友邻；取消 Coding Pages 端部署，换用腾讯云 COS 静态页面托管服务，使用 DNSPOD 服务对境内外浏览分流至不同端，合并域名。
 
