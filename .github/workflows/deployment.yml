@@ -32,6 +32,19 @@ jobs:
         npm i
         hexo clean
         hexo g
+    
+    - name: Deploy to Tencent COS
+      env:
+        SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+        SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+        BUCKET: ${{ secrets.COS_BUCKET_BLOG }}
+        REGION: ${{ secrets.COS_REGION_BLOG }}
+      run: |
+        pip install coscmd
+        cd ./public
+        coscmd config -a $SECRET_ID -s $SECRET_KEY -b $BUCKET -r $REGION
+        coscmd upload -rs . /
+    
     - name: Deploy to Github Pages
       env:
         GIT_NAME: MarioZZJ
@@ -45,13 +58,3 @@ jobs:
         git commit -m "Site deployed by GitHub Actions on push. "
         git config --global init.defaultBranch master
         git push --force --quiet "https://$GH_TOKEN@$REPO" master:master
-    - name: Deploy to Tencent COS
-      env:
-        SECRET_ID: ${{ secrets.COS_SECRET_ID }}
-        SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
-        BUCKET: ${{ secrets.COS_BUCKET_BLOG }}
-        REGION: ${{ secrets.COS_REGION_BLOG }}
-      run: |
-        pip install coscmd
-        coscmd config -a $SECRET_ID -s $SECRET_KEY -b $BUCKET -r $REGION
-        coscmd upload -rs . /
