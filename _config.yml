@@ -121,7 +121,7 @@ douban:
     quote: 
     meta: true
     comments: true
-    top_img: /image/bg_15.jpg
+    top_img: http://download.mariozzj.cn/img/static/bg_15.jpg
     aside: true
     path: list/booklist
     limit: 100
@@ -130,7 +130,7 @@ douban:
     quote: 
     meta: true
     comments: true
-    top_img: /image/bg_15.jpg
+    top_img: http://download.mariozzj.cn/img/static/bg_15.jpg
     aside: true
     path: list/filmlist
     limit: 100
@@ -139,7 +139,7 @@ douban:
     quote: 
     meta: true
     comments: true
-    top_img: /image/bg_15.jpg
+    top_img: http://download.mariozzj.cn/img/static/bg_15.jpg
     aside: true
     path: list/gamelist
     limit: 100
