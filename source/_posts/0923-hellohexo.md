@@ -68,7 +68,7 @@ $ npm  -v
 使用 npm（node 的包管理器，可以类比 python 的 pip）可以直接安装 Hexo。在终端输入如下命令：
 
 ```bash
-$ npm install hexo
+$ npm install -g hexo
 ```
 
 即可安装。终端运行 `hexo -v` 检查是否安装正常。
@@ -254,7 +254,7 @@ Github Action 配置后，可以根据行动（如`push`）自动执行持续集
 
 工作流是一次持续集成的过程，由多个构建任务（job）组成，一个构建任务由多个步骤（step）组成，每个步骤包含多个 action。
 
-在博客所在目录下新建 `.github` 文件夹，在该文件夹下新建 `workflow` 文件夹，并在其中创建 `deployment.yml`，内容如下：
+在博客所在目录下新建 `.github` 文件夹，在该文件夹下新建 `workflows` 文件夹，并在其中创建 `deployment.yml`，内容如下：
 
 ```yaml
 name: Deployment ### workflow
