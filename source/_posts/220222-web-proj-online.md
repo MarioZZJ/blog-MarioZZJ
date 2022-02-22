@@ -414,7 +414,7 @@ $ sudo systemctl restart nginx
 
 备案流程完成之后，可以根据回函提示，在网站页面底端添加备案相关信息：
 
-![image-20220222164455069](https://download.mariozzj.cn/img/picgo/202202221644105.png)
+![备案信息](https://download.mariozzj.cn/img/picgo/202202221644105.png)
 
 
 
