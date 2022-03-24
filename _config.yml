@@ -162,3 +162,8 @@ abbrlink:
 
 baidusitemap:
   path: baidusitemap.xml
+
+feed:
+  enable: true
+  type: atom
+  content: false
