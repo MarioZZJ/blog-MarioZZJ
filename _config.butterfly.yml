@@ -213,7 +213,7 @@ sharejs:
 
 # 数学公式渲染
 katex:
-  enable: false
+  enable: true
   # true 表示每一頁都加載katex.js
   # false 需要時加載，須在使用的Markdown Front-matter 加上 katex: true
   per_page: false
@@ -345,3 +345,7 @@ search:
 inject: 
   head: 
     - <meta name="referrer" content="no-referrer" />
+
+CDN:
+  katex_copytex: https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.min.js
+  katex_copytex_css: https://cdn.jsdelivr.net/npm/katex@latest/dist/contrib/copy-tex.css
