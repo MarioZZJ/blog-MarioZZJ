@@ -18,7 +18,7 @@ keywords:
     - Scientometrics
 description: 介绍两种相似的有向图结点重要性评价算法——PageRank 和 EigenFactor
 top_img: https://download.mariozzj.cn/img/picgo/202204011146566.png
-cover: https://download.mariozzj.cn/img/picgo/202204011147496.png
+cover: https://download.mariozzj.cn/img/picgo/202204191304070.png
 copyright_author:
 copyright_author_href:
 copyright_url:
@@ -248,7 +248,7 @@ matrix([[0.10135135],
 
 # EigenFactor
 
-EigenFactor，一说译作“特征因子”[^1]，于 2006 年由  West Bergstorm 等提出，类似于 PageRank 在网页和超链接构成的有向图中计算网页影响力，EigenFactor 一般在期刊和引用关系构成的有向图中计算期刊影响力。理解 PageRank 原理有助于我们理解 EigenFactor 的计算原理。
+EigenFactor，一说译作“特征因子”[^3]，于 2006 年由  West Bergstorm 等提出，类似于 PageRank 在网页和超链接构成的有向图中计算网页影响力，EigenFactor 一般在期刊和引用关系构成的有向图中计算期刊影响力。理解 PageRank 原理有助于我们理解 EigenFactor 的计算原理。
 
 ## 基本理解
 在研读文献时，文献本身可能会对参考的文献进行引用，我们作为读者就有可能阅读文献的参考文献。而参考文献一般与当前文献不位于同一本期刊上，我们就需要去阅读另一本期刊。这样的一种从期刊到期刊的跳转就类似于 PageRank 中网页到网页的跳转，根据引用关系构成的拓扑结构，以及 EigenFactor 加入的期刊载文量信息，就可以迭代计算出期刊的影响力。
@@ -356,6 +356,3 @@ matrix([[1.5828387 ],
         [3.53327085],
         [0.41132979]])  # ArticleInfluence Score
 ```
-
-
-[^1]: https://blog.sciencenet.cn/blog-38899-240133.html
