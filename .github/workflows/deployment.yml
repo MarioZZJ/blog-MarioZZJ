@@ -26,6 +26,7 @@ jobs:
         node -v
         npm un hexo-renderer-marked --save
         npm un hexo-renderer-kramed --save
+        npm i -g hexo-cli
         npm i
         hexo clean
         hexo g
