@@ -21,10 +21,14 @@ jobs:
       with:
         node-version: 16.15.1
 
-    - name: Install dependencies & Generate Static files
+    - name: Install dependencies
       run: |
         node -v
-        npm i
+        npm i hexo-cli
+        npm i --verbose
+
+    - name: Generate Static files
+      run: |
         hexo clean
         hexo g
     
