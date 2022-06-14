@@ -2,7 +2,7 @@ name: Interval
 
 on:
   schedule:
-    - cron: '15 5,17 * * *'
+    - cron: '15 5 * * *'
 
 jobs:
   hexo-deployment:
@@ -12,22 +12,22 @@ jobs:
 
     steps:
     - name: Checkout source
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: true
 
     - name: Setup Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
-        node-version: '12.x'
+        node-version: 12.18.0
 
-    - name: Install dependencies & Generate static files
+    - name: Install dependencies
       run: |
         node -v
-        npm un hexo-renderer-marked --save
-        npm un hexo-renderer-kramed --save
-        npm i -g hexo-cli
         npm i
+
+    - name: Generate static files
+      run: |
         hexo clean
         hexo g
     
