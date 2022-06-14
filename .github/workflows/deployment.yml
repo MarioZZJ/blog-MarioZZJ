@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         node -v
-        npm i
+        npm i --verbose
 
     - name: Generate static files
       run: |
