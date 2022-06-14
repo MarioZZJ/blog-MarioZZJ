@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         node -v
-        npm i hexo-cli
+        npm i hexo-cli --location=global
         npm i --verbose
 
     - name: Generate Static files
