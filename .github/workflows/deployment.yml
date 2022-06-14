@@ -19,15 +19,12 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 12.18.0
+        node-version: 16.15.1
 
-    - name: Install dependencies
+    - name: Install dependencies & Generate Static files
       run: |
         node -v
         npm i --verbose
-
-    - name: Generate static files
-      run: |
         hexo clean
         hexo g
     
