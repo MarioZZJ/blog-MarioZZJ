@@ -1,0 +1,524 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Linux 基础操作学习(3)：文件操作进阶 | MarioZZJ's blog</title><meta name="keywords" content="Linux"><meta name="author" content="MarioZZJ,mariozzj@outlook.com"><meta name="copyright" content="MarioZZJ"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Linux 基础学习第三部分：文件压缩、文件内容查找与替换、文件目录查找">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 基础操作学习(3)：文件操作进阶">
+<meta property="og:url" content="https://blog.mariozzj.cn/posts/2c01ed8b/index.html">
+<meta property="og:site_name" content="MarioZZJ&#39;s blog">
+<meta property="og:description" content="Linux 基础学习第三部分：文件压缩、文件内容查找与替换、文件目录查找">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://download.mariozzj.cn/img/picgo/202112152228655.png">
+<meta property="article:published_time" content="2021-12-27T16:44:15.000Z">
+<meta property="article:modified_time" content="2021-12-27T16:44:15.000Z">
+<meta property="article:author" content="MarioZZJ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://download.mariozzj.cn/img/picgo/202112152228655.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.mariozzj.cn/posts/2c01ed8b/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/pluginsSrc/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/pluginsSrc/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: MarioZZJ","link":"链接: ","source":"来源: MarioZZJ's blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'mediumZoom',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#663300","bgDark":"#996633","position":"bottom-right"},
+  source: {
+    justifiedGallery: {
+      js: '/pluginsSrc/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: '/pluginsSrc/flickr-justified-gallery/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux 基础操作学习(3)：文件操作进阶',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-28 00:44:15'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="referrer" content="no-referrer" /><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="MarioZZJ's blog" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="http://download.mariozzj.cn/img/static/icon256.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">26</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/list/booklist/"><i class="fa-fw fas fa-book-open"></i><span> 阅读</span></a></li><li><a class="site-page child" href="/list/filmlist/"><i class="fa-fw fas fa-video"></i><span> 观影</span></a></li><li><a class="site-page child" href="/list/gamelist/"><i class="fa-fw fas fa-gamepad"></i><span> 游戏</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-portrait"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://download.mariozzj.cn/img/picgo/202112152228655.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">MarioZZJ's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/list/booklist/"><i class="fa-fw fas fa-book-open"></i><span> 阅读</span></a></li><li><a class="site-page child" href="/list/filmlist/"><i class="fa-fw fas fa-video"></i><span> 观影</span></a></li><li><a class="site-page child" href="/list/gamelist/"><i class="fa-fw fas fa-gamepad"></i><span> 游戏</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-comments"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-portrait"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux 基础操作学习(3)：文件操作进阶</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-27T16:44:15.000Z" title="发表于 2021-12-28 00:44:15">2021-12-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-27T16:44:15.000Z" title="更新于 2021-12-28 00:44:15">2021-12-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">计算机科学</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>18分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux 基础操作学习(3)：文件操作进阶"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>文件压缩和解压</h1>
+<p>常用的压缩包后缀有 <code>.tar</code>、<code>.gz</code>、<code>.bz</code>、<code>.z</code>、<code>.zip</code>、<code>.rar</code> 等，分别采用不同压缩方法进行压缩和解压。根据不同类型可以在 Linux 下选择不同的压缩文件。</p>
+<h2 id="gzip、gunzip"><code>gzip</code>、<code>gunzip</code></h2>
+<p><code>gzip</code> 命令和 <code>gunzip</code> 命令用于 <code>.gz</code> 文件的压缩和解压。</p>
+<p><code>gzip &lt;参数&gt; &lt;目录&gt;</code> 可用于目录的压缩，压缩后得到的文件会放在工作目录。</p>
+<ul>
+<li>常用参数：
+<ul>
+<li><code>-l</code>：列出压缩文件的相关信息（list）</li>
+<li><code>-v</code>：显示指令执行过程（verbose）</li>
+<li><code>-d</code>：改为解压指定文件（decompress）</li>
+<li><code>-r</code>：递归处理目录下的文件及子目录（recursive）</li>
+</ul>
+</li>
+</ul>
+<p><code>gunzip &lt;参数&gt; &lt;文件.gz&gt;</code> 可用于文件的解压，解压的目录放在工作目录下。常用参数同上（除 <code>-d</code>）。</p>
+<h2 id="bzip2、bunzip2"><code>bzip2</code>、<code>bunzip2</code></h2>
+<p><code>bzip2</code> 命令和 <code>bunzip2</code> 命令用于 <code>.bz2</code> 文件的压缩和解压。</p>
+<p><code>bzip2 &lt;参数&gt; &lt;目录&gt;</code> 可用于目录的压缩，压缩后得到的文件会放在工作目录。常用参数同上。</p>
+<p><code>bunzip2 &lt;参数&gt; &lt;文件.bz2&gt;</code> 可用于文件的解压，解压的目录放在工作目录下。常用参数同上（除 <code>-d</code>）。</p>
+<h2 id="compress-、uncompress"><code>compress</code> 、<code>uncompress</code></h2>
+<p><code>compress</code> 命令和 <code>uncompress</code> 命令用于 <code>.Z</code> 文件的压缩和解压。该方法已不太常用</p>
+<p><code>bzip2 &lt;参数&gt; &lt;目录&gt;</code> 可用于目录的压缩，压缩后得到的文件会放在工作目录。支持同上<code>-v</code>、<code>-d</code> 参数。</p>
+<p><code>bunzip2 &lt;参数&gt; &lt;文件.bz2&gt;</code> 可用于文件的解压，解压的目录放在工作目录下。支持同上 <code>-v</code> 参数。</p>
+<h2 id="tar"><code>tar</code></h2>
+<p><code>tar</code> 是用来建立，还原备份文件的工具程序，可以加入、解开备份文件内的文件。（tape archive）</p>
+<p><code>tar</code> 本身可以处理 <code>.tar</code> 格式的压缩和解压。但通过附加参数，<code>tar</code> 命令即可实现 tar 上追加其他属性的压缩和解压。</p>
+<p>模式参数：</p>
+<ul>
+<li><code>-c</code>：建立压缩档案</li>
+<li><code>-x</code>：解压</li>
+<li><code>-t</code>：查看内容</li>
+<li><code>-r</code>：像压缩归档文件末尾追加文件</li>
+<li><code>-u</code>：更新原压缩包中的文件</li>
+</ul>
+<p>以上五个独立命令是使用 <code>tar</code> 操作时必须用到，指定本次命令的目的。五个参数只能选择其一，并可与其他参数混用。</p>
+<p>其他参数：</p>
+<ul>
+<li><code>-z</code>：gzip 属性</li>
+<li><code>-j</code>：bz2 属性</li>
+<li><code>-Z</code>：compress 属性</li>
+<li><code>-v</code>：显示所有过程</li>
+<li><code>-O</code>：将文件解开到标准输出</li>
+</ul>
+<p>必选结尾参数：</p>
+<ul>
+<li><code>-f</code>：使用档案名。该参数是最后一个参数，后面接档案名。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">压缩操作</span></span><br><span class="line">tar –cvf jpg.tar *.jpg       # 将目录里所有jpg文件打包成 tar.jpg </span><br><span class="line">tar –czf jpg.tar.gz *.jpg    # 将目录里所有jpg文件打包成 jpg.tar 后，并且将其用 gzip 压缩，生成一个 gzip 压缩过的包，命名为 jpg.tar.gz </span><br><span class="line">tar –cjf jpg.tar.bz2 *.jpg   # 将目录里所有jpg文件打包成 jpg.tar 后，并且将其用 bzip2 压缩，生成一个 bzip2 压缩过的包，命名为jpg.tar.bz2 </span><br><span class="line">tar –cZf jpg.tar.Z *.jpg     # 将目录里所有 jpg 文件打包成 jpg.tar 后，并且将其用 compress 压缩，生成一个 umcompress 压缩过的包，命名为jpg.tar.Z</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">解压操作</span></span><br><span class="line">tar –xvf file.tar         # 解压 tar 包 </span><br><span class="line">tar -xzvf file.tar.gz     # 解压 tar.gz </span><br><span class="line">tar -xjvf file.tar.bz2    # 解压 tar.bz2 </span><br><span class="line">tar –xZvf file.tar.Z      # 解压 tar.Z </span><br></pre></td></tr></table></figure>
+<h2 id="zip、unzip"><code>zip</code>、<code>unzip</code></h2>
+<p><code>zip</code> 命令和 <code>unzip</code> 命令用于 <code>.zip</code> 文件的压缩。</p>
+<p>需要额外注意的是要想使用该命令，需要先安装 Zip for Linux。如在 CentOS 下安装，输入指令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">yum install -y zip</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">yum install -y unzip</span></span><br></pre></td></tr></table></figure>
+<p>用法：<code>zip &lt;参数&gt; [&lt;生成的文件目录&gt;] &lt;目录或多文件&gt;</code></p>
+<p>常用参数：</p>
+<ul>
+<li><code>-v</code>：同上</li>
+<li><code>-r</code>：同上</li>
+<li><code>-d</code>：从压缩文件内删除指定的文件</li>
+<li><code>-q</code>：不显示指令执行过程</li>
+<li><code>-f</code>：更新现有文件</li>
+<li><code>-P &lt;密码&gt;</code>：加密压缩文件，后接加密密码</li>
+</ul>
+<p>用法：<code>unzip &lt;参数&gt; &lt;目录或多文件&gt;</code></p>
+<p>常用参数：</p>
+<ul>
+<li><code>-v</code>：同上</li>
+<li><code>-q</code>：同上</li>
+<li><code>-f</code>：同上</li>
+<li><code>-P &lt;密码&gt;</code>：解压时输入密码</li>
+<li><code>-d &lt;目录&gt;</code>：指定文件解压缩后要存储的目录</li>
+<li><code>-x &lt;空格分隔文件&gt;</code>：指定不处理压缩文件中的哪些文件</li>
+</ul>
+<h2 id="rar、unrar"><code>rar</code>、<code>unrar</code></h2>
+<p><code>rar</code> 命令和 <code>unrar</code> 命令用于 <code>.rar</code> 文件的压缩。</p>
+<p>需要额外注意的是，要使用该命令同样需要先安装 RAR for Linux。直接 <code>yum</code> 安装可能提示无资源，可以添加其他镜像或<a target="_blank" rel="noopener" href="http://www.rarlab.com/download.htm">直接下载</a>。<code>rar</code> 和 <code>unrar</code> 的用法和 <code>zip</code>、<code>unzip</code> 类似。</p>
+<h2 id="实战：文件压缩和解压">实战：文件压缩和解压</h2>
+<ol>
+<li>在 <code>/home/datawhale</code> 目录下昵称文件夹中，下载 <a target="_blank" rel="noopener" href="https://mirror.coggle.club/dataset/jaychou_lyrics.txt.zip%E3%80%82">https://mirror.coggle.club/dataset/jaychou_lyrics.txt.zip。</a></li>
+<li>使用 <code>zip</code> 压缩该昵称文件夹</li>
+<li>使用 <code>tar</code> 压缩该昵称文件夹</li>
+<li>将该昵称文件夹打包为 <code>tar.gz</code> 格式</li>
+</ol>
+<p>实操：</p>
+<ol>
+<li>
+<p>下载文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ wget https://mirror.coggle.club/dataset/jaychou_lyrics.txt.zip</span><br><span class="line">--2021-12-27 21:48:35--  https://mirror.coggle.club/dataset/jaychou_lyrics.txt.zip</span><br><span class="line">Resolving mirror.coggle.club (mirror.coggle.club)... 113.229.252.249, 2408:872b:f01:1002:3::3fc</span><br><span class="line">Connecting to mirror.coggle.club (mirror.coggle.club)|113.229.252.249|:443... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 52607 (51K) [application/zip]</span><br><span class="line">Saving to: ‘jaychou_lyrics.txt.zip’</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">100%</span><span class="language-bash">[==============================================================================&gt;] 52,607      --.-K/s   <span class="keyword">in</span> 0.03s</span></span><br><span class="line"></span><br><span class="line">2021-12-27 21:48:36 (1.71 MB/s) - ‘jaychou_lyrics.txt.zip’ saved [52607/52607]</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>zip</code> 压缩目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 大家都在根目录执行压缩语句，压缩包全都默认丢到根目录，已经乱成一锅粥了，所以我还是指定一下目标目录</span></span></span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$ zip -v -r ./MarioZZJ/MarioZZJ.zip ./MarioZZJ</span><br><span class="line">  adding: MarioZZJ/     (in=0) (out=0) (stored 0%)</span><br><span class="line">  adding: MarioZZJ/datawhale/   (in=0) (out=0) (stored 0%)</span><br><span class="line">  adding: MarioZZJ/datawhale/affairs.txt        (in=92161) (out=14343) (deflated 84%)</span><br><span class="line">  adding: MarioZZJ/datawhale/test.py    (in=46) (out=46) (stored 0%)</span><br><span class="line">  adding: MarioZZJ/datawhale/test1.py   (in=46) (out=46) (stored 0%)</span><br><span class="line">  adding: MarioZZJ/datawhale/test2.py   (in=48) (out=48) (stored 0%)</span><br><span class="line">  adding: MarioZZJ/test5.py     (in=188) (out=129) (deflated 31%)</span><br><span class="line">  adding: MarioZZJ/affairs/     (in=0) (out=0) (stored 0%)</span><br><span class="line">  adding: MarioZZJ/affairs/.affairs.py.swp      (in=12288) (out=395) (deflated 97%)</span><br><span class="line">  adding: MarioZZJ/affairs/affairs.py   (in=241) (out=176) (deflated 27%)</span><br><span class="line">  adding: MarioZZJ/affairs/__init__.py  (in=0) (out=0) (stored 0%)</span><br><span class="line">  adding: MarioZZJ/affairs/test6.py     (in=173) (out=129) (deflated 25%)</span><br><span class="line">  adding: MarioZZJ/affairs/__pycache__/ (in=0) (out=0) (stored 0%)</span><br><span class="line">  adding: MarioZZJ/affairs/__pycache__/affairs.cpython-36.pyc   (in=435) (out=328) (deflated 25%)</span><br><span class="line">  adding: MarioZZJ/affairs/__pycache__/__init__.cpython-36.pyc  (in=127) (out=100) (deflated 21%)</span><br><span class="line">  adding: MarioZZJ/test6.py     (in=114) (out=92) (deflated 19%)</span><br><span class="line">  adding: MarioZZJ/sleep.py     (in=108) (out=91) (deflated 16%)</span><br><span class="line">  adding: MarioZZJ/outlog.txt   (in=517740) (out=61794) (deflated 88%)</span><br><span class="line">  adding: MarioZZJ/jaychou_lyrics.txt.zip       (in=52607) (out=52607) (stored 0%)</span><br><span class="line">total bytes=676322, compressed=130324 -&gt; 81% savings</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>tar</code> 压缩目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ tar -cf ./MarioZZJ/MarioZZJ.tar ./MarioZZJ</span><br><span class="line">tar: ./MarioZZJ/MarioZZJ.tar: file is the archive; not dumped</span><br></pre></td></tr></table></figure>
+<p>发现直接这么执行报错了，为什么呢？通过查找资料发现 <code>tar</code> 后接目标时只能写文件名，不能写本例中的目录名。否则只会生成备份文件而非压缩文件。所以我们可以重新操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ cd MarioZZJ</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ rm MarioZZJ.tar </span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ tar -cvf MarioZZJ.tar * # 打包当前目录下所有文件，可以使用通配符 *</span><br><span class="line">affairs/</span><br><span class="line">affairs/.affairs.py.swp</span><br><span class="line">affairs/affairs.py</span><br><span class="line">affairs/__init__.py</span><br><span class="line">affairs/test6.py</span><br><span class="line">affairs/__pycache__/</span><br><span class="line">affairs/__pycache__/affairs.cpython-36.pyc</span><br><span class="line">affairs/__pycache__/__init__.cpython-36.pyc</span><br><span class="line">datawhale/</span><br><span class="line">datawhale/affairs.txt</span><br><span class="line">datawhale/test.py</span><br><span class="line">datawhale/test1.py</span><br><span class="line">datawhale/test2.py</span><br><span class="line">jaychou_lyrics.txt.zip</span><br><span class="line">MarioZZJ.zip</span><br><span class="line">outlog.txt</span><br><span class="line">sleep.py</span><br><span class="line">test5.py</span><br><span class="line">test6.py</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>压缩目录为 <code>tar.gz</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ tar -czf MarioZZJ.tar.gz *</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<hr>
+<h1>文件文本字符查找替换</h1>
+<h2 id="grep"><code>grep</code></h2>
+<p><code>grep</code> 命令用于查找文件里符合条件的字符串行，即如果发现某文件包含符合指定范本样式的内容，就把那一行显示出来。</p>
+<p>用法：<code>grep [-abcEFGhHilLnqrsvVwxy][-A&lt;显示行数&gt;][-B&lt;显示列数&gt;][-C&lt;显示列数&gt;][-e&lt;范本样式&gt;][-f&lt;范本文件&gt;][--help][范本样式][文件或目录...]</code></p>
+<p>参数：</p>
+<ul>
+<li><code>-A &lt;显示行数&gt;</code>：除了显示结果行之外并展示该行之后的内容（同 <code>--after-context=&lt;显示行数&gt;</code>）</li>
+<li><code>-B &lt;显示行数&gt;</code>：除了显示结果行之外并展示该行之前的内容（同 <code>--before-context=&lt;显示行数&gt;</code>）</li>
+<li><code>-C &lt;显示行数&gt;</code>：除了显示结果行之外并展示该行之前之后的内容（同 <code>--context=&lt;显示行数&gt;</code>）</li>
+<li><code>-e &lt;范本样式&gt;</code>：指定字符串作为查找文件内容的样式（同 <code>--regexp=&lt;范本样式&gt;</code>），见 <a target="_blank" rel="noopener" href="https://www.runoob.com/regexp/regexp-syntax.html">正则表达式 – 语法 | 菜鸟教程 (runoob.com)</a></li>
+<li><code>-f &lt;规则文件&gt;</code>：指定规则文件，其内容含有一个或多个规则样式，让 grep 查找符合规则条件的文件内容，格式为每行一个规则样式。</li>
+<li><code>-i</code>：忽略字符大小写（同 <code>--ignore-case</code>）</li>
+<li><code>-l</code>：仅输出符合指定样式的文件名称</li>
+<li><code>-n</code>：在显示符合样式的那一行之前，标示出该行的列数编号</li>
+<li><code>-r</code>：以递归方式查找符合条件的文献（查找目录及子目录，同 <code>--recursive</code> 或 <code>-d recurse</code>）</li>
+<li><code>-v</code>：反向查找，打印出不符合条件行的内容（同 <code>--invert-match</code>）</li>
+</ul>
+<p>应用举例：</p>
+<p>系统报警显示了时间，但是日志文件太大无法直接 cat 查看。(查询含有特定文本的文件，并拿到这些文本所在的行)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -n &#x27;2019-10-24 00:01:11&#x27; *.log</span><br></pre></td></tr></table></figure>
+<p>在当前目录里第一级文件夹中寻找包含指定字符串的 .in 文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &quot;thermcontact&quot; /.in</span><br></pre></td></tr></table></figure>
+<p>从根目录开始查找所有扩展名为 .log 的文本文件，并找出包含 “ERROR” 的行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -type f -name &quot;*.log&quot; | xargs grep &quot;ERROR&quot;</span><br></pre></td></tr></table></figure>
+<p>例子：从当前目录开始查找所有扩展名为 .in 的文本文件，并找出包含 “thermcontact” 的行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find . -name &quot;*.in&quot; | xargs grep &quot;thermcontact&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="sed"><code>sed</code></h2>
+<p><code>sed</code> 命令可用来自动编辑一个或多个文件，简化对文件的反复操作。</p>
+<p>用法：<code>sed [-hnV][-e &lt;script&gt;][-f &lt;script文件&gt;][文本文件]</code></p>
+<p>参数：</p>
+<ul>
+<li><code>-e</code>：以选项中指定的 script 处理输入的文本文件</li>
+<li><code>-f</code>：以选项中指定的 script 文件来处理输入的文本文件</li>
+<li><code>-n</code>：仅显示 script 处理后的结果</li>
+</ul>
+<p>动作说明：</p>
+<ul>
+<li><code>a</code>：新增， <code>a</code> 的后面接字符串，这些字符串会在新的一行出现</li>
+<li><code>c</code>：取代， <code>c</code> 的后面接字符串，这些字符串可以取代 n1,n2 之间的行！</li>
+<li><code>d</code>：删除</li>
+<li><code>i</code>：插入， <code>i</code> 的后面接字符串，这些字符串会在新的一行出现(目前的上一行)</li>
+<li><code>p</code>：打印，亦即将某个选择的数据印出。通常 <code>p</code> 会与参数 <code>sed -n</code> 一起运行</li>
+<li><code>s</code>：取代，可以直接进行取代的工作哩！通常这个 <code>s</code> 的动作可以搭配正规表示法</li>
+</ul>
+<p>动作举例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除某行</span></span><br><span class="line">sed -e &#x27;1d&#x27; ab         #删除第一行 </span><br><span class="line">sed -e &#x27;$d&#x27; ab         #删除最后一行</span><br><span class="line">sed -e &#x27;1,2d&#x27; ab       #删除第一行到第二行</span><br><span class="line">sed -e &#x27;2,$d&#x27; ab       #删除第二行到最后一行</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">　　# </span><span class="language-bash">显示某行</span></span><br><span class="line">sed -e &#x27;1p&#x27; ab         #显示第一行 </span><br><span class="line">sed -e &#x27;$p&#x27; ab         #显示最后一行</span><br><span class="line">sed -e &#x27;1,2p&#x27; ab       #显示第一行到第二行</span><br><span class="line">sed -e &#x27;2,$p&#x27; ab       #显示第二行到最后一行</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">　　# </span><span class="language-bash">使用模式进行查询</span></span><br><span class="line">sed -e &#x27;/ruby/p&#x27; ab    #查询包括关键字ruby所在所有行</span><br><span class="line">sed -e &#x27;/\$/p&#x27; ab      #查询包括关键字$所在所有行，使用反斜线\屏蔽特殊含义</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">　　# </span><span class="language-bash">增加一行或多行字符串</span></span><br><span class="line">cat ab</span><br><span class="line">Hello!</span><br><span class="line">ruby is me,welcome to my blog.</span><br><span class="line">end</span><br><span class="line">sed -e &#x27;1a drink tea&#x27; ab  #第一行后增加字符串&quot;drink tea&quot;</span><br><span class="line">Hello!</span><br><span class="line">drink tea</span><br><span class="line">ruby is me,welcome to my blog. </span><br><span class="line">end</span><br><span class="line">sed -e &#x27;1,3a drink tea&#x27; ab #第一行到第三行后增加字符串&quot;drink tea&quot;</span><br><span class="line">Hello!</span><br><span class="line">drink tea</span><br><span class="line">ruby is me,welcome to my blog.</span><br><span class="line">drink tea</span><br><span class="line">end</span><br><span class="line">drink tea</span><br><span class="line">sed -e &#x27;1a drink tea\nor coffee&#x27; ab   #第一行后增加多行，使用换行符\n</span><br><span class="line">Hello!</span><br><span class="line">drink tea</span><br><span class="line">or coffee</span><br><span class="line">ruby is me,welcome to my blog.</span><br><span class="line">end</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">　　代替一行或多行</span></span><br><span class="line">sed -e &#x27;1c Hi&#x27; ab                #第一行代替为Hi</span><br><span class="line">Hi</span><br><span class="line">ruby is me,welcome to my blog.</span><br><span class="line">end</span><br><span class="line">sed -e &#x27;1,2c Hi&#x27; ab             #第一行到第二行代替为Hi</span><br><span class="line">Hi</span><br><span class="line">end</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">替换一行中的某部分</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">格式：sed <span class="string">&#x27;s/要替换的字符串/新的字符串/g&#x27;</span>   （要替换的字符串可以用正则表达式）</span></span><br><span class="line">sed -n -e &#x27;/ruby/p&#x27; ab | sed &#x27;s/ruby/bird/g&#x27;    #替换ruby为bird</span><br><span class="line">sed -n -e &#x27;/ruby/p&#x27; ab | sed &#x27;s/ruby//g&#x27;        #删除ruby</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">插入</span></span><br><span class="line">sed -i &#x27;$a bye&#x27; ab         #在文件ab中最后一行直接输入&quot;bye&quot;</span><br><span class="line">cat ab</span><br><span class="line">Hello!</span><br><span class="line">ruby is me,welcome to my blog.</span><br><span class="line">end</span><br><span class="line">bye</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除匹配行</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">格式：sed -i <span class="string">&#x27;/匹配字符串/d&#x27;</span>  filename  （注：若匹配字符串是变量，则需要“”，而不是‘’。）</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">替换匹配行中的某个字符串</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">格式：sed -i <span class="string">&#x27;/匹配字符串/s/替换源字符串/替换目标字符串/g&#x27;</span> filename</span></span><br></pre></td></tr></table></figure>
+<h2 id="实战：字符串查找替换">实战：字符串查找替换</h2>
+<ol>
+<li>在 <code>/home/datawhale</code> 目录下昵称文件夹中，下载 <a target="_blank" rel="noopener" href="https://mirror.coggle.club/dataset/jaychou_lyrics.txt.zip%EF%BC%8C%E5%B9%B6%E8%A7%A3%E5%8E%8B%E3%80%82">https://mirror.coggle.club/dataset/jaychou_lyrics.txt.zip，并解压。</a></li>
+<li>使用 <code>grep</code> 完成下列操作，并输出到屏幕
+<ol>
+<li>统计歌词中 包含【超人】的歌词</li>
+<li>统计歌词中 包含【外婆】但不包含【期待】的歌词</li>
+<li>统计歌词中 以【我】开头的歌词</li>
+<li>统计歌词中 以【我】结尾的歌词</li>
+</ol>
+</li>
+<li>使用 <code>sed</code> 命令完成下列操作，并输出到屏幕
+<ol>
+<li>将歌词中 第2行 至 第40行 删除</li>
+<li>将歌词中 所有【我】替换成【你】</li>
+</ol>
+</li>
+</ol>
+<p>实操：</p>
+<ol>
+<li>下载文件并解压</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ wget https://mirror.coggle.club/dataset/jaychou_lyrics.txt.zip</span><br><span class="line">--2021-12-27 23:45:13--  https://mirror.coggle.club/dataset/jaychou_lyrics.txt.zip</span><br><span class="line">Resolving mirror.coggle.club (mirror.coggle.club)... 113.229.252.249, 2408:872b:f01:1002:3::3fc</span><br><span class="line">Connecting to mirror.coggle.club (mirror.coggle.club)|113.229.252.249|:443... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 52607 (51K) [application/zip]</span><br><span class="line">Saving to: ‘jaychou_lyrics.txt.zip’</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">100%</span><span class="language-bash">[==============================================================================&gt;] 52,607      --.-K/s   <span class="keyword">in</span> 0.06s</span></span><br><span class="line"></span><br><span class="line">2021-12-27 23:45:13 (880 KB/s) - ‘jaychou_lyrics.txt.zip’ saved [52607/52607]</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ unzip -d . jaychou_lyrics.txt.zip</span><br><span class="line">Archive:  jaychou_lyrics.txt.zip</span><br><span class="line">inflating: ./jaychou_lyrics.txt</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><code>grep</code> 文本匹配</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ grep -n &quot;超人&quot; jaychou_lyrics.txt</span><br><span class="line">5795:如果超人会飞 那就让我在空中停一停歇</span><br><span class="line">5798:不要问我哭过了没 因為超人不能流眼泪</span><br><span class="line">5815:只能说当超人真的好难</span><br><span class="line">5816:如果超人会飞 那就让我在空中停一停歇</span><br><span class="line">5819:不要问我哭过了没 因為超人不能流眼泪</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ grep -n &quot;外婆&quot; jaychou_lyrics.txt | grep -v &quot;期待&quot;</span><br><span class="line">579:我想带你 回我的外婆家</span><br><span class="line">595:我想带你 回我的外婆家</span><br><span class="line">2267:今天是外婆生日</span><br><span class="line">2269:载着外婆开着拉风的古董车兜兜兜风</span><br><span class="line">2274:外婆她脸上的涟漪</span><br><span class="line">2288:外婆她的无奈</span><br><span class="line">2294:记得去年外婆的生日</span><br><span class="line">2295:表哥带我和外婆参加</span><br><span class="line">2304:是因为看到外婆失落而失落</span><br><span class="line">2313:我告诉外婆 我没输 不需要改变</span><br><span class="line">2316:只要外婆觉得好听</span><br><span class="line">2318:外婆露出了笑容 说她以我为荣</span><br><span class="line">2327:外婆她的无奈</span><br><span class="line">2339:外婆她的无奈</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ grep -n -e &quot;^我&quot; jaychou_lyrics.txt</span><br><span class="line">5:我每天每天每天在想想想想著你</span><br><span class="line">24:我每天每天每天在想想想想著你</span><br><span class="line">51:我想要将我的寂寞封闭</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## 太多了，略去部分输出</span></span></span><br><span class="line">5788:我唱的歌词要有点文化 因為随时会被当教材</span><br><span class="line">5811:我到底是一个创作歌手</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ grep -n -e &quot;我$&quot; jaychou_lyrics.txt</span><br><span class="line">82:随风跟著我</span><br><span class="line">120:你在那里 在小村外的溪边河口默默等著我</span><br><span class="line">132:默默的在等著我</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## 太多了，略去部分输出</span></span></span><br><span class="line">5361:人群散了后 夜色多朦朧 月光也會跟著我</span><br><span class="line">5365:人群散了后 夜色多朦朧 月光也會跟著我</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><code>sed</code> 文本替换</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ sed -e &#x27;2,40d&#x27; jaychou_lyrics.txt</span><br><span class="line">想要有直升机</span><br><span class="line">透明的让我感动的可爱女人</span><br><span class="line">坏坏的让我疯狂的可爱女人</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## 省略其余输出</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ sed -n -e &#x27;/我/p&#x27; jaychou_lyrics.txt | sed &#x27;s/我/你/g&#x27;</span><br><span class="line">你每天每天每天在想想想想著你</span><br><span class="line">让你开始乡相信命运</span><br><span class="line">让你碰到你</span><br><span class="line">漂亮的让你面红的可爱女人</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## 太多了，省略部分输出</span></span></span><br><span class="line">拯救地球好累 虽然有些疲惫 但你还是会</span><br><span class="line">不要问你哭过了没 因為超人不能流眼泪</span><br></pre></td></tr></table></figure>
+<hr>
+<h1>文件目录查找</h1>
+<h2 id="find"><code>find</code></h2>
+<p><code>find</code> 命令用于在指定目录下查找文件。</p>
+<p>用法：<code>find &lt;path&gt; &lt;参数&gt; [-exec &lt;命令&gt; &#123;&#125; \]</code></p>
+<p>参数前的字符串视为欲查找的目录名，如果不指定目录名则在当前目录下查找。</p>
+<p>常用参数：</p>
+<ul>
+<li>
+<p><code>-name &lt;文件名&gt;</code>：文件名满足要求的文件。使用 <code>-iname</code> 可以忽略大小写</p>
+</li>
+<li>
+<p><code>-type &lt;类型&gt;</code>：文件类型满足要求的文件。类型包括：</p>
+<ul>
+<li><code>d</code>：目录</li>
+<li><code>f</code>：一般文件</li>
+<li>其他：<code>c</code>、<code>b</code>、<code>p</code>、<code>l</code>、<code>s</code></li>
+</ul>
+</li>
+<li>
+<p><code>-perm &lt;id&gt;</code>：具有特定权限的文件</p>
+</li>
+<li>
+<p><code>-user &lt;user&gt;</code>：根据文件属主查找文件</p>
+</li>
+<li>
+<p><code>-amin &lt;n&gt;</code>：查找系统中最后 n 分钟访问的文件</p>
+</li>
+<li>
+<p><code>-cmin &lt;n&gt;</code>：查找系统中最后 n 分钟被改变文件状态的文件</p>
+</li>
+<li>
+<p><code>-mmin &lt;n&gt;</code>：查找系统中最后 n 分钟被改变文件数据的文件（对于上述三个命令，如果前面是 <code>-</code>，限制的是距当前一定时间内；而如果换用 <code>+</code>，限制的是距当前一定时间前。</p>
+</li>
+<li>
+<p><code>-empty</code>：空文件</p>
+</li>
+<li>
+<p><code>-exec &lt;command&gt; &#123; &#125; \;</code>：对 <code>find</code> 所匹配的文件执行该参数所给出的命令。如将 <code>exec</code> 换为 <code>ok</code>，则是以一种更安全的模式执行命令，在执行每个命令之前提示用户询问是否执行。</p>
+</li>
+</ul>
+<p>使用示例可参见 <a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/linux-common-command-2.html">Linux 常用命令学习 | 菜鸟教程 (runoob.com)</a> 之 17。</p>
+<h2 id="locate"><code>locate</code></h2>
+<p><code>locate</code> 命令通过搜寻系统内建文档数据库查找符合条件的文档</p>
+<p>用法：<code>locate &lt;参数&gt; &lt;范本样式...&gt;</code></p>
+<p>常用参数：</p>
+<ul>
+<li><code>-r &lt;reg&gt;</code>：使用正则表达式匹配</li>
+<li><code>-l &lt;num&gt;</code>：限定输出的条目数</li>
+<li><code>-c</code>：只输出找到的数量</li>
+<li><code>-q</code>：不显示错误输出</li>
+<li><code>-i</code>：忽略大小写</li>
+</ul>
+<h2 id="实战：文件目录查找">实战：文件目录查找</h2>
+<ol>
+<li>使用 <code>find</code> 统计文件系统中以 <code>py</code> 为后缀名的文件个数</li>
+<li>使用 <code>find</code> 寻找 <code>/home/</code> 文件夹下文件内容包含 datawhale 的文件</li>
+<li>使用 <code>locate</code> 寻找到 <code>python3.6.1.gz</code> 文件</li>
+</ol>
+<p>实操：</p>
+<ol>
+<li>统计文件个数</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 这个为什么一定要用 find 呢，locate -c 不是更简单</span></span></span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$ find / -name &quot;*.py&quot; | wc -l # 使用 wc 对输出的换行符数进行统计，即可获知文件数量</span><br><span class="line">find: ‘/proc/tty/driver’: Permission denied</span><br><span class="line">find: ‘/proc/1/task/1/fd’: Permission denied</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## 省略其他无权限报错</span></span></span><br><span class="line">find: ‘/boot/grub2’: Permission denied</span><br><span class="line">5907</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>发现包含特定内容的文件</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">仅用 find 并不能根据文件内容发现文件，需要结合 grep 使用</span></span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$ find /home -type f -exec grep -l &quot;datawhale&quot; &#123;&#125; \;</span><br><span class="line">/home/datawhale/.bash_history</span><br><span class="line">/home/datawhale/jane/affairs.pyc</span><br><span class="line">/home/datawhale/gjb/__pycache__/affairs.cpython-36.pyc</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">## 符合条件文件过多，省略部分输出</span></span></span><br><span class="line">/home/datawhale/geyashi.tar</span><br><span class="line">/home/datawhale/chen.tar</span><br><span class="line">/home/datawhale/zyc.zip</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>找到特定文件</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ locate python3.6.1.gz</span><br><span class="line">/usr/share/man/man1/python3.6.1.gz</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.mariozzj.cn">MarioZZJ</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.mariozzj.cn/posts/2c01ed8b/">https://blog.mariozzj.cn/posts/2c01ed8b/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.mariozzj.cn" target="_blank">MarioZZJ's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/Shell/">Shell</a></div><div class="post_share"><div class="social-share" data-image="https://download.mariozzj.cn/img/picgo/202112152228655.png" data-sites="facebook,wechat,qq,qzone,douban,linkedin"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="http://download.mariozzj.cn/img/static/wxpay.jpg" target="_blank"><img class="post-qr-code-img" src="http://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="http://download.mariozzj.cn/img/static/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="http://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/8d6b8da8/"><img class="prev-cover" src="https://download.mariozzj.cn/img/picgo/202201151236429.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">玩转服务器 | 搭建 24h 在线的《饥荒》联机服务器</div></div></a></div><div class="next-post pull-right"><a href="/posts/4449c636/"><img class="next-cover" src="https://download.mariozzj.cn/img/picgo/202112211840892.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Linux 基础操作学习(2)：Python 交互</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/672ba085/" title="Linux 基础操作学习(1)：连接与文件操作"><img class="cover" src="https://download.mariozzj.cn/img/picgo/202112152228655.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-15</div><div class="title">Linux 基础操作学习(1)：连接与文件操作</div></div></a></div><div><a href="/posts/4449c636/" title="Linux 基础操作学习(2)：Python 交互"><img class="cover" src="https://download.mariozzj.cn/img/picgo/202112211840892.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-21</div><div class="title">Linux 基础操作学习(2)：Python 交互</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="http://download.mariozzj.cn/img/static/icon256.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MarioZZJ</div><div class="author-info__description">不变的是我迷途未返的执着</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">26</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MarioZZJ/"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MarioZZJ" target="_blank" title="Github"><i class="fa-brands fa-github"></i></a><a class="social-icon" href="mailto:mariozzj@outlook.com" target="_blank" title="Email"><i class="fa-regular fa-envelope"></i></a><a class="social-icon" href="https://www.linkedin.com/in/mariozzj/" target="_blank" title="领英"><i class="fa-brands fa-linkedin"></i></a><a class="social-icon" href="https://www.zhihu.com/people/MarioZZJ" target="_blank" title="知乎"><i class="fa-brands fa-zhihu"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=h84pms0BX6LZg6soeFF-GU0v8Cnqc3Op&amp;noverify=0" target="_blank" title="QQ"><i class="fa-brands fa-qq"></i></a><a class="social-icon" href="https://space.bilibili.com/28623387" target="_blank" title="Bilibili"><i class="fa-brands fa-bilibili"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来访我的博客，共同学习、交流、进步、发现共同的兴趣点！<br />新的起点，新的目标，愿携手共进，不断努力！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">文件压缩和解压</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#gzip%E3%80%81gunzip"><span class="toc-number">1.1.</span> <span class="toc-text">gzip、gunzip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bzip2%E3%80%81bunzip2"><span class="toc-number">1.2.</span> <span class="toc-text">bzip2、bunzip2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#compress-%E3%80%81uncompress"><span class="toc-number">1.3.</span> <span class="toc-text">compress 、uncompress</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tar"><span class="toc-number">1.4.</span> <span class="toc-text">tar</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zip%E3%80%81unzip"><span class="toc-number">1.5.</span> <span class="toc-text">zip、unzip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rar%E3%80%81unrar"><span class="toc-number">1.6.</span> <span class="toc-text">rar、unrar</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%EF%BC%9A%E6%96%87%E4%BB%B6%E5%8E%8B%E7%BC%A9%E5%92%8C%E8%A7%A3%E5%8E%8B"><span class="toc-number">1.7.</span> <span class="toc-text">实战：文件压缩和解压</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">文件文本字符查找替换</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#grep"><span class="toc-number">2.1.</span> <span class="toc-text">grep</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sed"><span class="toc-number">2.2.</span> <span class="toc-text">sed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%EF%BC%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9F%A5%E6%89%BE%E6%9B%BF%E6%8D%A2"><span class="toc-number">2.3.</span> <span class="toc-text">实战：字符串查找替换</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">文件目录查找</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#find"><span class="toc-number">3.1.</span> <span class="toc-text">find</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#locate"><span class="toc-number">3.2.</span> <span class="toc-text">locate</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%EF%BC%9A%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E6%9F%A5%E6%89%BE"><span class="toc-number">3.3.</span> <span class="toc-text">实战：文件目录查找</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img src="https://download.mariozzj.cn/img/picgo/202204191318445.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="让 Markdown 成为写作的起点"/></a><div class="content"><a class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</a><time datetime="2022-04-19T05:06:14.000Z" title="发表于 2022-04-19 13:06:14">2022-04-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor"><img src="https://download.mariozzj.cn/img/picgo/202204191304070.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="两种图算法：PageRank &amp; EigenFactor"/></a><div class="content"><a class="title" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor">两种图算法：PageRank &amp; EigenFactor</a><time datetime="2022-04-01T04:02:45.000Z" title="发表于 2022-04-01 12:02:45">2022-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/9364d192/" title="玩转服务器 | 使用 frp 实现内网穿透"><img src="https://download.mariozzj.cn/img/picgo/202203111724444.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="玩转服务器 | 使用 frp 实现内网穿透"/></a><div class="content"><a class="title" href="/posts/9364d192/" title="玩转服务器 | 使用 frp 实现内网穿透">玩转服务器 | 使用 frp 实现内网穿透</a><time datetime="2022-03-11T06:45:40.000Z" title="发表于 2022-03-11 14:45:40">2022-03-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By MarioZZJ</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><a target="_blank" rel="noopener" href="http://beian.miit.gov.cn/"><span>备案号：赣ICP备20002056号-2</span></a><a target="_blank" rel="noopener" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261"><img class="icp-icon" src="http://download.mariozzj.cn/img/static/gongan.png"><span>鄂公网安备 42010602004261号</span></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/pluginsSrc/medium-zoom/dist/medium-zoom.min.js"></script><script src="/pluginsSrc/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function loadWaline () {
+  function insertCSS () {
+    const link = document.createElement("link")
+    link.rel = "stylesheet"
+    link.href = "/pluginsSrc/@waline/client/dist/waline.css"
+    document.head.appendChild(link)
+  }
+
+  function initWaline () {
+    const waline = Waline.init(Object.assign({
+      el: '#waline-wrap',
+      serverURL: 'https://blog-waline-api-mariozzj.vercel.app/',
+      pageview: false,
+      dark: 'html[data-theme="dark"]',
+      path: window.location.pathname,
+      comment: false,
+    }, null))
+  }
+
+  if (typeof Waline === 'function') initWaline()
+  else {
+    insertCSS()
+    getScript('/pluginsSrc/@waline/client/dist/waline.js').then(initWaline)
+  }
+}
+
+if ('Waline' === 'Waline' || !true) {
+  if (true) btf.loadComment(document.getElementById('waline-wrap'),loadWaline)
+  else setTimeout(loadWaline, 0)
+} else {
+  function loadOtherComment () {
+    loadWaline()
+  }
+}</script></div><script src="/pluginsSrc/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
