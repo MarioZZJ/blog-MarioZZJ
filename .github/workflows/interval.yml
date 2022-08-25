@@ -2,7 +2,7 @@ name: Interval
 
 on:
   schedule:
-    - cron: '15 5 * * *'
+    - cron: '6 5 17 ? * L'
 
 jobs:
   hexo-deployment:
