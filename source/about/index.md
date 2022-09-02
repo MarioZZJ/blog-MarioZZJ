@@ -10,7 +10,7 @@ comments: false
 
 ## 基本信息
 
-嚼菜根的信管研究生。
+九乡河勇园信管研究生。
 
 关于我的个人基本情况，可以查看我的 [领英](https://www.linkedin.com/in/mariozzj/)。若需关注我的 coding 实践技能点，可查看我的 [Github](https://github.com/MarioZZJ)。
 
@@ -24,11 +24,11 @@ comments: false
 
 ## 技术支持
 
-本站基于 [Hexo](https://hexo.io/) 框架搭建，使用 [Butterfly](https://github.com/jerryc127/hexo-theme-butterfly) 主题，使用 [Github Pages](https://pages.github.com/) 和 [腾讯云对象存储 COS](https://cloud.tencent.com/product/cos) 双端部署静态页面。
+本站基于 [Hexo](https://hexo.io/) 框架搭建，使用 [Butterfly](https://github.com/jerryc127/hexo-theme-butterfly) 主题，使用 [Github Pages](https://pages.github.com/) 和 [腾讯云对象存储 COS](https://cloud.tencent.com/product/cos) 双端部署静态页面，中国大陆地区已启用 [腾讯云内容分发网络 CDN](https://cloud.tencent.com/product/cdn) 加速。
 
-本站评论系统基于 [Waline](https://waline.js.org/)，说说基于 [Artitalk](https://artitalk.js.org/)，使用 LeanCloud 国际版部署，使用 [Vercel](https://vercel.com/) 提供的支持。
+本站评论系统基于 [Twikoo](https://twikoo.js.org/)，说说基于 [Artitalk](https://artitalk.js.org/)。
 
-访客统计采用 [不蒜子](http://busuanzi.ibruce.info/)，访客地图插件采用 [ClustrMap](https://clustrmaps.com/)。
+访客统计采用 [Twikoo](https://twikoo.js.org/)，访客地图插件采用 [ClustrMap](https://clustrmaps.com/)。
 
 ## 博客更新日志
 
@@ -40,4 +40,4 @@ comments: false
 * 2021.12 理解 pug 语法，微调加载动画。
 * 2022.2 友链新增 2 位友邻；取消 Coding Pages 端部署，换用腾讯云 COS 静态页面托管服务，使用 DNSPOD 服务对境内外浏览分流至不同端，合并域名。
 * 2022.8 个人信息维护；更换 COS 存储桶地域；降低定时刷新频率以减少 CDN 回源流量请求。
-
+* 2022.9 更换评论系统为 Twikoo（私有部署）。
