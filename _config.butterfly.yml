@@ -189,8 +189,7 @@ runtimeshow:
 comments:
   # Up to two comments system, the first will be shown as default
   # Choose: Disqus/Disqusjs/Livere/Gitalk/Valine/Waline/Utterances/Facebook Comments/Twikoo
-  use:
-    - Waline
+  use: Twikoo
   text: true # Display the comment name next to the button
   # lazyload: The comment system will be load when comment element enters the browser's viewport.
   # If you set it to true, the comment count will be invalid
@@ -200,11 +199,16 @@ comments:
 
 # waline - A simple comment system with backend support fork from Valine
 # https://waline.js.org/
-waline:
-  serverURL: https://blog-waline-api-mariozzj.vercel.app/ # Waline server address url
-  bg: # waline background
-  visitor: false
-  option:
+# waline:
+#   serverURL: https://blog-waline-api-mariozzj.vercel.app/ # Waline server address url
+#   bg: # waline background
+#   visitor: false
+#   option:
+
+twikoo:
+  envId: https://twikoo.mariozzj.cn/ # Twikoo server address url
+  region: ap-shanghai
+  visitor: true
 
 # 分享
 sharejs:
