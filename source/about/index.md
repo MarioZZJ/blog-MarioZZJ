@@ -41,3 +41,4 @@ comments: false
 * 2022.2 友链新增 2 位友邻；取消 Coding Pages 端部署，换用腾讯云 COS 静态页面托管服务，使用 DNSPOD 服务对境内外浏览分流至不同端，合并域名。
 * 2022.8 个人信息维护；更换 COS 存储桶地域；降低定时刷新频率以减少 CDN 回源流量请求。
 * 2022.9 更换评论系统为 Twikoo（私有部署）。
+* 2022.11 博客正式加入[十年之约](https://www.foreverblog.cn/)、[开往](https://github.com/travellings-link/travellings)两个项目，对应修改博客基本布局。
