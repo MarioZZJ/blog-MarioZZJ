@@ -4,7 +4,7 @@ comments: true
 copyright: true
 abbrlink: fb1f3a84
 date: 2022-10-15 10:06:33
-updated: 2022-10-15 12:15:00
+updated: 2022-11-12 16:30:00
 tags:
     - OpenAlex
     - Spark
@@ -101,25 +101,14 @@ openalex-snapshot/
 
 下载的文件分布于多个文件夹、文件中，且以 gzip 压缩的 json 文件形式存储，可能不便于后续 Spark 计算性能的发挥，所以需要将数据文件进行合并，并转化为 TSV 形式（数据内容含逗号，因此采用制表符作为分隔符）。
 
-首先使用命令解压所有文件：
-
-```Shell
-$ cd openalex-snapshot
-$ for file in data/*/*/*.gz;  
-  do 
-    gzip -d $file;
-  done
-```
-
-解压后占用的磁盘空间约为 1.6 TB。
-
-由于文件存储形式为 json，需要实现这些 json 文件到关系型数据的转化。这里参照 [OpenAlex Postgres schema diagram](https://docs.openalex.org/download-snapshot/upload-to-your-database/load-to-a-relational-database/postgres-schema-diagram) 进行导入，文档中还给出了 [CSV 转换脚本](https://gist.github.com/richard-orr/152d828356a7c47ed7e3e22d2253708d)，但是经过测试，发现该脚本会将特殊字符以 unicode 形式写入文件，可能对后续 spark 读取带来困难，因此我对脚本的缺陷部分进行了调整：
+由于文件存储形式为 json，需要实现这些 json 文件到关系型数据的转化。这里参照 [OpenAlex Postgres schema diagram](https://docs.openalex.org/download-snapshot/upload-to-your-database/load-to-a-relational-database/postgres-schema-diagram) 进行导入，文档中还给出了 [CSV 转换脚本](https://gist.github.com/richard-orr/152d828356a7c47ed7e3e22d2253708d)，但是经过测试，发现该脚本存在一些缺陷，可能对后续 spark 读取带来困难，因此我对脚本的缺陷部分进行了调整：
 
 * 调整所有读取、写入的文件方法，规定编码集为 `utf-8`；
-* 调整分隔符为制表符，取消解压、压缩过程（前已执行）；
-* 对处理 json 的方法 `json.dumps()` 添加参数 `ensure_ascii=False`，确保不会将特殊字符转为 Unicode。
+* 调整分隔符为制表符，取消压缩过程；
+* 对处理 json 的方法 `json.dumps()` 添加参数 `ensure_ascii=False`，确保不会将特殊字符转为 Unicode。（[反馈](https://gist.github.com/richard-orr/152d828356a7c47ed7e3e22d2253708d?permalink_comment_id=4336113#gistcomment-4336113)后，作者已修复）
+* 对于所有的 id，源文件为完整 url，不便于之后的聚合、连接等操作时提升速度，因此均转换为 int 类型。
 
-最终得到了 [调整问题后的 TSV 转换脚本](https://gist.github.com/MarioZZJ/278e44031e58ff3ef0dcea2f557730f9/revisions)。在 `openalex-snapshot` 文件夹外运行指令即可：
+最终得到了 [调整问题后的 TSV 转换脚本](https://gist.github.com/MarioZZJ/3373ecd492af16728ac6c726d8639acd)。在 `openalex-snapshot` 文件夹外运行指令即可（注意需保证 python 版本不低于 3.8，以支持海象运算符）：
 
 ```Shell
 $ python3 flatten-openalex-jsonl.py 
