@@ -42,3 +42,4 @@ comments: false
 * 2022.8 个人信息维护；更换 COS 存储桶地域；降低定时刷新频率以减少 CDN 回源流量请求。
 * 2022.9 更换评论系统为 Twikoo（私有部署）。
 * 2022.11 博客正式加入[十年之约](https://www.foreverblog.cn/)、[开往](https://github.com/travellings-link/travellings)两个项目，对应修改博客基本布局。
+* 2023.1 友链新增 1 位友邻。
