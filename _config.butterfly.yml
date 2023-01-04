@@ -51,9 +51,9 @@ cover:
   position: both
   # 當沒有設置cover時，默認的封面顯示
   default_cover:
-    - http://download.mariozzj.cn/img/static/bg_12.jpg
-    - http://download.mariozzj.cn/img/static/bg_17.jpg
-    - http://download.mariozzj.cn/img/static/images.jpg
+    - https://download.mariozzj.cn/img/static/bg_12.jpg
+    - https://download.mariozzj.cn/img/static/bg_17.jpg
+    - https://download.mariozzj.cn/img/static/images.jpg
 
 # 文章页相关配置
 ## https://butterfly.js.org/posts/4aa8abbe/#%E6%96%87%E7%AB%A0%E9%A0%81%E7%9B%B8%E9%97%9C%E9%85%8D%E7%BD%AE
@@ -123,7 +123,7 @@ footer:
   owner:
     enable: true
     since: 2020
-  custom_text: <a href="https://www.foreverblog.cn/" target="_blank"> <img src="https://download.mariozzj.cn/img/picgo/202211071402932.png" alt="" style="width:auto;height:24px;" title="十年之约"></a><a href="https://www.foreverblog.cn/" target="_blank"> <img src="https://download.mariozzj.cn/img/picgo/202211071406314.png" alt="" style="width:auto;height:24px;" title="开往"></a><br /><a href="http://beian.miit.gov.cn/"><span>备案号：赣ICP备20002056号-2</span></a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261"><img class="icp-icon" src="http://download.mariozzj.cn/img/static/gongan.png"><span>鄂公网安备 42010602004261号</span></a>
+  custom_text: <a href="https://www.foreverblog.cn/" target="_blank"> <img src="https://download.mariozzj.cn/img/picgo/202211071402932.png" alt="" style="width:auto;height:24px;" title="十年之约"></a><a href="https://www.foreverblog.cn/" target="_blank"> <img src="https://download.mariozzj.cn/img/picgo/202211071406314.png" alt="" style="width:auto;height:24px;" title="开往"></a><br /><a href="https://beian.miit.gov.cn/"><span>备案号：赣ICP备20002056号-2</span></a><a href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261"><img class="icp-icon" src="https://download.mariozzj.cn/img/static/gongan.png"><span>鄂公网安备 42010602004261号</span></a>
   copyright: true # Copyright of theme and framework
 
 
@@ -243,25 +243,25 @@ theme_color:
   blockquote_background_color: "#CC9933"
 
 ## 网站背景
-index_img: http://download.mariozzj.cn/img/static/bg_14.jpg
-default_top_img: http://download.mariozzj.cn/img/static/bg_14.jpg
-archive_img: http://download.mariozzj.cn/img/static/bg_03.png
-tag_img: http://download.mariozzj.cn/img/static/bg_17.jpg
-tag_per_img: http://download.mariozzj.cn/img/static/bg_17.jpg
+index_img: https://download.mariozzj.cn/img/static/bg_14.jpg
+default_top_img: https://download.mariozzj.cn/img/static/bg_14.jpg
+archive_img: https://download.mariozzj.cn/img/static/bg_03.png
+tag_img: https://download.mariozzj.cn/img/static/bg_17.jpg
+tag_per_img: https://download.mariozzj.cn/img/static/bg_17.jpg
 # tag_per_img:
 #   python: python.jpg
 #   java: java.jpg
-category_img: http://download.mariozzj.cn/img/static/bg_15.jpg
-category_per_img: http://download.mariozzj.cn/img/static/bg_15.jpg
+category_img: https://download.mariozzj.cn/img/static/bg_15.jpg
+category_per_img: https://download.mariozzj.cn/img/static/bg_15.jpg
 # category_per_img:
 #   python: python.jpg
 #   java: java.jpg
-background: "url(http://download.mariozzj.cn/img/static/bg_22.jpg)"
+background: "url(https://download.mariozzj.cn/img/static/bg_22.jpg)"
 
 error_404:
   enable: true
   subtitle: "页面没有找到"
-  background: http://download.mariozzj.cn/img/static/bg_18.jpg
+  background: https://download.mariozzj.cn/img/static/bg_18.jpg
 
 ## 页面美化
 beautify:
