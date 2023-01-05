@@ -181,7 +181,7 @@ aside:
 busuanzi:
   site_uv: true
   site_pv: true
-  page_pv: true
+  page_pv: false
 
 runtimeshow:
   enable: true
