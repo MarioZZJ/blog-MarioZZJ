@@ -1,11 +1,11 @@
 ---
-title: 关于
-date: 2021-09-22 17:13:02
-type: "about"
-katex: true
 comments: false
+date: '2021-09-22T17:13:02+08:00'
+katex: true
+title: 关于
+type: about
+updated: 2023-8-20T13:38:43.384+8:0
 ---
-
 # 关于我
 
 ## 基本信息
@@ -43,3 +43,4 @@ comments: false
 * 2022.9 更换评论系统为 Twikoo（私有部署）。
 * 2022.11 博客正式加入[十年之约](https://www.foreverblog.cn/)、[开往](https://github.com/travellings-link/travellings)两个项目，对应修改博客基本布局。
 * 2023.1 友链新增 1 位友邻。修复不带 `index.html` 后缀的 CDN 缓存刷新问题，同时调整访客统计。
+* 2023.8 增加 [Qexo](https://github.com/Qexo/Qexo) 博客管理平台支持。
