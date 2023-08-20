@@ -1,6 +1,14 @@
 - class_name: 相关网站
   class_desc: 其他相关网站的我的个人主页，欢迎来访。
   link_list:
+    - name: Google Scholar
+      link: https://scholar.google.com/citations?user=SDe3YYEAAAAJ
+      avatar: https://scholar.google.com/favicon.ico
+      descr: Google 学术搜索主页
+    - name: ResearchGate
+      link: https://www.researchgate.net/profile/Zhejun-Zheng-2
+      avatar: https://www.researchgate.net/apple-touch-icon.png
+      descr: 科研人员社区
     - name: 领英 Linkedin
       link: https://www.linkedin.com/in/mariozzj/
       avatar: https://static.licdn.cn/sc/h/al2o9zrvru7aqj8e1x2rzsrca
