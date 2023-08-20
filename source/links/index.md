@@ -11,7 +11,7 @@ comments: "false"
 <link rel="stylesheet" href="https://unpkg.com/qexo-static@1.6.0/hexo/friends.css"/>
 
 <script src="https://unpkg.com/qexo-static@1.6.0/hexo/friends.js"></script>
-<script>loadQexoFriends("qexo-friends", "https://admin.blog.mariozzj.com")</script>
+<script>loadQexoFriends("qexo-friends", "https://admin.blog.mariozzj.cn")</script>
 
 <link rel="stylesheet" href="https://unpkg.com/apursuer-qexo-friend-links@1.0.2/apursuer-hexo-friend-links.css"/>
 
