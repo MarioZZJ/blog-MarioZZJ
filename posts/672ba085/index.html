@@ -1,0 +1,509 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Linux 基础操作学习(1)：连接与文件操作 | MarioZZJ's blog</title><meta name="author" content="MarioZZJ,mariozzj@outlook.com"><meta name="copyright" content="MarioZZJ"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Linux 基础指令第一部分：远程连接、目录操作、文件读取、Vim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 基础操作学习(1)：连接与文件操作">
+<meta property="og:url" content="https://blog.mariozzj.cn/posts/672ba085/index.html">
+<meta property="og:site_name" content="MarioZZJ&#39;s blog">
+<meta property="og:description" content="Linux 基础指令第一部分：远程连接、目录操作、文件读取、Vim">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://download.mariozzj.cn/img/picgo/202112152228655.png">
+<meta property="article:published_time" content="2021-12-15T14:21:18.000Z">
+<meta property="article:modified_time" content="2021-12-15T14:21:18.000Z">
+<meta property="article:author" content="MarioZZJ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://download.mariozzj.cn/img/picgo/202112152228655.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.mariozzj.cn/posts/672ba085/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/pluginsSrc/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/pluginsSrc/@fancyapps/ui/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: MarioZZJ","link":"链接: ","source":"来源: MarioZZJ's blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'mediumZoom',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#663300","bgDark":"#996633","position":"bottom-right"},
+  source: {
+    justifiedGallery: {
+      js: '/pluginsSrc/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: '/pluginsSrc/flickr-justified-gallery/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux 基础操作学习(1)：连接与文件操作',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-15 22:21:18'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="referrer" content="no-referrer" /><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="MarioZZJ's blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="http://download.mariozzj.cn/img/static/icon256.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/list/booklist/"><i class="fa-fw fas fa-book-open"></i><span> 阅读</span></a></li><li><a class="site-page child" href="/list/filmlist/"><i class="fa-fw fas fa-video"></i><span> 观影</span></a></li><li><a class="site-page child" href="/list/gamelist/"><i class="fa-fw fas fa-gamepad"></i><span> 游戏</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/talks/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-portrait"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://foreverblog.cn/go.html"><i class="fa-fw fa fa-spinner fa-spin"></i><span> 虫洞</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa-fw fa fa-spinner fa-spin"></i><span> 开往</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://download.mariozzj.cn/img/picgo/202112152228655.png')"><nav id="nav"><span id="blog-info"><a href="/" title="MarioZZJ's blog"><span class="site-name">MarioZZJ's blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/list/booklist/"><i class="fa-fw fas fa-book-open"></i><span> 阅读</span></a></li><li><a class="site-page child" href="/list/filmlist/"><i class="fa-fw fas fa-video"></i><span> 观影</span></a></li><li><a class="site-page child" href="/list/gamelist/"><i class="fa-fw fas fa-gamepad"></i><span> 游戏</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/talks/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-portrait"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://foreverblog.cn/go.html"><i class="fa-fw fa fa-spinner fa-spin"></i><span> 虫洞</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa-fw fa fa-spinner fa-spin"></i><span> 开往</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux 基础操作学习(1)：连接与文件操作</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-15T14:21:18.000Z" title="发表于 2021-12-15 22:21:18">2021-12-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-15T14:21:18.000Z" title="更新于 2021-12-15 22:21:18">2021-12-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">计算机科学</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>17分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Windows 远程连接 Linux 环境</h1>
+<p>我的 PC 是 Windows 11 操作系统，而我购置的服务器安装的是 Linux 环境（CentOS），如需用 PC 操作服务器，则需要建立 PC 和远程服务器的远程连接。</p>
+<p>我这里使用到的工具是 Windows 自带的 Powershell，<code>Win</code>+<code>R</code> 输入 <code>powershell</code> 即可打开。</p>
+<p>这里顺便推荐一波 Windows Terminal 作为默认终端程序打开 Powershell，非常美观！而且有很多配置可调。</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112131906030.png" alt="Powershell - Windows Terminal"></p>
+<p>Powershell 自带支持 <code>ssh</code> 命令。直接输入 <code>ssh &#123;user&#125;@&#123;ip&#125;</code> 即可建立连接。</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112131910807.png" alt="ssh 连接"></p>
+<p>最后一行 <code>[]</code> 内显示 <code>&#123;用户名&#125;@&#123;主机名&#125; &#123;目录&#125;</code> 时，说明已经进入 Linux 终端。</p>
+<hr>
+<h1>目录操作</h1>
+<p>登录系统后输入 <code>ls /</code> 后即可查看<code>/</code>，即根目录下所有目录和文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ ls /</span><br><span class="line">bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var</span><br></pre></td></tr></table></figure>
+<p>各个目录的功能可参见 <a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-system-contents.html">Linux 系统目录结构 | 菜鸟教程 (runoob.com)</a>。</p>
+<p>Linux 系统的文件路径有 <strong>绝对路径</strong> 和 <strong>相对路径</strong> 两种写法：</p>
+<ul>
+<li><strong>绝对路径</strong> 由根目录（<code>/</code>）写起，如 <code>/usr/share/dic</code></li>
+<li><strong>相对路径</strong> 由当前路径写起。在 Linux 文件系统中，<code>.</code> 代表当前目录（也可用 <code>./</code> 表示），<code>..</code> 代表上一层目录（也可用 <code>../</code> 表示）。如我们的当前目录绝对路径为 <code>/usr/share/doc</code> ，在当前目录用相对路径方式表示 <code>/usr/share/man</code> 的方法是 <code>../man</code>。</li>
+</ul>
+<p>另外需要注意，如果一个目录或文件名以 <code>.</code> 开始，如 <code>.bashrc</code>，说明该目录 / 文件为隐藏目录 / 文件，默认状态下不显示。</p>
+<p>处理目录的常见命令</p>
+<p>常见命令有：<code>ls</code>、<code>cd</code>、<code>pwd</code>、<code>mkdir</code>、<code>rmdir</code>、<code>cp</code>、<code>rm</code>、<code>mv</code>。可以通过 <code>man [命令]</code> 的方式来查看命令的使用文档。</p>
+<h2 id="ls">ls</h2>
+<p>列出目录及文件名（list files）</p>
+<p>常用参数：</p>
+<ul>
+<li><code>-a</code>：连同隐藏文件一起展示所有文件</li>
+<li><code>-d</code>：仅列出目录本身，而不是列出目录内的文件数据</li>
+<li><code>-l</code>：长数据串列出详情</li>
+</ul>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ ls -l / # 展示详情</span><br><span class="line">total 16</span><br><span class="line">lrwxrwxrwx.   1 0 root    7 Oct 30  2020 bin -&gt; usr/bin</span><br><span class="line">dr-xr-xr-x.   5 0 root 4096 Oct 30  2020 boot</span><br><span class="line">drwxr-xr-x   19 0 root 2820 Dec  1 16:41 dev</span><br><span class="line">drwxr-xr-x.  78 0 root 8192 Dec 11 17:41 etc</span><br><span class="line">drwxr-xr-x.   3 0 root   23 Dec  1 16:38 home</span><br><span class="line">lrwxrwxrwx.   1 0 root    7 Oct 30  2020 lib -&gt; usr/lib</span><br><span class="line">lrwxrwxrwx.   1 0 root    9 Oct 30  2020 lib64 -&gt; usr/lib64</span><br><span class="line">drwxr-xr-x.   2 0 root    6 Apr 11  2018 media</span><br><span class="line">drwxr-xr-x.   2 0 root    6 Apr 11  2018 mnt</span><br><span class="line">drwxr-xr-x.   2 0 root    6 Apr 11  2018 opt</span><br><span class="line">dr-xr-xr-x  116 0 root    0 Dec  1 16:41 proc</span><br><span class="line">dr-xr-x---.   4 0 root  161 Dec  1 16:51 root</span><br><span class="line">drwxr-xr-x   21 0 root  660 Dec 11 17:41 run</span><br><span class="line">lrwxrwxrwx.   1 0 root    8 Oct 30  2020 sbin -&gt; usr/sbin</span><br><span class="line">drwxr-xr-x.   2 0 root    6 Apr 11  2018 srv</span><br><span class="line">dr-xr-xr-x   13 0 root    0 Dec  8 11:36 sys</span><br><span class="line">drwxrwxrwt.   8 0 root  172 Dec 13 03:40 tmp</span><br><span class="line">drwxr-xr-x.  13 0 root  155 Oct 30  2020 usr</span><br><span class="line">drwxr-xr-x.  19 0 root  267 Feb  5  2021 var</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ ls -dl / # 展示当前目录详情</span><br><span class="line">dr-xr-xr-x. 17 0 root 244 May 31  2021 /</span><br></pre></td></tr></table></figure>
+<h2 id="cd">cd</h2>
+<p><code>cd [目录]</code></p>
+<p>切换目录（change directory）</p>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ cd /dev # 切换到指定绝对路径</span><br><span class="line">[I have no name!@i-ym8u2kyp dev]$ cd ../media # 切换到指定相对路径</span><br><span class="line">[I have no name!@i-ym8u2kyp media]$</span><br></pre></td></tr></table></figure>
+<h2 id="pwd">pwd</h2>
+<p>显示当前所在的目录（print working directory）</p>
+<p>常用参数</p>
+<ul>
+<li><code>-P</code>：显示确实路径，而非连结路径</li>
+</ul>
+<h2 id="mkdir">mkdir</h2>
+<p><code>mkdir [目录名/路径]</code></p>
+<p>创建新目录（make directory）</p>
+<p>常用参数</p>
+<ul>
+<li><code>-m</code>：配置文件权限，忽略默认权限配置影响</li>
+<li><code>-p</code>：可递归创建多级目录</li>
+</ul>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ cd /tmp</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ mkdir test5</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ mkdir test6/test7/test8 # 默认创建多级目录会报错</span><br><span class="line">mkdir: cannot create directory ‘test6/test7/test8’: No such file or directory</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ mkdir -p test6/test7/test8</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp tmp]$ mkdir -m 711 test7 # 创建目录并配置权限</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ ls -l</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x 2 1000 datawhale  6 Dec 15 16:22 test5</span><br><span class="line">drwxr-xr-x 3 1000 datawhale 19 Dec 15 16:23 test6</span><br><span class="line">drwx--x--x 2 1000 datawhale  6 Dec 15 16:25 test7 # 新创建目录配置权限与默认（755）不同</span><br></pre></td></tr></table></figure>
+<p>关于文件权限，可以查看 <a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-file-attr-permission.html">Linux 文件基本属性 | 菜鸟教程 (runoob.com)</a></p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112151646676.png" alt="文件权限表示"></p>
+<h2 id="rmdir">rmdir</h2>
+<p><code>rmdir [目录名/路径]</code></p>
+<p>删除空目录（remove directory）</p>
+<p>常用参数</p>
+<ul>
+<li><code>-p</code>：可递归删除多级目录</li>
+</ul>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp tmp]$ rmdir test5</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ rmdir test6</span><br><span class="line">rmdir: failed to remove ‘test6’: Directory not empty</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ rmdir -p test6</span><br><span class="line">rmdir: failed to remove ‘test6’: Directory not empty</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ rmdir -p test6/test7/test8 # 删除多级目录，目录须为空</span><br></pre></td></tr></table></figure>
+<p>如果要删除非空目录，可参见后续的 <code>rm</code> 命令</p>
+<h2 id="cp">cp</h2>
+<p><code>cp [源路径] [目标路径]</code></p>
+<p>复制文件或目录（copy）</p>
+<p>常用参数：</p>
+<ul>
+<li><code>-i</code>：若目标路径存在，覆盖前先询问动作</li>
+<li><code>-p</code>：复制时联通属性复制</li>
+<li><code>-r</code>：递归复制目录</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp tmp]$ mkdir test7</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ mkdir test9</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ mkdir test7/test8</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ cp test9 test7/test8 # 直接复制目录会失败</span><br><span class="line">cp: omitting directory ‘test9’</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ cp -r test9 test7/test8</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]# cp ~/.bashrc /tmp/bashrc</span><br><span class="line">[root@www ~]# cp -i ~/.bashrc /tmp/bashrc #n不覆盖，y为覆盖</span><br><span class="line">cp: overwrite `/tmp/bashrc&#x27;? n  </span><br></pre></td></tr></table></figure>
+<h2 id="rm">rm</h2>
+<p><code>rm [文件/目录路径]</code></p>
+<p>移除文件或目录（remove）</p>
+<p>常用参数：</p>
+<ul>
+<li><code>-f</code>：强制执行（force），忽略不存在的文件</li>
+<li><code>-i</code>：互动模式（interactive），询问是否执行</li>
+<li><code>-r</code>：递归删除，删除目录及子目录</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp tmp]$ rm -ri test7/test8/test9</span><br><span class="line">rm: remove directory ‘test7/test8/test9’? y</span><br></pre></td></tr></table></figure>
+<h2 id="mv">mv</h2>
+<p><code>mv [源路径] [目标路径]</code></p>
+<p>移动文件或目录，或修改名称（remove）</p>
+<p>常用参数：</p>
+<ul>
+<li><code>-f</code>：强制执行，如果目标文件已存在，不会询问而直接覆盖</li>
+<li><code>-i</code>：若目标已存在，询问是否直接覆盖</li>
+</ul>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp tmp]$ mv test9 test7/test8/test9</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ mv test7 test10 # 重命名</span><br></pre></td></tr></table></figure>
+<h2 id="实战：在目录下创建文件夹、删除文件夹">实战：在目录下创建文件夹、删除文件夹</h2>
+<ol>
+<li>在 <code>/home/datawhale</code> 目录下，新建一个以英文昵称为名的文件夹 A</li>
+<li>在文件夹 A 内部创建一个以 <code>datawhale</code> 命名的文件夹 B</li>
+<li>在 B 文件夹内创建一个空的 txt 文件</li>
+<li>删除上一步创建的文件</li>
+<li>删除文件夹 B，然后删除文件夹 A</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ cd /home/datawhale</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$ mkdir MarioZZJ # [1] 创建文件夹</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$ cd MarioZZJ</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ mkdir datawhale # [2] 创建文件夹</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ cd datawhale</span><br><span class="line">[I have no name!@i-ym8u2kyp datawhale]$ touch empty.txt # [3] 创建文件</span><br><span class="line">[I have no name!@i-ym8u2kyp datawhale]$ rm empty.txt # [4] 删除文件</span><br><span class="line">[I have no name!@i-ym8u2kyp datawhale]$ cd ../../</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$ rm -r ./MarioZZJ/datawhale # [5] 删除非空文件夹</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$ rmdir ./MarioZZJ # [5] 删除空目录</span><br></pre></td></tr></table></figure>
+<hr>
+<h1>文件操作</h1>
+<h2 id="wget">wget</h2>
+<p><code>wget [目标文件URL] </code></p>
+<p>下载文件的命令很多，如 <code>wget</code>、<code>apt-get</code> 等，这里以 <code>wget</code> 为例。我租赁的服务器安装的是 CentOS 系统，未预装 <code>wget</code>，使用该命令可能会提示 command not found。可以使用 <code>yum</code> 先安装 <code>wget</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install wget</span><br></pre></td></tr></table></figure>
+<p>常用参数：</p>
+<ul>
+<li><code>-O [name]</code>：将下载的文件重命名</li>
+<li><code>-c</code>：断点续传（重新启动下载中断的文件）</li>
+<li><code>-b</code>：后台下载</li>
+</ul>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp tmp]$ wget -O douban.png  https://img3.doubanio.com/f/frodo/144e6fb7d96701944e7dbb1a9bad51bdb1debe29/ # 下载并重命名</span><br><span class="line">pics/app/logo.png</span><br><span class="line">--2021-12-15 18:04:46--  https://img3.doubanio.com/f/frodo/144e6fb7d96701944e7dbb1a9bad51bdb1debe29/pics/app/logo.png</span><br><span class="line">Resolving img3.doubanio.com (img3.doubanio.com)... 60.28.216.240, 60.28.216.242, 60.28.216.244, ...</span><br><span class="line">Connecting to img3.doubanio.com (img3.doubanio.com)|60.28.216.240|:443... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 24158 (24K) [image/png]</span><br><span class="line">Saving to: ‘douban.png’</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">100%</span><span class="language-bash">[======================================================================================&gt;] 24,158      --.-K/s   <span class="keyword">in</span> 0s</span></span><br><span class="line"></span><br><span class="line">2021-12-15 18:04:46 (212 MB/s) - ‘douban.png’ saved [24158/24158]</span><br><span class="line"></span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$ wget -b -O douban.png https://img3.doubanio.com/f/frodo/144e6fb7d96701944e7dbb1a9bad51bdb1debe29/pics/app/logo.png # 下载重命名，不显示下载过程</span><br><span class="line">Continuing in background, pid 17703.</span><br><span class="line">Output will be written to ‘wget-log’.</span><br><span class="line">[I have no name!@i-ym8u2kyp tmp]$</span><br></pre></td></tr></table></figure>
+<h2 id="cat">cat</h2>
+<p><code>cat [文件路径]</code></p>
+<p>从第一行开始显示文件内容（将文件连接到屏幕上，concatenate）</p>
+<p>常用参数：</p>
+<ul>
+<li><code>-b</code>：列出非空白行行号</li>
+<li><code>-n</code>：列出所有行行号</li>
+<li><code>-v</code>：列出一些看不出来的特殊字符</li>
+<li><code>-E</code>：将结尾的断行字节显示出来</li>
+<li><code>-T</code>：将 <code>[tab]</code> 以 <code>^l</code> 展示出来</li>
+<li><code>-A</code>：等同于 <code>-vET</code></li>
+</ul>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ cat -b /etc/my.cnf</span><br><span class="line">     1  [mysqld]</span><br><span class="line">     2  datadir=/var/lib/mysql</span><br><span class="line">     3  socket=/var/lib/mysql/mysql.sock</span><br><span class="line">     4  # Disabling symbolic-links is recommended to prevent assorted security risks</span><br><span class="line">     5  symbolic-links=0</span><br><span class="line">     6  # Settings user and group are ignored when systemd is used.</span><br><span class="line">     7  # If you need to run mysqld under a different user or group,</span><br><span class="line">     8  # customize your systemd unit file for mariadb according to the</span><br><span class="line">     9  # instructions in http://fedoraproject.org/wiki/Systemd</span><br><span class="line"></span><br><span class="line">    10  [mysqld_safe]</span><br><span class="line">    11  log-error=/var/log/mariadb/mariadb.log</span><br><span class="line">    12  pid-file=/var/run/mariadb/mariadb.pid</span><br><span class="line"></span><br><span class="line">    13  #</span><br><span class="line">    14  # include all files from the config directory</span><br><span class="line">    15  #</span><br><span class="line">    16  !includedir /etc/my.cnf.d</span><br><span class="line"></span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$</span><br></pre></td></tr></table></figure>
+<h2 id="tac">tac</h2>
+<p>从最后一行开始显示（正好是 <code>cat</code> 反过来）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ tac /etc/my.cnf</span><br><span class="line"></span><br><span class="line">!includedir /etc/my.cnf.d</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"><span class="comment"># include all files from the config directory</span></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash"></span></span><br><span class="line">pid-file=/var/run/mariadb/mariadb.pid</span><br><span class="line">log-error=/var/log/mariadb/mariadb.log</span><br><span class="line">[mysqld_safe]</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">instructions <span class="keyword">in</span> http://fedoraproject.org/wiki/Systemd</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">customize your systemd unit file <span class="keyword">for</span> mariadb according to the</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">If you need to run mysqld under a different user or group,</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Settings user and group are ignored when systemd is used.</span></span><br><span class="line">symbolic-links=0</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Disabling symbolic-links is recommended to prevent assorted security risks</span></span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line">datadir=/var/lib/mysql</span><br><span class="line">[mysqld]</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$</span><br></pre></td></tr></table></figure>
+<h2 id="head">head</h2>
+<p><code>head [文件路径]</code></p>
+<p>取出文件前几行（默认 10 行）</p>
+<p>常用参数：</p>
+<ul>
+<li><code>-n [行数]</code>：指定显示的行数</li>
+</ul>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ head -n 5 /etc/my.cnf</span><br><span class="line">[mysqld]</span><br><span class="line">datadir=/var/lib/mysql</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Disabling symbolic-links is recommended to prevent assorted security risks</span></span><br><span class="line">symbolic-links=0</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$</span><br></pre></td></tr></table></figure>
+<h2 id="tail">tail</h2>
+<p>与 <code>head</code> 相反，取出文件后几行。</p>
+<h2 id="实战2：在目录下下载文件、阅读文件">实战2：在目录下下载文件、阅读文件</h2>
+<ol>
+<li>在 <code>/home/datawhale</code> 目录下，新建一个以英文昵称命名的文件夹 A</li>
+<li>在文件夹 A 内创建一个以 <code>datawhale</code> 命名的文件夹 B</li>
+<li>使用 <code>wget</code> 命令下载 <a target="_blank" rel="noopener" href="https://mirror.coggle.club/dataset/affairs.txt%EF%BC%8C%E5%88%B0%E6%96%87%E4%BB%B6%E5%A4%B9">https://mirror.coggle.club/dataset/affairs.txt，到文件夹</a> B</li>
+<li>使用 <code>cat</code>、<code>head</code>、<code>tail</code> 命令阅读下载的文件</li>
+<li>在命令行使用 <code>ipython</code> 进入 Python3 环境，并使用 <code>pandas</code> 读取下载的文件</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ mkdir -p ./MarioZZJ/datawhale # [1,2] 创建文件夹</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$ cd ./MarioZZJ/datawhale</span><br><span class="line">[I have no name!@i-ym8u2kyp datawhale]$ wget  https://mirror.coggle.club/dataset/affairs.txt # [3] 下载文件到当前目录</span><br><span class="line">--2021-12-15 20:24:41--  https://mirror.coggle.club/dataset/affairs.txt</span><br><span class="line">Resolving mirror.coggle.club (mirror.coggle.club)... 60.221.23.1, 2408:8731:c001:2:3::3fb</span><br><span class="line">Connecting to mirror.coggle.club (mirror.coggle.club)|60.221.23.1|:443... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 92161 (90K) [text/plain]</span><br><span class="line">Saving to: ‘affairs.txt’</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">100%</span><span class="language-bash">[=======================================================================================&gt;] 92,161      --.-K/s   <span class="keyword">in</span> 0.02s</span></span><br><span class="line"></span><br><span class="line">2021-12-15 20:24:42 (3.88 MB/s) - ‘affairs.txt’ saved [92161/92161]</span><br><span class="line"></span><br><span class="line">[I have no name!@i-ym8u2kyp datawhale]$ cat ./affairs.txt</span><br><span class="line">rate_marriage,age,yrs_married,children,religious,affairs</span><br><span class="line">5,32,6,1,3,0</span><br><span class="line">4,22,2.5,0,2,0</span><br><span class="line">3,32,9,3,3,1</span><br><span class="line">3,27,13,3,1,1</span><br><span class="line">....... # [4] 使用 cat 阅读文件，文件整体很长，后续输出略去</span><br><span class="line">[I have no name!@i-ym8u2kyp datawhale]$ head -n 5 ./affairs.txt # [4] 使用 head 阅读文件前 5 行</span><br><span class="line">rate_marriage,age,yrs_married,children,religious,affairs</span><br><span class="line">5,32,6,1,3,0</span><br><span class="line">4,22,2.5,0,2,0</span><br><span class="line">3,32,9,3,3,1</span><br><span class="line">3,27,13,3,1,1</span><br><span class="line">[I have no name!@i-ym8u2kyp datawhale]$ tail -n 5 ./affairs.txt # [4] 使用 tail 阅读文件后 5 行</span><br><span class="line">4,22,2.5,0,3,0</span><br><span class="line">5,22,2.5,0,2,0</span><br><span class="line">5,32,13,2,3,0</span><br><span class="line">4,32,13,1,1,0</span><br><span class="line">5,22,2.5,0,2,0[I have no name!@i-ym8u2kyp datawhale]$</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[I have no name!@i-ym8u2kyp datawhale]$ ipython # [5] 使用 ipython 打开交互式 python3</span><br><span class="line">Python 3.6.8 (default, Nov 16 2020, 16:55:22)</span><br><span class="line">Type &#x27;copyright&#x27;, &#x27;credits&#x27; or &#x27;license&#x27; for more information</span><br><span class="line">IPython 7.16.2 -- An enhanced Interactive Python. Type &#x27;?&#x27; for help.</span><br><span class="line"></span><br><span class="line">In [1]: !pwd ## 使用超级命令查看当前工作目录</span><br><span class="line">/home/datawhale/MarioZZJ/datawhale</span><br><span class="line"></span><br><span class="line">In [2]: import pandas as pd</span><br><span class="line"></span><br><span class="line">In [3]: data = pd.read_csv(&#x27;./affairs.txt&#x27;) ## 因为之前看过文件，确定是 csv，使用该方法读取</span><br><span class="line"></span><br><span class="line">In [4]: data.info()</span><br><span class="line">&lt;class &#x27;pandas.core.frame.DataFrame&#x27;&gt;</span><br><span class="line">RangeIndex: 6366 entries, 0 to 6365</span><br><span class="line">Data columns (total 6 columns):</span><br><span class="line"><span class="meta prompt_"> # </span><span class="language-bash">  Column         Non-Null Count  Dtype</span></span><br><span class="line">---  ------         --------------  -----</span><br><span class="line"> 0   rate_marriage  6366 non-null   int64</span><br><span class="line"> 1   age            6366 non-null   float64</span><br><span class="line"> 2   yrs_married    6366 non-null   float64</span><br><span class="line"> 3   children       6366 non-null   float64</span><br><span class="line"> 4   religious      6366 non-null   int64</span><br><span class="line"> 5   affairs        6366 non-null   int64</span><br><span class="line">dtypes: float64(3), int64(3)</span><br><span class="line">memory usage: 298.5 KB</span><br><span class="line"></span><br><span class="line">In [5]: data.head(5)</span><br><span class="line">Out[5]:</span><br><span class="line">   rate_marriage   age  yrs_married  children  religious  affairs</span><br><span class="line">0              5  32.0          6.0       1.0          3        0</span><br><span class="line">1              4  22.0          2.5       0.0          2        0</span><br><span class="line">2              3  32.0          9.0       3.0          3        1</span><br><span class="line">3              3  27.0         13.0       3.0          1        1</span><br><span class="line">4              4  22.0          2.5       0.0          1        1</span><br><span class="line"></span><br><span class="line">In [6]: exit()</span><br><span class="line">[I have no name!@i-ym8u2kyp datawhale]$</span><br></pre></td></tr></table></figure>
+<hr>
+<h1>文件编辑：Vim</h1>
+<h2 id="nano">nano</h2>
+<p>nano 是 Linux 的一个基础编辑器，使用 <code>nano [文件路径]</code> 即可使用 nano 打开文件</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112152042360.png" alt="Nano 界面"></p>
+<p>第一行反色部分指示 nano 版本和文件路径，随后下方显示出文件内容，我们在终端使用键盘上的方向键可以移动光标查看文件内容。在屏幕最底端展示的是快捷键，使用快捷键即可实现上述操作。以 Windows 操作的终端为例：</p>
+<ul>
+<li><code>^</code> 后接按键，代表该操作可以用 <code>Ctrl + [按键]</code> 的方式触发。例如要退出编辑器，可以按 <code>Ctrl+X</code>；以及屏幕上提示的其他操作</li>
+<li><code>M-</code> 后接按键，代表该操作可以用 <code>Alt + [按键]</code> 的方式触发。例如
+<ul>
+<li><code>Alt + M</code>：打开/关闭支持鼠标移动光标</li>
+<li><code>Alt + R</code>：查找模式下输入正则表达式</li>
+</ul>
+</li>
+</ul>
+<h2 id="vim">vim</h2>
+<p>vim 是知名的 Linux 内置文本编辑器，功能较为丰富，在程序员中被广泛使用。详细教程可参考 <a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-vim.html">Linux vi/vim | 菜鸟教程</a>。</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112152052427.gif" alt="Vim 键盘图"></p>
+<p>vim 分为三种模式，分别是命令模式（command mode）、输入模式（insert mode）和底线命令模式（last line mode）</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112152057482.png" alt="Vim 工作模式切换"></p>
+<h3 id="命令模式">命令模式</h3>
+<p>使用命令 <code>vim [文件路径]</code> 即可使用 vim 编辑器打开文件。</p>
+<p>默认进入的是命令模式，该模式下敲击键盘会被视作命令而非输入字符。命令模式支持的命令较少，使用更多命令可以按 <code>:</code> 进入底线命令模式。而如需输入则可以按 <code>i</code> 进入输入模式。</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112152106381.png" alt="Vim 命令模式"></p>
+<p>一般模式支持很多按键功能，介绍几个常用的：</p>
+<ul>
+<li><code>h</code>、<code>j</code>、<code>k</code>、<code>l</code>：作用与<code>←</code>、<code>↓</code>、<code>↑</code>、<code>→</code> 相同，可移动光标。</li>
+<li><code>[行数]+h/j/k/l/←/↓/↑/→</code>：组合快速移动任意行/字符数</li>
+<li><code>Ctrl + F/B</code>：（forward/backward）相当于 <code>Page Up / Page Down</code>。</li>
+</ul>
+<h3 id="输入模式">输入模式</h3>
+<p>命令模式下，按 <code>i</code> 进入输入模式：</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112152111017.png" alt="Vim 输入模式"></p>
+<p>在输入模式下部分按键的功能如下：</p>
+<ul>
+<li>字符按键，及其与 <code>Shift</code> 按键的组合：输入字符</li>
+<li>回车 <code>[Enter]</code>：换行</li>
+<li>退格 <code>[Backspace]</code>：删除光标前一个字符</li>
+<li>删除 <code>[Del]</code>：删除光标后一个字符</li>
+<li><code>Insert</code>：切换光标未输入/替换模式。光标分别为竖线/下划线。</li>
+<li><code>Page Up/Down</code>：上下翻页</li>
+<li><code>HOME/END</code>：移动光标到行首/行尾</li>
+<li><code>ESC</code>：退出输入模式，切换到命令模式</li>
+</ul>
+<h3 id="底层命令模式">底层命令模式</h3>
+<p>命令模式下，按 <code>:</code> 进入底层命令模式：</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112152115883.png" alt="Vim 底层命令模式"></p>
+<p>在底线命令模式中，基本的命令有：</p>
+<ul>
+<li><code>q</code>：退出程序</li>
+<li><code>w</code>：保存文件</li>
+<li><code>q!</code>：强制离开而不保存</li>
+<li><code>w [文件名]</code>：将编辑的数据存储为另一个档案</li>
+<li><code>r [文件名]</code>：在编辑的数据中，将另一个文件的数据追加到游标后面</li>
+<li><code>! [终端指令]</code>：暂时离开 vim，在指令中执行指令，并打印结果</li>
+<li><code>set nu/set nonu</code>：显示/取消行号</li>
+</ul>
+<h2 id="实战4：在目录下使用-vi-或-vim-编辑文件">实战4：在目录下使用 vi 或 vim 编辑文件</h2>
+<ol>
+<li>
+<p>使用 Nano 和 Vim 分别创建 <code>.py</code> 文件，并输入以下内容，并运行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Hello World!&#x27;</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>实操：</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112152208600.gif" alt="Nano 操作过程"></p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202112152208254.gif" alt="Vim 操作过程"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.mariozzj.cn">MarioZZJ</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.mariozzj.cn/posts/672ba085/">https://blog.mariozzj.cn/posts/672ba085/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.mariozzj.cn" target="_blank">MarioZZJ's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/Shell/">Shell</a></div><div class="post_share"><div class="social-share" data-image="https://download.mariozzj.cn/img/picgo/202112152228655.png" data-sites="facebook,wechat,qq,qzone,douban,linkedin"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="http://download.mariozzj.cn/img/static/wxpay.jpg" target="_blank"><img class="post-qr-code-img" src="http://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="http://download.mariozzj.cn/img/static/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="http://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/4449c636/" title="Linux 基础操作学习(2)：Python 交互"><img class="cover" src="https://download.mariozzj.cn/img/picgo/202112211840892.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Linux 基础操作学习(2)：Python 交互</div></div></a></div><div class="next-post pull-right"><a href="/posts/28d53052/" title="机器学习实验：回归 | Leeml-2020-hw1"><img class="cover" src="https://download.mariozzj.cn/img/picgo/202111162100438.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">机器学习实验：回归 | Leeml-2020-hw1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/4449c636/" title="Linux 基础操作学习(2)：Python 交互"><img class="cover" src="https://download.mariozzj.cn/img/picgo/202112211840892.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-21</div><div class="title">Linux 基础操作学习(2)：Python 交互</div></div></a></div><div><a href="/posts/2c01ed8b/" title="Linux 基础操作学习(3)：文件操作进阶"><img class="cover" src="https://download.mariozzj.cn/img/picgo/202112152228655.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-28</div><div class="title">Linux 基础操作学习(3)：文件操作进阶</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="http://download.mariozzj.cn/img/static/icon256.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MarioZZJ</div><div class="author-info__description">不变的是我迷途未返的执着</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MarioZZJ/"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MarioZZJ" target="_blank" title="Github"><i class="fa-brands fa-github"></i></a><a class="social-icon" href="mailto:mariozzj@outlook.com" target="_blank" title="Email"><i class="fa-regular fa-envelope"></i></a><a class="social-icon" href="https://www.linkedin.com/in/mariozzj/" target="_blank" title="领英"><i class="fa-brands fa-linkedin"></i></a><a class="social-icon" href="https://www.zhihu.com/people/MarioZZJ" target="_blank" title="知乎"><i class="fa-brands fa-zhihu"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=h84pms0BX6LZg6soeFF-GU0v8Cnqc3Op&amp;noverify=0" target="_blank" title="QQ"><i class="fa-brands fa-qq"></i></a><a class="social-icon" href="https://space.bilibili.com/28623387" target="_blank" title="Bilibili"><i class="fa-brands fa-bilibili"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来访我的博客，共同学习、交流、进步、发现共同的兴趣点！<br />新的起点，新的目标，愿携手共进，不断努力！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Windows 远程连接 Linux 环境</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">目录操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ls"><span class="toc-number">2.1.</span> <span class="toc-text">ls</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cd"><span class="toc-number">2.2.</span> <span class="toc-text">cd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pwd"><span class="toc-number">2.3.</span> <span class="toc-text">pwd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mkdir"><span class="toc-number">2.4.</span> <span class="toc-text">mkdir</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rmdir"><span class="toc-number">2.5.</span> <span class="toc-text">rmdir</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cp"><span class="toc-number">2.6.</span> <span class="toc-text">cp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rm"><span class="toc-number">2.7.</span> <span class="toc-text">rm</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mv"><span class="toc-number">2.8.</span> <span class="toc-text">mv</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%EF%BC%9A%E5%9C%A8%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%81%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">2.9.</span> <span class="toc-text">实战：在目录下创建文件夹、删除文件夹</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">文件操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#wget"><span class="toc-number">3.1.</span> <span class="toc-text">wget</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cat"><span class="toc-number">3.2.</span> <span class="toc-text">cat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tac"><span class="toc-number">3.3.</span> <span class="toc-text">tac</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#head"><span class="toc-number">3.4.</span> <span class="toc-text">head</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tail"><span class="toc-number">3.5.</span> <span class="toc-text">tail</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%982%EF%BC%9A%E5%9C%A8%E7%9B%AE%E5%BD%95%E4%B8%8B%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E3%80%81%E9%98%85%E8%AF%BB%E6%96%87%E4%BB%B6"><span class="toc-number">3.6.</span> <span class="toc-text">实战2：在目录下下载文件、阅读文件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">文件编辑：Vim</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#nano"><span class="toc-number">4.1.</span> <span class="toc-text">nano</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vim"><span class="toc-number">4.2.</span> <span class="toc-text">vim</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.2.1.</span> <span class="toc-text">命令模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.2.2.</span> <span class="toc-text">输入模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%95%E5%B1%82%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.2.3.</span> <span class="toc-text">底层命令模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%984%EF%BC%9A%E5%9C%A8%E7%9B%AE%E5%BD%95%E4%B8%8B%E4%BD%BF%E7%94%A8-vi-%E6%88%96-vim-%E7%BC%96%E8%BE%91%E6%96%87%E4%BB%B6"><span class="toc-number">4.3.</span> <span class="toc-text">实战4：在目录下使用 vi 或 vim 编辑文件</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img src="https://download.mariozzj.cn/img/picgo/202311021615799.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="NJUHPC 运行 Python 程序简明流程"/></a><div class="content"><a class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</a><time datetime="2023-11-02T00:24:53.000Z" title="发表于 2023-11-02 08:24:53">2023-11-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img src="https://download.mariozzj.cn/img/picgo/202210151013511.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录"/></a><div class="content"><a class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</a><time datetime="2022-10-15T02:06:33.000Z" title="发表于 2022-10-15 10:06:33">2022-10-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img src="https://download.mariozzj.cn/img/picgo/202204191318445.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="让 Markdown 成为写作的起点"/></a><div class="content"><a class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</a><time datetime="2022-04-19T05:06:14.000Z" title="发表于 2022-04-19 13:06:14">2022-04-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By MarioZZJ</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><a href="https://www.foreverblog.cn/" target="_blank"> <img src="https://download.mariozzj.cn/img/picgo/202211071402932.png" alt="" style="width:auto;height:24px;" title="十年之约"></a><a href="https://www.travellings.cn/go.html" target="_blank"> <img src="https://download.mariozzj.cn/img/picgo/202211071406314.png" alt="" style="width:auto;height:24px;" title="开往"></a><br /><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/"><span>备案号：赣ICP备20002056号-2</span></a><a target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261"><img class="icp-icon" src="https://download.mariozzj.cn/img/static/gongan.png"><span>鄂公网安备 42010602004261号</span></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/pluginsSrc/medium-zoom/dist/medium-zoom.min.js"></script><script src="/pluginsSrc/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo.mariozzj.cn/',
+      region: 'ap-shanghai',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.mariozzj.cn/',
+      region: 'ap-shanghai',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('/pluginsSrc/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script src="/pluginsSrc/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

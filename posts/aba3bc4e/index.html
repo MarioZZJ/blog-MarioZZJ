@@ -1,0 +1,510 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Neo4J 基本教程 —— 一切基于关系，而不受关系限制 | MarioZZJ's blog</title><meta name="author" content="MarioZZJ,mariozzj@outlook.com"><meta name="copyright" content="MarioZZJ"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Neo4J是知名图数据库，属于NoSQL非关系型数据库的范畴，是笔者认为相对于关系型数据库更灵活，且相对易于上手的一款数据库，在此整理基本教程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Neo4J 基本教程 —— 一切基于关系，而不受关系限制">
+<meta property="og:url" content="https://blog.mariozzj.cn/posts/aba3bc4e/index.html">
+<meta property="og:site_name" content="MarioZZJ&#39;s blog">
+<meta property="og:description" content="Neo4J是知名图数据库，属于NoSQL非关系型数据库的范畴，是笔者认为相对于关系型数据库更灵活，且相对易于上手的一款数据库，在此整理基本教程。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://dist.neo4j.com/wp-content/uploads/20210423072428/neo4j-logo-2020-1.svg">
+<meta property="article:published_time" content="2021-10-25T07:59:15.000Z">
+<meta property="article:modified_time" content="2021-10-25T07:59:15.000Z">
+<meta property="article:author" content="MarioZZJ">
+<meta property="article:tag" content="NoSQL">
+<meta property="article:tag" content="Neo4J">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dist.neo4j.com/wp-content/uploads/20210423072428/neo4j-logo-2020-1.svg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.mariozzj.cn/posts/aba3bc4e/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/pluginsSrc/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="/pluginsSrc/@fancyapps/ui/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: MarioZZJ","link":"链接: ","source":"来源: MarioZZJ's blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'mediumZoom',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#663300","bgDark":"#996633","position":"bottom-right"},
+  source: {
+    justifiedGallery: {
+      js: '/pluginsSrc/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: '/pluginsSrc/flickr-justified-gallery/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Neo4J 基本教程 —— 一切基于关系，而不受关系限制',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-10-25 15:59:15'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="referrer" content="no-referrer" /><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="MarioZZJ's blog" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="http://download.mariozzj.cn/img/static/icon256.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/list/booklist/"><i class="fa-fw fas fa-book-open"></i><span> 阅读</span></a></li><li><a class="site-page child" href="/list/filmlist/"><i class="fa-fw fas fa-video"></i><span> 观影</span></a></li><li><a class="site-page child" href="/list/gamelist/"><i class="fa-fw fas fa-gamepad"></i><span> 游戏</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/talks/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-portrait"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://foreverblog.cn/go.html"><i class="fa-fw fa fa-spinner fa-spin"></i><span> 虫洞</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa-fw fa fa-spinner fa-spin"></i><span> 开往</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://dist.neo4j.com/wp-content/uploads/20210423072428/neo4j-logo-2020-1.svg')"><nav id="nav"><span id="blog-info"><a href="/" title="MarioZZJ's blog"><span class="site-name">MarioZZJ's blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/list/booklist/"><i class="fa-fw fas fa-book-open"></i><span> 阅读</span></a></li><li><a class="site-page child" href="/list/filmlist/"><i class="fa-fw fas fa-video"></i><span> 观影</span></a></li><li><a class="site-page child" href="/list/gamelist/"><i class="fa-fw fas fa-gamepad"></i><span> 游戏</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/talks/"><i class="fa-fw fas fa-comment"></i><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-portrait"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://foreverblog.cn/go.html"><i class="fa-fw fa fa-spinner fa-spin"></i><span> 虫洞</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html"><i class="fa-fw fa fa-spinner fa-spin"></i><span> 开往</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Neo4J 基本教程 —— 一切基于关系，而不受关系限制</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-10-25T07:59:15.000Z" title="发表于 2021-10-25 15:59:15">2021-10-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-10-25T07:59:15.000Z" title="更新于 2021-10-25 15:59:15">2021-10-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7%E5%B9%B2%E8%B4%A7/">工具干货</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>关于 NoSQL</h1>
+<p>Neo4J 属于 NoSQL 非关系型数据库的范畴。</p>
+<h2 id="基本概念理解">基本概念理解</h2>
+<p>SQL 是结构化查询语言（Structured Query Language）的缩写，是一种编程语言，其应用场景一般是关系型数据库。而 NoSQL 是一种概念，全称为“Not Only SQL”，一般代表非关系型数据库，或称文档型数据库。</p>
+<h2 id="为什么要用-NoSQL？">为什么要用 NoSQL？</h2>
+<p>在关系型数据库中，一般一张表可以代表实体或联系，数据和关系都存放在表中，在使用时需要预先定义好表的结构，即预定义的模式。而有时如果根据业务需要，我们需要对实体/关系的属性做调整时，这就必须涉及到对表结构的调整，且新增数据可能还涉及历史数据的补足，显得不够灵活。也就是说，我们的行动可能会被表结构所约束，如果在最初设计数据库时没有考虑完整实体的业务属性，可能会给之后的维护带来麻烦。</p>
+<p>而以 Neo4J 为例的非关系型数据库，在字段约束上就显得没有那么严谨，在 Neo4J 数据库中仅有节点和关系两类需要我们考虑的实例，而对于节点和关系，我们可以为其自由增减属性，在部分应用场景中显得比较灵活。</p>
+<p>举个例子，我们正在开发一个文献信息系统，使用关系型数据库做好了基本的数据库设计，包含了文献的基本信息，而甲方在验收时突然加需求说要在文献详情页展示文献的参考文献和引证文献、相关推荐文献，这可能就需要对数据库进行不小的调整，因为引入了两个一对多关系。（而且如果改进不当，有可能大幅增加数据库存储）</p>
+<p>而如果我们使用的是 Neo4J 数据库，上述操作就很简单了，只需要建立两种关系（Relation）——引用关系和推荐关系即可，不需对节点本身做批量的修改。前台需要获取参考、引证、推荐时，只需查询这两种关系，并返回对应的节点即可</p>
+<p>所以，我使用 NoSQL 的理由可能就归结于——<strong>灵活，不受限于预定义关系模式</strong>。</p>
+<h1>安装使用 Neo4J</h1>
+<h2 id="下载安装">下载安装</h2>
+<p>前往 <a target="_blank" rel="noopener" href="https://neo4j.com/download-center/#community">Neo4j Download Center - Neo4j Graph Database Platform</a> 即可下载，选择社区版本（Community Server）即可。</p>
+<p>以 Windows 为例，下载完成后会得到一个 zip 压缩包，将其全部内容解压到某个目录下即可。例如 <code>C:\Program Files\neo4j</code></p>
+<p>对于 Linux 系统，可以选择用 yum 方式下载 Neo4J RPM，可以参考 <a target="_blank" rel="noopener" href="https://yum.neo4j.com/">https://yum.neo4j.com/</a> 。使用这种方式安装系统会帮助检查环境和依赖，所以可以跳过下面的两节（2.2 ＆ 2.3）。</p>
+<h2 id="基础环境检查：Java">基础环境检查：Java</h2>
+<p>Neo4J 是基于 Java 的图数据库，运行需要 Java 环境。可以在命令行中输入以下命令以检查是否有该环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+<p><img src="http://download.mariozzj.cn/img/picgo/20210902205954.png" alt="image-20210902205954029"></p>
+<p>如果不存在，可以去 <a target="_blank" rel="noopener" href="http://www.java.com">Java 官网</a> 下载，如果使用 <code>neo4j version 3</code> 下载 <code>JDK 8</code> 版本即可；如果使用 <code>neo4j version 4</code> 建议下载 <code>JDK 11</code>。</p>
+<h2 id="基础环境检查：环境变量">基础环境检查：环境变量</h2>
+<p>以 Windows 为例，右击此电脑-属性-高级系统设置- [高级] 选项卡-环境变量处可设置环境变量。</p>
+<h3 id="Java-环境变量">Java 环境变量</h3>
+<ul>
+<li>查看系统变量里是否有名为 <code>JAVA_HOME</code> 的变量，如无则创建。地址为 Java 的安装目录（安装目录下的 /bin 文件夹有 java.exe）。</li>
+<li>在系统变量的 <code>Path</code> 变量中添加 <code>%JAVA_HOME%\bin</code>;<code>%JAVA_HOME%\jre\bin</code>;</li>
+</ul>
+<h3 id="Neo4J-环境变量">Neo4J 环境变量</h3>
+<ul>
+<li>在系统中新建变量，变量名为 <code>Neo4J</code> ，变量值为 Neo4J 的安装目录。</li>
+<li>在系统变量的 <code>Path</code> 变量中添加 <code>%NEO4J_HOME%\bin</code> 。</li>
+</ul>
+<h2 id="命令安装启动">命令安装启动</h2>
+<p>终端键入</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neo4j install-service</span><br></pre></td></tr></table></figure>
+<p>即可完成安装。安装完成后，键入</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neo4j start</span><br></pre></td></tr></table></figure>
+<p>即可启动 Neo4J 服务。在浏览器中输入终端提示的 url（默认为 <a target="_blank" rel="noopener" href="http://localhost:7474">http://localhost:7474</a>）即可进入 Neo4J 的浏览器页面。</p>
+<p>默认的账号密码配置为:</p>
+<ul>
+<li>账号：neo4j</li>
+<li>密码：neo4j</li>
+</ul>
+<p>后续可根据页面提示，进入向导。</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202110251113311.png" alt="Neo4J 浏览器界面"></p>
+<p>键入命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neo4j stop</span><br></pre></td></tr></table></figure>
+<p>可以停止服务。</p>
+<h2 id="数据备份与迁移">数据备份与迁移</h2>
+<p>有时我们可能需要将数据库中的数据进行迁移，如将本地数据库中的数据部署到在线服务器上，就需要进行数据迁移。数据迁移涉及到数据安全等问题，需要使用 <code>neo4j-admin</code> 命令进行，可以在终端输入 <code>neo4j-admin help</code>  查看是否在安装时已配好环境变量，如果无有效响应，可以切换至 <code>%NEO4J_HOME%\bin</code> 下，启动 <code>neo4j-admin</code></p>
+<h3 id="数据备份到文件">数据备份到文件</h3>
+<p>终端键入如下命令即可完成备份。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neo4j-admin dump --database=&lt;database_name&gt; --to=&lt;file_directory&gt;</span><br></pre></td></tr></table></figure>
+<p>其中 <code>&lt;database_name&gt;</code> 为 Neo4J 数据库名，<code>&lt;file_directory&gt;</code> 为保存的目标地址。</p>
+<h3 id="文件加载至数据库">文件加载至数据库</h3>
+<p>终端键入如下命令即可将备份文件加载到数据库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neo4j-admin load --from=&lt;file_directory&gt; --database=&lt;database_name&gt; [--force]</span><br></pre></td></tr></table></figure>
+<p>参数含义同上。这里尾部添加 <code>force</code> 参数可以忽略上载时的错误，强制执行。</p>
+<h1>Cypher 语言</h1>
+<p>在 MySQL 中，我们会使用 SQL 语言对数据库进行操作；而在 Neo4J 中，操作数据库的主语言为 CQL （Cypher Query Language）Cypher 的语法提供了一种类 SQL 方式来匹配图中的节点和关系，即模式。如若具备 SQL 的基础，那么学习起 Cypher 就能变得更加容易。</p>
+<h2 id="操作目标">操作目标</h2>
+<p>使用 Cypher 语言，我们可以操作<strong>节点</strong>、<strong>关系</strong>、<strong>模式</strong>三种对象，这三种对象具有不同的表示形式。</p>
+<h3 id="节点">节点</h3>
+<p>在 Cypher 语言中，节点一般使用小括号表示：<code>()</code></p>
+<p>小括号中填写变量名，如<code>(a)</code>，获取到 a 后可以对 a 进行后续操作。</p>
+<p>我们也可以对节点补充更多细节，一般可以限定其类型和属性值。</p>
+<ul>
+<li>限定节点标签：使用冒号 <code>:</code> ，如 <code>(a:Author)</code>，<code>(a:Author:Person)</code>。</li>
+<li>限定节点属性：使用花括号 <code>&#123;&#125;</code> 补充键值对。如<code>(a:Author &#123;age:21,sex:'男'&#125;)</code>。</li>
+</ul>
+<p>如果动作不关心节点是什么，括号内可留空，仅有括号，表示这是一个节点。</p>
+<h3 id="关系">关系</h3>
+<p>在 Cypher 语言中，关系一般使用中括号表示：<code>[]</code></p>
+<p>关系的括号内如节点一样，可以添加变量名、类型、属性键值对。</p>
+<p>已知，关系需要由两个节点组成（包括自环），用中括号连接两个节点表示关系。</p>
+<ul>
+<li>如果不需要强调关系的方向，节点与关系之间使用一根短横线连接：<code>()-[rel:FRIENDS]-()</code></li>
+<li>如果需要强调关系的方向，则在终止节点前使用尖括号表示箭头：<code>()-[relation:KNOWS]-&gt;()</code></li>
+</ul>
+<p>关系括号内也可以留空。</p>
+<h3 id="模式">模式</h3>
+<p>模式组成的基本要素就是节点和关系的表示方法。在模式中，可以添加逗号，函数等实现更复杂的查询。</p>
+<p>如我们需要查询文献中的互引行为（由两组关系组成），可以使用逗号连接两组关系。（下面的示例用到了 <code>MATCH</code> <code>RETURN</code> 关键词，后面会介绍）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH pattern=(a:Paper)-[:reference]-&gt;(b:Paper),(b:Paper)-[:reference]-&gt;(a:Paper) RETURN p</span><br></pre></td></tr></table></figure>
+<p><img src="https://download.mariozzj.cn/img/picgo/202110251244268.png" alt="示例-互引查询"></p>
+<p>查找模式时，默认会返回模式中涉及的所有对象，在 Neo4J 数据库的浏览器页面查询模式，可以返回节点和关系，并用图的形式可视化。如执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH pattern=(a:Paper)-[r:reference]-&gt;(b) RETURN pattern</span><br></pre></td></tr></table></figure>
+<p>和执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH (a:Paper)-[r:reference]-&gt;(b) RETURN a,r,b</span><br></pre></td></tr></table></figure>
+<p>都可以触发 Neo4J 浏览器端的可视化。</p>
+<p><img src="https://download.mariozzj.cn/img/picgo/202110251241640.png" alt="模式可视化"></p>
+<h2 id="操作命令">操作命令</h2>
+<h3 id="MATCH">MATCH</h3>
+<p><code>MATCH</code> 命令起匹配作用，后接节点、关系、模式等。<code>MATCH</code> 需要和其他命令一起使用。</p>
+<h3 id="RETURN">RETURN</h3>
+<p><code>RETURN</code> 命令一般和 <code>MATCH</code> 命令搭配使用，返回之前匹配的结果。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MATCH (node:Author) RETURN node //匹配节点</span><br><span class="line">MATCH ()-[r:KNOWS]-&gt;() RETURN r //匹配关系</span><br></pre></td></tr></table></figure>
+<h3 id="CREATE">CREATE</h3>
+<p><code>CREATE</code> 命令可用于创建节点和关系。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CREATE (node:Author &#123;name:&#x27;John&#x27;&#125;) //创建节点</span><br><span class="line">CREATE (node:Author &#123;name:&#x27;John&#x27;&#125;)-[r:KNOWS]-&gt;(node2:Author &#123;name:&#x27;Lennon&#x27;&#125;) //创建节点和关系</span><br></pre></td></tr></table></figure>
+<h3 id="DELETE">DELETE</h3>
+<p><code>DELETE</code> 命令一般和 <code>MATCH</code> 命令搭配使用，当 <code>MATCH</code> 匹配到符合条件的节点/关系后，可以将其删除。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MATCH (node:Author) DELETE node //删除节点</span><br><span class="line">MATCH (n) DELETE n //删除库中所有节点</span><br></pre></td></tr></table></figure>
+<h3 id="WHERE">WHERE</h3>
+<p>除了表示节点时，限定其标签和属性之外，使用 <code>WHERE</code> 可以以逻辑表达式的形式添加更多匹配条件来过滤结果。<code>WHERE</code> 放在 <code>MATCH</code> 之后，<code>RETURN</code> 之前。</p>
+<p>支持如下比较运算符：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>=</td>
+<td>等于</td>
+</tr>
+<tr>
+<td>&lt;&gt;</td>
+<td>不等于</td>
+</tr>
+<tr>
+<td>&lt;；&lt;=</td>
+<td>小于；小于等于</td>
+</tr>
+<tr>
+<td>&gt;；&gt;=</td>
+<td>大于；大于等于</td>
+</tr>
+</tbody>
+</table>
+<p>支持如下逻辑运算符：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AND</td>
+<td>与</td>
+</tr>
+<tr>
+<td>OR</td>
+<td>或</td>
+</tr>
+<tr>
+<td>NOT</td>
+<td>非</td>
+</tr>
+<tr>
+<td>XOR</td>
+<td>异或</td>
+</tr>
+</tbody>
+</table>
+<p>支持包含关系 IN，IS NULL 判断等。</p>
+<p>举例应用：</p>
+<ol>
+<li>
+<p>用于获取节点时，过滤匹配条件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MATCH a=(p:Paper)-[r:reference]-&gt;(q:Paper) WHERE p.year - q.year &gt; 30 AND q.year IN [2000,2001,2002,2003] RETURN a </span><br><span class="line">// 获取所有的引用年限差大于 30 年,且被引文献发表年份在2000-2003年的所有引用模式.</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>用于现有节点的关系建立</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MATCH (p:Paper),(q:Paper)</span><br><span class="line">WHERE p.id = &#x27;1001&#x27; AND q.id = &#x27;4001&#x27;</span><br><span class="line">CREATE (p)-[r:reference &#123;value:10&#125;]-&gt;(q)</span><br><span class="line">RETURN r// 建立id为1001,4001的节点之间的关系,并返回该关系</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="ORDER-BY">ORDER BY</h3>
+<p><code>ORDER BY</code> 可使返回的记录按照指定的字段排序，可以是升序或降序（关键字 <code>ASC</code>/<code>DESC</code>）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH (node:Author) RETURN node ORDER BY node.year DESC</span><br></pre></td></tr></table></figure>
+<h3 id="LIMIT-SKIP">LIMIT &amp; SKIP</h3>
+<p><code>LIMIT</code> 可以限制结果返回的条数，<code>SKIP</code> 类似于 Hive SQL 中的 <code>OFFSET</code>，可以控制跳过多少条记录，二者可以组合使用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH (node:Author) RETURN node SKIP 10 LIMIT 10</span><br></pre></td></tr></table></figure>
+<h3 id="SET">SET</h3>
+<p><code>SET</code> 可用于属性的增加/修改，匹配到符合条件的节点/关系后直接对相应属性更改即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH (p:Paper) WHERE p.year &lt; 2000 SET p.century = &#x27;20th&#x27;</span><br></pre></td></tr></table></figure>
+<h3 id="REMOVE">REMOVE</h3>
+<p><code>REMOVE</code> 可用于删除节点/关系的属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH (p:Paper) WHERE p.year &lt; 2000 REMOVE p.century</span><br></pre></td></tr></table></figure>
+<h3 id="聚合函数">聚合函数</h3>
+<p>Cypher 支持如下聚合函数（含义与 SQL 几乎相同）：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>COUNT()</td>
+<td>计数</td>
+</tr>
+<tr>
+<td>MAX()</td>
+<td>最大值</td>
+</tr>
+<tr>
+<td>MIN()</td>
+<td>最小值</td>
+</tr>
+<tr>
+<td>SUM()</td>
+<td>求和</td>
+</tr>
+<tr>
+<td>AVG()</td>
+<td>平均值</td>
+</tr>
+</tbody>
+</table>
+<p>举例：计算符合条件的节点数量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MATCH (n:Author) WHERE n.sex=&#x27;M&#x27; RETURN COUNT(n)</span><br></pre></td></tr></table></figure>
+<h1>高级语言支持</h1>
+<p>Neo4J 是一个数据库，并不是一个可视化工具，虽然它内置的浏览器交互界面非常好用，但是不要低估了 Neo4J 广阔的应用场景。</p>
+<p><code>Python</code> 有 <code>Py2Neo</code> 包可以直接操纵 Neo4J 数据库。详细的使用，可以查看官方文档，<a target="_blank" rel="noopener" href="https://py2neo.org/">Py2Neo Handbook</a>，注意版本与本地对应。</p>
+<p><code>Java</code> Spring 框架 也对此有支持，可以查看 <a target="_blank" rel="noopener" href="https://docs.spring.io/spring-data/neo4j/docs/current/reference/html/">Spring Data Neo4j</a>。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://blog.mariozzj.cn">MarioZZJ</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.mariozzj.cn/posts/aba3bc4e/">https://blog.mariozzj.cn/posts/aba3bc4e/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.mariozzj.cn" target="_blank">MarioZZJ's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/NoSQL/">NoSQL</a><a class="post-meta__tags" href="/tags/Neo4J/">Neo4J</a></div><div class="post_share"><div class="social-share" data-image="https://dist.neo4j.com/wp-content/uploads/20210423072428/neo4j-logo-2020-1.svg" data-sites="facebook,wechat,qq,qzone,douban,linkedin"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="http://download.mariozzj.cn/img/static/wxpay.jpg" target="_blank"><img class="post-qr-code-img" src="http://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="http://download.mariozzj.cn/img/static/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="http://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/52d95125/" title="igraph 上手教程——使用 Python 开展社会网络分析和可视化"><img class="cover" src="https://download.mariozzj.cn/img/picgo/202110271543237.svg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">igraph 上手教程——使用 Python 开展社会网络分析和可视化</div></div></a></div><div class="next-post pull-right"><a href="/posts/16cc73c/" title="Jupyter——轻量级数据处理分析利器"><img class="cover" src="https://download.mariozzj.cn/img/picgo/202110091016118.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Jupyter——轻量级数据处理分析利器</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="http://download.mariozzj.cn/img/static/icon256.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">MarioZZJ</div><div class="author-info__description">不变的是我迷途未返的执着</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MarioZZJ/"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MarioZZJ" target="_blank" title="Github"><i class="fa-brands fa-github"></i></a><a class="social-icon" href="mailto:mariozzj@outlook.com" target="_blank" title="Email"><i class="fa-regular fa-envelope"></i></a><a class="social-icon" href="https://www.linkedin.com/in/mariozzj/" target="_blank" title="领英"><i class="fa-brands fa-linkedin"></i></a><a class="social-icon" href="https://www.zhihu.com/people/MarioZZJ" target="_blank" title="知乎"><i class="fa-brands fa-zhihu"></i></a><a class="social-icon" href="https://qm.qq.com/cgi-bin/qm/qr?k=h84pms0BX6LZg6soeFF-GU0v8Cnqc3Op&amp;noverify=0" target="_blank" title="QQ"><i class="fa-brands fa-qq"></i></a><a class="social-icon" href="https://space.bilibili.com/28623387" target="_blank" title="Bilibili"><i class="fa-brands fa-bilibili"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来访我的博客，共同学习、交流、进步、发现共同的兴趣点！<br />新的起点，新的目标，愿携手共进，不断努力！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">关于 NoSQL</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3"><span class="toc-number">1.1.</span> <span class="toc-text">基本概念理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8-NoSQL%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">为什么要用 NoSQL？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">安装使用 Neo4J</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85"><span class="toc-number">2.1.</span> <span class="toc-text">下载安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E6%A3%80%E6%9F%A5%EF%BC%9AJava"><span class="toc-number">2.2.</span> <span class="toc-text">基础环境检查：Java</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E6%A3%80%E6%9F%A5%EF%BC%9A%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.</span> <span class="toc-text">基础环境检查：环境变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.1.</span> <span class="toc-text">Java 环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Neo4J-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">2.3.2.</span> <span class="toc-text">Neo4J 环境变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E5%AE%89%E8%A3%85%E5%90%AF%E5%8A%A8"><span class="toc-number">2.4.</span> <span class="toc-text">命令安装启动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%81%E7%A7%BB"><span class="toc-number">2.5.</span> <span class="toc-text">数据备份与迁移</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD%E5%88%B0%E6%96%87%E4%BB%B6"><span class="toc-number">2.5.1.</span> <span class="toc-text">数据备份到文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8A%A0%E8%BD%BD%E8%87%B3%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">2.5.2.</span> <span class="toc-text">文件加载至数据库</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">Cypher 语言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%9B%AE%E6%A0%87"><span class="toc-number">3.1.</span> <span class="toc-text">操作目标</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9"><span class="toc-number">3.1.1.</span> <span class="toc-text">节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E7%B3%BB"><span class="toc-number">3.1.2.</span> <span class="toc-text">关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.1.3.</span> <span class="toc-text">模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4"><span class="toc-number">3.2.</span> <span class="toc-text">操作命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MATCH"><span class="toc-number">3.2.1.</span> <span class="toc-text">MATCH</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RETURN"><span class="toc-number">3.2.2.</span> <span class="toc-text">RETURN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CREATE"><span class="toc-number">3.2.3.</span> <span class="toc-text">CREATE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DELETE"><span class="toc-number">3.2.4.</span> <span class="toc-text">DELETE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WHERE"><span class="toc-number">3.2.5.</span> <span class="toc-text">WHERE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ORDER-BY"><span class="toc-number">3.2.6.</span> <span class="toc-text">ORDER BY</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LIMIT-SKIP"><span class="toc-number">3.2.7.</span> <span class="toc-text">LIMIT &amp; SKIP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SET"><span class="toc-number">3.2.8.</span> <span class="toc-text">SET</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#REMOVE"><span class="toc-number">3.2.9.</span> <span class="toc-text">REMOVE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.10.</span> <span class="toc-text">聚合函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">高级语言支持</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img src="https://download.mariozzj.cn/img/picgo/202311021615799.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="NJUHPC 运行 Python 程序简明流程"/></a><div class="content"><a class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</a><time datetime="2023-11-02T00:24:53.000Z" title="发表于 2023-11-02 08:24:53">2023-11-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img src="https://download.mariozzj.cn/img/picgo/202210151013511.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录"/></a><div class="content"><a class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</a><time datetime="2022-10-15T02:06:33.000Z" title="发表于 2022-10-15 10:06:33">2022-10-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img src="https://download.mariozzj.cn/img/picgo/202204191318445.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="让 Markdown 成为写作的起点"/></a><div class="content"><a class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</a><time datetime="2022-04-19T05:06:14.000Z" title="发表于 2022-04-19 13:06:14">2022-04-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By MarioZZJ</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><a href="https://www.foreverblog.cn/" target="_blank"> <img src="https://download.mariozzj.cn/img/picgo/202211071402932.png" alt="" style="width:auto;height:24px;" title="十年之约"></a><a href="https://www.travellings.cn/go.html" target="_blank"> <img src="https://download.mariozzj.cn/img/picgo/202211071406314.png" alt="" style="width:auto;height:24px;" title="开往"></a><br /><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/"><span>备案号：赣ICP备20002056号-2</span></a><a target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261"><img class="icp-icon" src="https://download.mariozzj.cn/img/static/gongan.png"><span>鄂公网安备 42010602004261号</span></a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/pluginsSrc/medium-zoom/dist/medium-zoom.min.js"></script><script src="/pluginsSrc/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="/pluginsSrc/katex/dist/katex.min.css"><script src="/pluginsSrc/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo.mariozzj.cn/',
+      region: 'ap-shanghai',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.mariozzj.cn/',
+      region: 'ap-shanghai',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('/pluginsSrc/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script src="/pluginsSrc/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>

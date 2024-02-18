@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>MarioZZJ&#39;s blog</title>
+  <icon>https://www.gravatar.com/avatar/77b07ed7fc3b6cbb4f3847a387f8713e</icon>
+  
+  <link href="https://blog.mariozzj.cn/atom.xml" rel="self"/>
+  
+  <link href="https://blog.mariozzj.cn/"/>
+  <updated>2024-02-18T17:19:35.013Z</updated>
+  <id>https://blog.mariozzj.cn/</id>
+  
+  <author>
+    <name>MarioZZJ</name>
+    <email>mariozzj@outlook.com</email>
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>NJUHPC 运行 Python 程序简明流程</title>
+    <link href="https://blog.mariozzj.cn/posts/6ab96d9d/"/>
+    <id>https://blog.mariozzj.cn/posts/6ab96d9d/</id>
+    <published>2023-11-02T00:24:53.000Z</published>
+    <updated>2024-02-18T17:19:35.013Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://hpc.nju.edu.cn/&quot;&gt;NJU HPC&lt;/a&gt; 指南京大学人工微结构科学与技术协同创新中心高性能计算中心，中心提供多种软硬件资源以供高性能运算服务，本文简单介绍在 NJU HPC 上运行 Python 程序的流程，更多详细使用方法</summary>
+      
+    
+    
+    
+    <category term="工程实践" scheme="https://blog.mariozzj.cn/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/"/>
+    
+    
+    <category term="Python" scheme="https://blog.mariozzj.cn/tags/Python/"/>
+    
+    <category term="bsub" scheme="https://blog.mariozzj.cn/tags/bsub/"/>
+    
+    <category term="HPC" scheme="https://blog.mariozzj.cn/tags/HPC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>下载 OpenAlex 数据集并配置 PySpark 的一次记录</title>
+    <link href="https://blog.mariozzj.cn/posts/fb1f3a84/"/>
+    <id>https://blog.mariozzj.cn/posts/fb1f3a84/</id>
+    <published>2022-10-15T02:06:33.000Z</published>
+    <updated>2022-11-12T08:30:00.000Z</updated>
+    
+    
+    <summary type="html">记录一下最近一次配置开源数据集的过程</summary>
+    
+    
+    
+    <category term="工程实践" scheme="https://blog.mariozzj.cn/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/"/>
+    
+    
+    <category term="OpenAlex" scheme="https://blog.mariozzj.cn/tags/OpenAlex/"/>
+    
+    <category term="Spark" scheme="https://blog.mariozzj.cn/tags/Spark/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>让 Markdown 成为写作的起点</title>
+    <link href="https://blog.mariozzj.cn/posts/fd830caf/"/>
+    <id>https://blog.mariozzj.cn/posts/fd830caf/</id>
+    <published>2022-04-19T05:06:14.000Z</published>
+    <updated>2022-04-19T05:06:14.000Z</updated>
+    
+    
+    <summary type="html">轻量级标记语言，简约易学，专注内容，无限潜力。</summary>
+    
+    
+    
+    <category term="工具干货" scheme="https://blog.mariozzj.cn/categories/%E5%B7%A5%E5%85%B7%E5%B9%B2%E8%B4%A7/"/>
+    
+    
+    <category term="Markdown" scheme="https://blog.mariozzj.cn/tags/Markdown/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>两种图算法：PageRank &amp; EigenFactor</title>
+    <link href="https://blog.mariozzj.cn/posts/1d43c0e5/"/>
+    <id>https://blog.mariozzj.cn/posts/1d43c0e5/</id>
+    <published>2022-04-01T04:02:45.000Z</published>
+    <updated>2022-04-01T04:02:45.000Z</updated>
+    
+    
+    <summary type="html">介绍两种相似的有向图结点重要性评价算法——PageRank 和 EigenFactor</summary>
+    
+    
+    
+    <category term="数科知识" scheme="https://blog.mariozzj.cn/categories/%E6%95%B0%E7%A7%91%E7%9F%A5%E8%AF%86/"/>
+    
+    
+    <category term="Python" scheme="https://blog.mariozzj.cn/tags/Python/"/>
+    
+    <category term="PageRank" scheme="https://blog.mariozzj.cn/tags/PageRank/"/>
+    
+    <category term="EigenFactor" scheme="https://blog.mariozzj.cn/tags/EigenFactor/"/>
+    
+    <category term="Algorithm" scheme="https://blog.mariozzj.cn/tags/Algorithm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>玩转服务器 | 使用 frp 实现内网穿透</title>
+    <link href="https://blog.mariozzj.cn/posts/9364d192/"/>
+    <id>https://blog.mariozzj.cn/posts/9364d192/</id>
+    <published>2022-03-11T06:45:40.000Z</published>
+    <updated>2022-03-11T06:45:40.000Z</updated>
+    
+    
+    <summary type="html">用云服务器穿进局域网！</summary>
+    
+    
+    
+    <category term="玩转服务器" scheme="https://blog.mariozzj.cn/categories/%E7%8E%A9%E8%BD%AC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    
+    <category term="云服务器应用" scheme="https://blog.mariozzj.cn/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/"/>
+    
+    <category term="frp" scheme="https://blog.mariozzj.cn/tags/frp/"/>
+    
+    <category term="内网穿透" scheme="https://blog.mariozzj.cn/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>玩转服务器 | Web 应用部署上线全流程（Ubuntu + Nginx + MySQL + Flask）</title>
+    <link href="https://blog.mariozzj.cn/posts/7f568f00/"/>
+    <id>https://blog.mariozzj.cn/posts/7f568f00/</id>
+    <published>2022-02-22T11:30:29.000Z</published>
+    <updated>2022-02-22T11:30:29.000Z</updated>
+    
+    
+    <summary type="html">完成 Web 应用开发后，如何将应用发布到服务器，让更多人访问到呢？以 Ubuntu + Nginx + MySQL + Flask 为例，展示应用部署全流程。</summary>
+    
+    
+    
+    <category term="玩转服务器" scheme="https://blog.mariozzj.cn/categories/%E7%8E%A9%E8%BD%AC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    
+    <category term="云服务器应用" scheme="https://blog.mariozzj.cn/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/"/>
+    
+    <category term="Web 开发" scheme="https://blog.mariozzj.cn/tags/Web-%E5%BC%80%E5%8F%91/"/>
+    
+    <category term="Nginx" scheme="https://blog.mariozzj.cn/tags/Nginx/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>玩转服务器 | 服务器的简单防火墙管理</title>
+    <link href="https://blog.mariozzj.cn/posts/e0d78514/"/>
+    <id>https://blog.mariozzj.cn/posts/e0d78514/</id>
+    <published>2022-02-17T05:43:11.000Z</published>
+    <updated>2022-02-17T05:43:11.000Z</updated>
+    
+    
+    <summary type="html">简单实现服务器端口控制，管理服务器请求</summary>
+    
+    
+    
+    <category term="玩转服务器" scheme="https://blog.mariozzj.cn/categories/%E7%8E%A9%E8%BD%AC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    
+    <category term="云服务器应用" scheme="https://blog.mariozzj.cn/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/"/>
+    
+    <category term="UFW" scheme="https://blog.mariozzj.cn/tags/UFW/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>玩转服务器 | 配置 SSH 免密登录</title>
+    <link href="https://blog.mariozzj.cn/posts/5c25bf34/"/>
+    <id>https://blog.mariozzj.cn/posts/5c25bf34/</id>
+    <published>2022-02-17T05:42:50.000Z</published>
+    <updated>2022-02-17T05:42:50.000Z</updated>
+    
+    
+    <summary type="html">完成配置，无需密码，一键远程连接</summary>
+    
+    
+    
+    <category term="玩转服务器" scheme="https://blog.mariozzj.cn/categories/%E7%8E%A9%E8%BD%AC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    
+    <category term="云服务器应用" scheme="https://blog.mariozzj.cn/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/"/>
+    
+    <category term="SSH" scheme="https://blog.mariozzj.cn/tags/SSH/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>玩转服务器 | 购置自己的第一台服务器</title>
+    <link href="https://blog.mariozzj.cn/posts/75521d8e/"/>
+    <id>https://blog.mariozzj.cn/posts/75521d8e/</id>
+    <published>2022-02-16T05:41:53.000Z</published>
+    <updated>2022-02-17T05:41:53.000Z</updated>
+    
+    
+    <summary type="html">在购买自己的第一台服务器前，需要了解的一点点知识</summary>
+    
+    
+    
+    <category term="玩转服务器" scheme="https://blog.mariozzj.cn/categories/%E7%8E%A9%E8%BD%AC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    
+    <category term="云服务器应用" scheme="https://blog.mariozzj.cn/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>玩转服务器 | 搭建 24h 在线的《饥荒》联机服务器</title>
+    <link href="https://blog.mariozzj.cn/posts/8d6b8da8/"/>
+    <id>https://blog.mariozzj.cn/posts/8d6b8da8/</id>
+    <published>2022-01-14T14:08:06.000Z</published>
+    <updated>2022-01-14T14:08:06.000Z</updated>
+    
+    
+    <summary type="html">用闲置云服务器和朋友们快乐联机《饥荒》！</summary>
+    
+    
+    
+    <category term="玩转服务器" scheme="https://blog.mariozzj.cn/categories/%E7%8E%A9%E8%BD%AC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+    
+    <category term="游戏《饥荒》" scheme="https://blog.mariozzj.cn/tags/%E6%B8%B8%E6%88%8F%E3%80%8A%E9%A5%A5%E8%8D%92%E3%80%8B/"/>
+    
+    <category term="云服务器应用" scheme="https://blog.mariozzj.cn/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/"/>
+    
+    <category term="联机游戏" scheme="https://blog.mariozzj.cn/tags/%E8%81%94%E6%9C%BA%E6%B8%B8%E6%88%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 基础操作学习(3)：文件操作进阶</title>
+    <link href="https://blog.mariozzj.cn/posts/2c01ed8b/"/>
+    <id>https://blog.mariozzj.cn/posts/2c01ed8b/</id>
+    <published>2021-12-27T16:44:15.000Z</published>
+    <updated>2021-12-27T16:44:15.000Z</updated>
+    
+    
+    <summary type="html">Linux 基础学习第三部分：文件压缩、文件内容查找与替换、文件目录查找</summary>
+    
+    
+    
+    <category term="计算机科学" scheme="https://blog.mariozzj.cn/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    
+    <category term="Linux" scheme="https://blog.mariozzj.cn/tags/Linux/"/>
+    
+    <category term="Shell" scheme="https://blog.mariozzj.cn/tags/Shell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 基础操作学习(2)：Python 交互</title>
+    <link href="https://blog.mariozzj.cn/posts/4449c636/"/>
+    <id>https://blog.mariozzj.cn/posts/4449c636/</id>
+    <published>2021-12-21T10:28:23.000Z</published>
+    <updated>2021-12-21T10:28:23.000Z</updated>
+    
+    
+    <summary type="html">Linux 基础操作第二部分：Python OS、SYS库，模块化；Linux 后台运行、关闭与查看后台任务</summary>
+    
+    
+    
+    <category term="计算机科学" scheme="https://blog.mariozzj.cn/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    
+    <category term="Linux" scheme="https://blog.mariozzj.cn/tags/Linux/"/>
+    
+    <category term="Shell" scheme="https://blog.mariozzj.cn/tags/Shell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 基础操作学习(1)：连接与文件操作</title>
+    <link href="https://blog.mariozzj.cn/posts/672ba085/"/>
+    <id>https://blog.mariozzj.cn/posts/672ba085/</id>
+    <published>2021-12-15T14:21:18.000Z</published>
+    <updated>2021-12-15T14:21:18.000Z</updated>
+    
+    
+    <summary type="html">Linux 基础指令第一部分：远程连接、目录操作、文件读取、Vim</summary>
+    
+    
+    
+    <category term="计算机科学" scheme="https://blog.mariozzj.cn/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/"/>
+    
+    
+    <category term="Linux" scheme="https://blog.mariozzj.cn/tags/Linux/"/>
+    
+    <category term="Shell" scheme="https://blog.mariozzj.cn/tags/Shell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>机器学习实验：回归 | Leeml-2020-hw1</title>
+    <link href="https://blog.mariozzj.cn/posts/28d53052/"/>
+    <id>https://blog.mariozzj.cn/posts/28d53052/</id>
+    <published>2021-12-05T11:50:23.000Z</published>
+    <updated>2021-12-05T11:50:23.000Z</updated>
+    
+    
+    <summary type="html">回归实验——来自李宏毅机器学习课程 ML2020-HW1</summary>
+    
+    
+    
+    <category term="数科知识" scheme="https://blog.mariozzj.cn/categories/%E6%95%B0%E7%A7%91%E7%9F%A5%E8%AF%86/"/>
+    
+    
+    <category term="ML" scheme="https://blog.mariozzj.cn/tags/ML/"/>
+    
+    <category term="Regression" scheme="https://blog.mariozzj.cn/tags/Regression/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Town of Salem 板子(1)：Classic</title>
+    <link href="https://blog.mariozzj.cn/posts/2b373355/"/>
+    <id>https://blog.mariozzj.cn/posts/2b373355/</id>
+    <published>2021-12-03T13:49:25.000Z</published>
+    <updated>2021-12-03T13:49:25.000Z</updated>
+    
+    
+    <summary type="html">本文介绍游戏 Town of Salem 的最基础最基础的板子：Classic</summary>
+    
+    
+    
+    <category term="游戏手册" scheme="https://blog.mariozzj.cn/categories/%E6%B8%B8%E6%88%8F%E6%89%8B%E5%86%8C/"/>
+    
+    
+    <category term="桌面游戏" scheme="https://blog.mariozzj.cn/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Town of Salem 游戏简介</title>
+    <link href="https://blog.mariozzj.cn/posts/2b373354/"/>
+    <id>https://blog.mariozzj.cn/posts/2b373354/</id>
+    <published>2021-12-03T13:31:30.000Z</published>
+    <updated>2021-12-03T13:31:30.000Z</updated>
+    
+    
+    <summary type="html">本文介绍一款曾经较火爆的类狼人杀游戏，Town of Salem</summary>
+    
+    
+    
+    <category term="游戏手册" scheme="https://blog.mariozzj.cn/categories/%E6%B8%B8%E6%88%8F%E6%89%8B%E5%86%8C/"/>
+    
+    
+    <category term="桌面游戏" scheme="https://blog.mariozzj.cn/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>igraph 上手教程——使用 Python 开展社会网络分析和可视化</title>
+    <link href="https://blog.mariozzj.cn/posts/52d95125/"/>
+    <id>https://blog.mariozzj.cn/posts/52d95125/</id>
+    <published>2021-10-27T07:37:01.000Z</published>
+    <updated>2021-10-27T07:37:01.000Z</updated>
+    
+    
+    <summary type="html">本文就 python-igraph 的使用手册原文进行翻译，探索式学习 igraph 包，使用 Python 即可完成社会网络分析和可视化。</summary>
+    
+    
+    
+    <category term="工具干货" scheme="https://blog.mariozzj.cn/categories/%E5%B7%A5%E5%85%B7%E5%B9%B2%E8%B4%A7/"/>
+    
+    
+    <category term="SNA" scheme="https://blog.mariozzj.cn/tags/SNA/"/>
+    
+    <category term="igraph" scheme="https://blog.mariozzj.cn/tags/igraph/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Neo4J 基本教程 —— 一切基于关系，而不受关系限制</title>
+    <link href="https://blog.mariozzj.cn/posts/aba3bc4e/"/>
+    <id>https://blog.mariozzj.cn/posts/aba3bc4e/</id>
+    <published>2021-10-25T07:59:15.000Z</published>
+    <updated>2021-10-25T07:59:15.000Z</updated>
+    
+    
+    <summary type="html">Neo4J是知名图数据库，属于NoSQL非关系型数据库的范畴，是笔者认为相对于关系型数据库更灵活，且相对易于上手的一款数据库，在此整理基本教程。</summary>
+    
+    
+    
+    <category term="工具干货" scheme="https://blog.mariozzj.cn/categories/%E5%B7%A5%E5%85%B7%E5%B9%B2%E8%B4%A7/"/>
+    
+    
+    <category term="NoSQL" scheme="https://blog.mariozzj.cn/tags/NoSQL/"/>
+    
+    <category term="Neo4J" scheme="https://blog.mariozzj.cn/tags/Neo4J/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Jupyter——轻量级数据处理分析利器</title>
+    <link href="https://blog.mariozzj.cn/posts/16cc73c/"/>
+    <id>https://blog.mariozzj.cn/posts/16cc73c/</id>
+    <published>2021-10-09T02:12:48.000Z</published>
+    <updated>2021-10-08T16:00:00.000Z</updated>
+    
+    
+    <summary type="html">通过本文，了解数据分析常用工具 Jupyter Notebook/Lab 的使用！</summary>
+    
+    
+    
+    <category term="工具干货" scheme="https://blog.mariozzj.cn/categories/%E5%B7%A5%E5%85%B7%E5%B9%B2%E8%B4%A7/"/>
+    
+    
+    <category term="Jupyter" scheme="https://blog.mariozzj.cn/tags/Jupyter/"/>
+    
+    <category term="Python" scheme="https://blog.mariozzj.cn/tags/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用 Hexo 搭建属于自己的博客</title>
+    <link href="https://blog.mariozzj.cn/posts/569080df/"/>
+    <id>https://blog.mariozzj.cn/posts/569080df/</id>
+    <published>2021-09-23T04:20:23.000Z</published>
+    <updated>2021-09-23T04:20:23.000Z</updated>
+    
+    
+    <summary type="html">不用服务器，不用会代码，借助 Github Pages 和简单的配置即可建设自己的博客！</summary>
+    
+    
+    
+    <category term="工具干货" scheme="https://blog.mariozzj.cn/categories/%E5%B7%A5%E5%85%B7%E5%B9%B2%E8%B4%A7/"/>
+    
+    
+    <category term="Hexo.js" scheme="https://blog.mariozzj.cn/tags/Hexo-js/"/>
+    
+    <category term="Github" scheme="https://blog.mariozzj.cn/tags/Github/"/>
+    
+  </entry>
+  
+</feed>
