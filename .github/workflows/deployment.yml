@@ -19,12 +19,11 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 16.15.1
+        node-version: 18.17.0
 
     - name: Install dependencies
       run: |
         node -v
-        npm i hexo-cli --location=global
         npm i
 
     - name: Generate Static files
