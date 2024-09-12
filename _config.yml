@@ -3,19 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: MarioZZJ's blog
-# subtitle: 'MarioZZJ个人博客' 调整到后面
-description: ''
+title: MarioBlog
+subtitle: ''
+description: '记录自己的学习、成长、见解'
 keywords:
 author: MarioZZJ
 language: zh-CN
-timezone: ''
-email: mariozzj@outlook.com
+timezone: Asia/Shanghai
 
 # URL
-## If your site is put in a subdirectory, set url as 'http://example.com/child' and root as '/child/'
+## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://blog.mariozzj.cn
-root: /
 permalink: posts/:abbrlink/
 permalink_defaults:
 pretty_urls:
@@ -99,53 +97,20 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: butterfly
+theme: solitude
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
 
-markdown:
-  plugins:
-    - plugin:
-      name: '@neilsustc/markdown-it-katex'
-      options:
-        strict: false
+# hexo-generator-search
+search:
+  path: search.xml
+  field: post
+  content: true
 
-douban:
-  user: mariozzj
-  builtin: true
-  book:
-    title: '我的阅读'
-    quote: 
-    meta: true
-    comments: true
-    top_img: https://download.mariozzj.cn/img/static/bg_15.jpg
-    aside: true
-    path: list/booklist
-    limit: 100
-  movie:
-    title: '我的观影'
-    quote: 
-    meta: true
-    comments: true
-    top_img: https://download.mariozzj.cn/img/static/bg_15.jpg
-    aside: true
-    path: list/filmlist
-    limit: 100
-  game:
-    title: '我的游戏'
-    quote: 
-    meta: true
-    comments: true
-    top_img: https://download.mariozzj.cn/img/static/bg_15.jpg
-    aside: true
-    path: list/gamelist
-    limit: 100
-  timeout: 50000 
-
-# abbrlink config
+# hexo-abbrlink
 abbrlink:
   alg: crc32      #support crc16(default) and crc32
   rep: hex        #support dec(default) and hex
@@ -159,11 +124,3 @@ abbrlink:
   auto_title: false #enable auto title, it can auto fill the title by path
   auto_date: false #enable auto date, it can auto fill the date by time today
   force: false #enable force mode,in this mode, the plugin will ignore the cache, and calc the abbrlink for every post even it already had abbrlink.
-
-baidusitemap:
-  path: baidusitemap.xml
-
-feed:
-  enable: true
-  type: atom
-  content: false
