@@ -1,7 +1,6 @@
 ---
 title: 玩转服务器 | 搭建 24h 在线的《饥荒》联机服务器
-comments: true
-copyright: true
+comment: true
 abbrlink: 8d6b8da8
 date: 2022-01-14 22:08:06
 updated: 2022-01-14 22:08:06
@@ -13,13 +12,8 @@ categories: 玩转服务器
 keywords: 
   - 饥荒
   - 联机游戏
-description: 用闲置云服务器和朋友们快乐联机《饥荒》！
-top_img: https://download.mariozzj.cn/img/picgo/202201151235435.png
+desc: 用闲置云服务器和朋友们快乐联机《饥荒》！
 cover: https://download.mariozzj.cn/img/picgo/202201151236429.jpeg
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
 katex: false
 aside: true
 ---

@@ -1,7 +1,6 @@
 ---
 title: 玩转服务器 | Web 应用部署上线全流程（Ubuntu + Nginx + MySQL + Flask）
-comments: true
-copyright: true
+comment: true
 abbrlink: 7f568f00
 date: 2022-02-22 19:30:29
 updated: 2022-02-22 19:30:29
@@ -18,13 +17,8 @@ keywords:
   - Flask
   - 域名解析
   - SSL
-description: 完成 Web 应用开发后，如何将应用发布到服务器，让更多人访问到呢？以 Ubuntu + Nginx + MySQL + Flask 为例，展示应用部署全流程。
-top_img: https://download.mariozzj.cn/img/picgo/202202221929984.png
+desc: 完成 Web 应用开发后，如何将应用发布到服务器，让更多人访问到呢？以 Ubuntu + Nginx + MySQL + Flask 为例，展示应用部署全流程。
 cover: https://download.mariozzj.cn/img/picgo/202202221929984.png
-copyright_author: MarioZZJ
-copyright_author_href: blog.mariozzj.cn
-copyright_url: blog.mariozzj.cn/posts/7f568f00
-copyright_info:
 katex: false
 aside: true
 ---

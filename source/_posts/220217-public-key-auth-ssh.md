@@ -1,7 +1,6 @@
 ---
 title: 玩转服务器 | 配置 SSH 免密登录
-comments: true
-copyright: true
+comment: true
 abbrlink: 5c25bf34
 tags:
   - 云服务器应用
@@ -10,17 +9,12 @@ categories: 玩转服务器
 keywords:
   - 云服务器
   - SSH
-description: 完成配置，无需密码，一键远程连接
-top_img: 'https://download.mariozzj.cn/img/picgo/202202171403151.png'
+desc: 完成配置，无需密码，一键远程连接
 cover: 'https://download.mariozzj.cn/img/picgo/202202171403151.png'
 date: 2022-02-17 13:42:50
 updated: 2022-02-17 13:42:50
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
-katex:
-aside:
+katex: false
+aside: true
 ---
 
 SSH 即安全外壳协议（Secure Shell），可在不安全的网络环境下提供安全的数据传输。

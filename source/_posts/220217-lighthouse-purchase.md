@@ -1,7 +1,6 @@
 ---
 title: 玩转服务器 | 购置自己的第一台服务器
-comments: true
-copyright: true
+comment: true
 abbrlink: 75521d8e
 date: 2022-02-16 13:41:53
 updated: 2022-02-17 13:41:53
@@ -10,15 +9,10 @@ tags:
 categories: 玩转服务器
 keywords:
     - 云服务器
-description: 在购买自己的第一台服务器前，需要了解的一点点知识
-top_img: https://download.mariozzj.cn/img/picgo/202202171348754.png
+desc: 在购买自己的第一台服务器前，需要了解的一点点知识
 cover: https://download.mariozzj.cn/img/picgo/202202171348754.png
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
-katex:
-aside:
+katex: false
+aside: true
 ---
 
 # 什么是买服务器？

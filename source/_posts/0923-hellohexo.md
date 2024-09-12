@@ -1,7 +1,6 @@
 ---
 title: 使用 Hexo 搭建属于自己的博客
-comments: true
-copyright: true
+comment: true
 abbrlink: 569080df
 tags:
   - Hexo.js
@@ -11,17 +10,12 @@ categories:
 keywords:
   - 博客建设
   - Hexo
-description: 不用服务器，不用会代码，借助 Github Pages 和简单的配置即可建设自己的博客！
-top_img: 'https://download.mariozzj.cn/img/picgo/20210923171646.png'
+desc: 不用服务器，不用会代码，借助 Github Pages 和简单的配置即可建设自己的博客！
 cover: 'https://download.mariozzj.cn/img/picgo/20210923171646.png'
 katex: true
 aside: true
 date: 2021-09-23 12:20:23
 updated: 2021-09-23 12:20:23
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
 ---
 
 > 原文地址：https://blog.mariozzj.cn/posts/569080df/

@@ -1,7 +1,6 @@
 ---
 title: Town of Salem 板子(1)：Classic
-comments: true
-copyright: true
+comment: true
 date: 2021-12-03 21:49:25
 updated: 2021-12-03 21:49:25
 abbrlink: 2b373355
@@ -10,13 +9,8 @@ tags:
 categories:
   - 游戏手册
 keywords: Salem, Werewolf
-description: 本文介绍游戏 Town of Salem 的最基础最基础的板子：Classic
-top_img: https://download.mariozzj.cn/img/picgo/202112032152423.png
+desc: 本文介绍游戏 Town of Salem 的最基础最基础的板子：Classic
 cover: https://download.mariozzj.cn/img/picgo/202112032152423.png
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
 katex: true
 aside: true
 ---

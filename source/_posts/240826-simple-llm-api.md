@@ -1,24 +1,18 @@
 ---
 title: 调用大模型 API 解决简单信息处理任务
-comments: true
-copyright: true
+comment: true
 abbrlink: 573fc6c3
 tags:
   - Python
   - LLM
 categories: 工程实践
-top_img: 'https://download.mariozzj.cn/img/picgo/202409041617877.png'
 cover: 'https://download.mariozzj.cn/img/picgo/202409041617877.png'
 date: 2024-08-26 18:00:00
 updated:
 keywords:
-description:
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
-katex:
-aside:
+desc: 介绍如何调用大模型 API 解决简单信息处理任务
+katex: false
+aside: true
 ---
 
 近年来大模型的发展推动了不同领域的范式变革，大模型强悍的理解、推理和生成能力使得其在各类任务中取得优异表现。

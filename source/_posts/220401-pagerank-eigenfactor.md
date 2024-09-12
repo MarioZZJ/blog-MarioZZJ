@@ -1,7 +1,6 @@
 ---
 title: 两种图算法：PageRank & EigenFactor
-comments: true
-copyright: true
+comment: true
 abbrlink: 1d43c0e5
 date: 2022-04-01 12:02:45
 updated: 2022-04-01 12:02:45
@@ -16,13 +15,8 @@ keywords:
     - EigenFactor
     - Graph Algorithm
     - Scientometrics
-description: 介绍两种相似的有向图结点重要性评价算法——PageRank 和 EigenFactor
-top_img: https://download.mariozzj.cn/img/picgo/202204011146566.png
+desc: 介绍两种相似的有向图结点重要性评价算法——PageRank 和 EigenFactor
 cover: https://download.mariozzj.cn/img/picgo/202204191304070.png
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
 katex: true
 aside: true
 ---

@@ -1,7 +1,6 @@
 ---
 title: 玩转服务器 | 服务器的简单防火墙管理
-comments: true
-copyright: true
+comment: true
 abbrlink: e0d78514
 tags:
   - 云服务器应用
@@ -11,17 +10,12 @@ keywords:
   - 云服务器
   - 防火墙
   - UFW
-description: 简单实现服务器端口控制，管理服务器请求
-top_img: 'https://download.mariozzj.cn/img/picgo/202202171407132.png'
+desc: 简单实现服务器端口控制，管理服务器请求
 cover: 'https://download.mariozzj.cn/img/picgo/202202171407132.png'
 date: 2022-02-17 13:43:11
 updated: 2022-02-17 13:43:11
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
-katex:
-aside:
+katex: false
+aside: true
 ---
 
 # 防火墙、ufw

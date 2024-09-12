@@ -1,7 +1,6 @@
 ---
 title: 让 Markdown 成为写作的起点
-comments: true
-copyright: true
+comment: true
 abbrlink: fd830caf
 date: 2022-04-19 13:06:14
 updated: 2022-04-19 13:06:14
@@ -10,13 +9,8 @@ tags:
 categories: 工具干货
 keywords:
     - Markdown
-description: 轻量级标记语言，简约易学，专注内容，无限潜力。
-top_img: https://download.mariozzj.cn/img/picgo/202204201006mdhead.png
+desc: 轻量级标记语言，简约易学，专注内容，无限潜力。
 cover: https://download.mariozzj.cn/img/picgo/202204191318445.png
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
 katex: true
 aside: true
 ---

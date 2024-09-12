@@ -1,24 +1,18 @@
 ---
 title: Jupyter——轻量级数据处理分析利器
-comments: true
-copyright: true
+comment: true
 abbrlink: 16cc73c
 tags:
   - Jupyter
   - Python
 categories: 工具干货
 keywords: Jupyter
-description: 通过本文，了解数据分析常用工具 Jupyter Notebook/Lab 的使用！
-top_img: 'https://download.mariozzj.cn/img/picgo/202110091016267.png'
+desc: 通过本文，了解数据分析常用工具 Jupyter Notebook/Lab 的使用！
 cover: 'https://download.mariozzj.cn/img/picgo/202110091016118.jpeg'
 katex: true
 aside: true
 date: 2021-10-09 10:12:48
 updated: 2021-10-09 00:00:00
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
 ---
 
 之前初学Python时，老师推荐的是Jetbrains出品的PyCharm作为IDE，对初学者而言感觉PyCharm非常实用，但是随着学习的深入也逐渐能感觉到使用PyCharm的一些缺陷：

@@ -1,7 +1,6 @@
 ---
 title: 机器学习实验：回归 | Leeml-2020-hw1
-comments: true
-copyright: true
+comment: true
 abbrlink: 28d53052
 date: 2021-12-05 19:50:23
 updated: 2021-12-05 19:50:23
@@ -10,13 +9,8 @@ tags:
     - Regression
 categories: 数科知识
 keywords: Regression
-description: 回归实验——来自李宏毅机器学习课程 ML2020-HW1 
-top_img: https://download.mariozzj.cn/img/picgo/202111162100438.png
+desc: 回归实验——来自李宏毅机器学习课程 ML2020-HW1 
 cover: https://download.mariozzj.cn/img/picgo/202111162100438.png
-copyright_author: 
-copyright_author_href:
-copyright_url:
-copyright_info:
 katex: true
 aside: true
 ---

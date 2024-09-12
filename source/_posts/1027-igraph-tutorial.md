@@ -1,7 +1,6 @@
 ---
 title: igraph 上手教程——使用 Python 开展社会网络分析和可视化
-comments: true
-copyright: true
+comment: true
 abbrlink: 52d95125
 date: 2021-10-27 15:37:01
 updated: 2021-10-27 15:37:01
@@ -11,13 +10,8 @@ tags:
 categories:
   - 工具干货
 keywords: igraph
-description: 本文就 python-igraph 的使用手册原文进行翻译，探索式学习 igraph 包，使用 Python 即可完成社会网络分析和可视化。
-top_img: https://download.mariozzj.cn/img/picgo/202110271543237.svg
+desc: 本文就 python-igraph 的使用手册原文进行翻译，探索式学习 igraph 包，使用 Python 即可完成社会网络分析和可视化。
 cover: https://download.mariozzj.cn/img/picgo/202110271543237.svg
-copyright_author: 
-copyright_author_href:
-copyright_url:
-copyright_info:
 katex: false
 aside: true
 ---

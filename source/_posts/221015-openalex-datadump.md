@@ -1,7 +1,6 @@
 ---
 title: 下载 OpenAlex 数据集并配置 PySpark 的一次记录
-comments: true
-copyright: true
+comment: true
 abbrlink: fb1f3a84
 date: 2022-10-15 10:06:33
 updated: 2022-11-12 16:30:00
@@ -12,13 +11,8 @@ categories: 工程实践
 keywords: 
     - pyspark
     - OpenAlex
-description: 记录一下最近一次配置开源数据集的过程
-top_img: https://download.mariozzj.cn/img/picgo/202210151028093.png
+desc: 记录一下最近一次配置开源数据集的过程
 cover: https://download.mariozzj.cn/img/picgo/202210151013511.png
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
 katex: false
 aside: true
 ---

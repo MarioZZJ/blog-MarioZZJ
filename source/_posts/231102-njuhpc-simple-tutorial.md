@@ -1,7 +1,6 @@
 ---
 title: NJUHPC 运行 Python 程序简明流程
-comments: true
-copyright: true
+comment: true
 abbrlink: 6ab96d9d
 date: 2023-11-02 08:24:53
 updated:
@@ -14,12 +13,8 @@ keywords:
 description:
 top_img: https://download.mariozzj.cn/img/picgo/202311021615799.png
 cover: https://download.mariozzj.cn/img/picgo/202311021615799.png
-copyright_author:
-copyright_author_href:
-copyright_url:
-copyright_info:
-katex:
-aside:
+katex: false
+aside: true
 ---
 [NJU HPC](https://hpc.nju.edu.cn/) 指南京大学人工微结构科学与技术协同创新中心高性能计算中心，中心提供多种软硬件资源以供高性能运算服务，本文简单介绍在 NJU HPC 上运行 Python 程序的流程，更多详细使用方法可参见 [使用手册](https://doc.nju.edu.cn/books/efe93)。
 
