@@ -1,0 +1,1308 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>机器学习实验：回归 | Leeml-2020-hw1 | MarioBlog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://download.mariozzj.cn/img/static/icon256.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.12"><!-- inject head--><meta name="google-site-verification" content="google-site-verification=ATi1JuhDx8tMQDtqhsnoa90uIXlU2vjn6wRkMJMmNOw"><link rel="canonical" href="https://blog.mariozzj.cn/posts/28d53052/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"><!-- Open Graph--><meta name="description" content="Overview 实验已作为 Kaggle 竞赛发布，见 Kaggle。涉及的主要内容： 通过完成一次时间序列预测任务，回顾回归相关知识 梯度下降的步骤，求解方法 学习率参数选择 特征缩放对学习效果的影响 最小二乘法直接求解回归问题 EDA 任务说明：训练集数据提供丰原气象站某年每月前 20"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="MarioBlog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://download.mariozzj.cn/img/static/icon256.jpg"><link rel="apple-touch-icon" href="https://download.mariozzj.cn/img/static/icon256.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.12' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2020-05-17 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。"}},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: ["You'll make it.","You're gonna make it.","Good luck, stranger."],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false,
+    color: false,
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><div id="loading-box" onclick="preloader.endLoading();" style="zoom:1"><div class="loading-bg"><img class="loading-img nolazyload" src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="loading image"></div></div><script>const preloader = {
+    isLoaded: false,
+    endLoading: () => {
+        if (!preloader.isLoaded) {
+            document.getElementById('loading-box').classList.add('loaded');
+            preloader.isLoaded = true;
+            preloader.togglePaceDone();
+        }
+    },
+    initLoading: () => {
+        document.getElementById('loading-box').classList.remove('loaded');
+        preloader.isLoaded = false;
+        preloader.togglePaceDone();
+    },
+    togglePaceDone: () => {
+        document.getElementById('body').className = preloader.isLoaded ? 'pace-done' : '';
+    }
+}
+
+window.addEventListener('load', () => {
+    preloader.endLoading();
+});
+
+window.addEventListener('pjax:send', () => {
+    preloader.initLoading();
+});
+
+document.addEventListener('pjax:complete', () => {
+    preloader.endLoading();
+});
+
+setTimeout(() => {
+    preloader.endLoading();
+}, 5000);</script><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/Hexo-js/">Hexo.js<sup>1</sup></a><a href="/tags/Github/">Github<sup>1</sup></a><a href="/tags/Jupyter/">Jupyter<sup>1</sup></a><a href="/tags/Python/">Python<sup>4</sup></a><a href="/tags/NoSQL/">NoSQL<sup>1</sup></a><a href="/tags/Neo4J/">Neo4J<sup>1</sup></a><a href="/tags/SNA/">SNA<sup>1</sup></a><a href="/tags/igraph/">igraph<sup>1</sup></a><a href="/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/">桌面游戏<sup>2</sup></a><a href="/tags/ML/">ML<sup>1</sup></a><a href="/tags/Regression/">Regression<sup>1</sup></a><a href="/tags/Linux/">Linux<sup>3</sup></a><a href="/tags/Shell/">Shell<sup>3</sup></a><a href="/tags/%E6%B8%B8%E6%88%8F%E3%80%8A%E9%A5%A5%E8%8D%92%E3%80%8B/">游戏《饥荒》<sup>1</sup></a><a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/">云服务器应用<sup>6</sup></a><a href="/tags/%E8%81%94%E6%9C%BA%E6%B8%B8%E6%88%8F/">联机游戏<sup>1</sup></a><a href="/tags/SSH/">SSH<sup>1</sup></a><a href="/tags/UFW/">UFW<sup>1</sup></a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发<sup>1</sup></a><a href="/tags/Nginx/">Nginx<sup>1</sup></a><a href="/tags/frp/">frp<sup>1</sup></a><a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">内网穿透<sup>1</sup></a><a href="/tags/PageRank/">PageRank<sup>1</sup></a><a href="/tags/EigenFactor/">EigenFactor<sup>1</sup></a><a href="/tags/Algorithm/">Algorithm<sup>1</sup></a><a href="/tags/Markdown/">Markdown<sup>1</sup></a><a href="/tags/OpenAlex/">OpenAlex<sup>1</sup></a><a href="/tags/Spark/">Spark<sup>1</sup></a><a href="/tags/bsub/">bsub<sup>1</sup></a><a href="/tags/HPC/">HPC<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">MarioBlog</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">机器学习实验：回归 | Leeml-2020-hw1</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="travellings_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html" title=""><i class="solitude fas fa-train"></i></a></div><div class="nav-button" id="foreverblog_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.foreverblog.cn/" title=""><i class="solitude fa-solid fa-blog"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="https://download.mariozzj.cn/img/picgo/202111162100438.png" alt="机器学习实验：回归 | Leeml-2020-hw1"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/%E6%95%B0%E7%A7%91%E7%9F%A5%E8%AF%86/">数科知识</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ML/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>ML</span></a><a class="post-meta__tags" href="/tags/Regression/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Regression</span></a></div></div></div></div><h1 class="post-title">机器学习实验：回归 | Leeml-2020-hw1</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-wordcount"><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Overview</h1>
+<p>实验已作为 Kaggle 竞赛发布，见 <a target="_blank" rel="noopener" href="https://www.kaggle.com/c/ml2020spring-hw1/">Kaggle</a>。涉及的主要内容：</p>
+<ul>
+<li>通过完成一次时间序列预测任务，回顾回归相关知识</li>
+<li>梯度下降的步骤，求解方法</li>
+<li>学习率参数选择</li>
+<li>特征缩放对学习效果的影响</li>
+<li>最小二乘法直接求解回归问题</li>
+</ul>
+<h1>EDA</h1>
+<blockquote>
+<p>任务说明：训练集数据提供丰原气象站某年每月前 20 天每小时的 18 项指标数值。测试集给出余下天数的前 9 小时的所有指标数值，要求预测出第 10 小时的 PM2.5 数值。</p>
+</blockquote>
+<h2 id="load-data">load data</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TASK_DIR = ROOT_DIR + <span class="string">&#x27;ml2020spring-hw1/&#x27;</span></span><br><span class="line">data_train = pd.read_csv(TASK_DIR + <span class="string">&quot;train.csv&quot;</span>,encoding = <span class="string">&#x27;big5&#x27;</span>)</span><br><span class="line">data_test  = pd.read_csv(TASK_DIR + <span class="string">&quot;test.csv&quot;</span> ,encoding = <span class="string">&#x27;big5&#x27;</span>,names = [<span class="string">&#x27;日期&#x27;</span>, <span class="string">&#x27;測項&#x27;</span>, <span class="string">&#x27;0&#x27;</span>, <span class="string">&#x27;1&#x27;</span>, <span class="string">&#x27;2&#x27;</span>, <span class="string">&#x27;3&#x27;</span>, <span class="string">&#x27;4&#x27;</span>, <span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;6&#x27;</span>, <span class="string">&#x27;7&#x27;</span>, <span class="string">&#x27;8&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data_train.info()</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 4320 entries, 0 to 4319
+Data columns (total 27 columns):
+ #   Column  Non-Null Count  Dtype 
+---  ------  --------------  ----- 
+ 0   日期      4320 non-null   object
+ 1   測站      4320 non-null   object
+ 2   測項      4320 non-null   object
+ 3   0       4320 non-null   object
+ 4   1       4320 non-null   object
+ 5   2       4320 non-null   object
+ 6   3       4320 non-null   object
+ 7   4       4320 non-null   object
+ 8   5       4320 non-null   object
+ 9   6       4320 non-null   object
+ 10  7       4320 non-null   object
+ 11  8       4320 non-null   object
+ 12  9       4320 non-null   object
+ 13  10      4320 non-null   object
+ 14  11      4320 non-null   object
+ 15  12      4320 non-null   object
+ 16  13      4320 non-null   object
+ 17  14      4320 non-null   object
+ 18  15      4320 non-null   object
+ 19  16      4320 non-null   object
+ 20  17      4320 non-null   object
+ 21  18      4320 non-null   object
+ 22  19      4320 non-null   object
+ 23  20      4320 non-null   object
+ 24  21      4320 non-null   object
+ 25  22      4320 non-null   object
+ 26  23      4320 non-null   object
+dtypes: object(27)
+memory usage: 911.4+ KB
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data_train.head(<span class="number">20</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th &#123;
+    vertical-align: top;
+&#125;
+
+.dataframe thead th &#123;
+    text-align: right;
+&#125;
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>日期</th>
+      <th>測站</th>
+      <th>測項</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>...</th>
+      <th>14</th>
+      <th>15</th>
+      <th>16</th>
+      <th>17</th>
+      <th>18</th>
+      <th>19</th>
+      <th>20</th>
+      <th>21</th>
+      <th>22</th>
+      <th>23</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>AMB_TEMP</td>
+      <td>14</td>
+      <td>14</td>
+      <td>14</td>
+      <td>13</td>
+      <td>12</td>
+      <td>12</td>
+      <td>12</td>
+      <td>...</td>
+      <td>22</td>
+      <td>22</td>
+      <td>21</td>
+      <td>19</td>
+      <td>17</td>
+      <td>16</td>
+      <td>15</td>
+      <td>15</td>
+      <td>15</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>CH4</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>...</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>CO</td>
+      <td>0.51</td>
+      <td>0.41</td>
+      <td>0.39</td>
+      <td>0.37</td>
+      <td>0.35</td>
+      <td>0.3</td>
+      <td>0.37</td>
+      <td>...</td>
+      <td>0.37</td>
+      <td>0.37</td>
+      <td>0.47</td>
+      <td>0.69</td>
+      <td>0.56</td>
+      <td>0.45</td>
+      <td>0.38</td>
+      <td>0.35</td>
+      <td>0.36</td>
+      <td>0.32</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>NMHC</td>
+      <td>0.2</td>
+      <td>0.15</td>
+      <td>0.13</td>
+      <td>0.12</td>
+      <td>0.11</td>
+      <td>0.06</td>
+      <td>0.1</td>
+      <td>...</td>
+      <td>0.1</td>
+      <td>0.13</td>
+      <td>0.14</td>
+      <td>0.23</td>
+      <td>0.18</td>
+      <td>0.12</td>
+      <td>0.1</td>
+      <td>0.09</td>
+      <td>0.1</td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>NO</td>
+      <td>0.9</td>
+      <td>0.6</td>
+      <td>0.5</td>
+      <td>1.7</td>
+      <td>1.8</td>
+      <td>1.5</td>
+      <td>1.9</td>
+      <td>...</td>
+      <td>2.5</td>
+      <td>2.2</td>
+      <td>2.5</td>
+      <td>2.3</td>
+      <td>2.1</td>
+      <td>1.9</td>
+      <td>1.5</td>
+      <td>1.6</td>
+      <td>1.8</td>
+      <td>1.5</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>NO2</td>
+      <td>16</td>
+      <td>9.2</td>
+      <td>8.2</td>
+      <td>6.9</td>
+      <td>6.8</td>
+      <td>3.8</td>
+      <td>6.9</td>
+      <td>...</td>
+      <td>11</td>
+      <td>11</td>
+      <td>22</td>
+      <td>28</td>
+      <td>19</td>
+      <td>12</td>
+      <td>8.1</td>
+      <td>7</td>
+      <td>6.9</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>NOx</td>
+      <td>17</td>
+      <td>9.8</td>
+      <td>8.7</td>
+      <td>8.6</td>
+      <td>8.5</td>
+      <td>5.3</td>
+      <td>8.8</td>
+      <td>...</td>
+      <td>14</td>
+      <td>13</td>
+      <td>25</td>
+      <td>30</td>
+      <td>21</td>
+      <td>13</td>
+      <td>9.7</td>
+      <td>8.6</td>
+      <td>8.7</td>
+      <td>7.5</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>O3</td>
+      <td>16</td>
+      <td>30</td>
+      <td>27</td>
+      <td>23</td>
+      <td>24</td>
+      <td>28</td>
+      <td>24</td>
+      <td>...</td>
+      <td>65</td>
+      <td>64</td>
+      <td>51</td>
+      <td>34</td>
+      <td>33</td>
+      <td>34</td>
+      <td>37</td>
+      <td>38</td>
+      <td>38</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>PM10</td>
+      <td>56</td>
+      <td>50</td>
+      <td>48</td>
+      <td>35</td>
+      <td>25</td>
+      <td>12</td>
+      <td>4</td>
+      <td>...</td>
+      <td>52</td>
+      <td>51</td>
+      <td>66</td>
+      <td>85</td>
+      <td>85</td>
+      <td>63</td>
+      <td>46</td>
+      <td>36</td>
+      <td>42</td>
+      <td>42</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>PM2.5</td>
+      <td>26</td>
+      <td>39</td>
+      <td>36</td>
+      <td>35</td>
+      <td>31</td>
+      <td>28</td>
+      <td>25</td>
+      <td>...</td>
+      <td>36</td>
+      <td>45</td>
+      <td>42</td>
+      <td>49</td>
+      <td>45</td>
+      <td>44</td>
+      <td>41</td>
+      <td>30</td>
+      <td>24</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>RAINFALL</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>...</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+      <td>NR</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>RH</td>
+      <td>77</td>
+      <td>68</td>
+      <td>67</td>
+      <td>74</td>
+      <td>72</td>
+      <td>73</td>
+      <td>74</td>
+      <td>...</td>
+      <td>47</td>
+      <td>49</td>
+      <td>56</td>
+      <td>67</td>
+      <td>72</td>
+      <td>69</td>
+      <td>70</td>
+      <td>70</td>
+      <td>70</td>
+      <td>69</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>SO2</td>
+      <td>1.8</td>
+      <td>2</td>
+      <td>1.7</td>
+      <td>1.6</td>
+      <td>1.9</td>
+      <td>1.4</td>
+      <td>1.5</td>
+      <td>...</td>
+      <td>3.9</td>
+      <td>4.4</td>
+      <td>9.9</td>
+      <td>5.1</td>
+      <td>3.4</td>
+      <td>2.3</td>
+      <td>2</td>
+      <td>1.9</td>
+      <td>1.9</td>
+      <td>1.9</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>THC</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>1.9</td>
+      <td>1.9</td>
+      <td>1.8</td>
+      <td>1.9</td>
+      <td>...</td>
+      <td>1.9</td>
+      <td>1.9</td>
+      <td>1.9</td>
+      <td>2.1</td>
+      <td>2</td>
+      <td>1.9</td>
+      <td>1.9</td>
+      <td>1.9</td>
+      <td>1.9</td>
+      <td>1.9</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>WD_HR</td>
+      <td>37</td>
+      <td>80</td>
+      <td>57</td>
+      <td>76</td>
+      <td>110</td>
+      <td>106</td>
+      <td>101</td>
+      <td>...</td>
+      <td>307</td>
+      <td>304</td>
+      <td>307</td>
+      <td>124</td>
+      <td>118</td>
+      <td>121</td>
+      <td>113</td>
+      <td>112</td>
+      <td>106</td>
+      <td>110</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>WIND_DIREC</td>
+      <td>35</td>
+      <td>79</td>
+      <td>2.4</td>
+      <td>55</td>
+      <td>94</td>
+      <td>116</td>
+      <td>106</td>
+      <td>...</td>
+      <td>313</td>
+      <td>305</td>
+      <td>291</td>
+      <td>124</td>
+      <td>119</td>
+      <td>118</td>
+      <td>114</td>
+      <td>108</td>
+      <td>102</td>
+      <td>111</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>WIND_SPEED</td>
+      <td>1.4</td>
+      <td>1.8</td>
+      <td>1</td>
+      <td>0.6</td>
+      <td>1.7</td>
+      <td>2.5</td>
+      <td>2.5</td>
+      <td>...</td>
+      <td>2.5</td>
+      <td>2.2</td>
+      <td>1.4</td>
+      <td>2.2</td>
+      <td>2.8</td>
+      <td>3</td>
+      <td>2.6</td>
+      <td>2.7</td>
+      <td>2.1</td>
+      <td>2.1</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>2014/1/1</td>
+      <td>豐原</td>
+      <td>WS_HR</td>
+      <td>0.5</td>
+      <td>0.9</td>
+      <td>0.6</td>
+      <td>0.3</td>
+      <td>0.6</td>
+      <td>1.9</td>
+      <td>2</td>
+      <td>...</td>
+      <td>2.1</td>
+      <td>2.1</td>
+      <td>1.9</td>
+      <td>1</td>
+      <td>2.5</td>
+      <td>2.5</td>
+      <td>2.8</td>
+      <td>2.6</td>
+      <td>2.4</td>
+      <td>2.3</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>2014/1/2</td>
+      <td>豐原</td>
+      <td>AMB_TEMP</td>
+      <td>16</td>
+      <td>15</td>
+      <td>15</td>
+      <td>14</td>
+      <td>14</td>
+      <td>15</td>
+      <td>16</td>
+      <td>...</td>
+      <td>24</td>
+      <td>24</td>
+      <td>23</td>
+      <td>21</td>
+      <td>20</td>
+      <td>19</td>
+      <td>18</td>
+      <td>18</td>
+      <td>18</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>2014/1/2</td>
+      <td>豐原</td>
+      <td>CH4</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>...</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+    </tr>
+  </tbody>
+</table>
+<p>20 rows × 27 columns</p>
+</div>
+<p>训练集由每月前 20 天每小时的 18 项观测指标组成，除 <code>RAINFALL</code> 观测指标外其余指标均为数值型。下载观测整个数据集发现，<code>RAINFALL</code> 指标值不为 <code>NR</code> 时，以数值型记录了该小时的降雨量，所以<strong>需要对 <code>NR</code> 值进行处理，将其改为 0</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data_test</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<pre><code>.dataframe tbody tr th &#123;
+    vertical-align: top;
+&#125;
+
+.dataframe thead th &#123;
+    text-align: right;
+&#125;
+</code></pre>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>日期</th>
+      <th>測項</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>id_0</td>
+      <td>AMB_TEMP</td>
+      <td>21</td>
+      <td>21</td>
+      <td>20</td>
+      <td>20</td>
+      <td>19</td>
+      <td>19</td>
+      <td>19</td>
+      <td>18</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>id_0</td>
+      <td>CH4</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.8</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>id_0</td>
+      <td>CO</td>
+      <td>0.39</td>
+      <td>0.36</td>
+      <td>0.36</td>
+      <td>0.4</td>
+      <td>0.53</td>
+      <td>0.55</td>
+      <td>0.34</td>
+      <td>0.31</td>
+      <td>0.23</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>id_0</td>
+      <td>NMHC</td>
+      <td>0.16</td>
+      <td>0.24</td>
+      <td>0.22</td>
+      <td>0.27</td>
+      <td>0.27</td>
+      <td>0.26</td>
+      <td>0.27</td>
+      <td>0.29</td>
+      <td>0.1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>id_0</td>
+      <td>NO</td>
+      <td>1.3</td>
+      <td>1.3</td>
+      <td>1.3</td>
+      <td>1.3</td>
+      <td>1.4</td>
+      <td>1.6</td>
+      <td>1.2</td>
+      <td>1.1</td>
+      <td>0.9</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>4315</th>
+      <td>id_239</td>
+      <td>THC</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.8</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.7</td>
+      <td>1.7</td>
+    </tr>
+    <tr>
+      <th>4316</th>
+      <td>id_239</td>
+      <td>WD_HR</td>
+      <td>80</td>
+      <td>92</td>
+      <td>95</td>
+      <td>95</td>
+      <td>96</td>
+      <td>97</td>
+      <td>96</td>
+      <td>96</td>
+      <td>84</td>
+    </tr>
+    <tr>
+      <th>4317</th>
+      <td>id_239</td>
+      <td>WIND_DIREC</td>
+      <td>76</td>
+      <td>99</td>
+      <td>93</td>
+      <td>97</td>
+      <td>93</td>
+      <td>94</td>
+      <td>98</td>
+      <td>97</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <th>4318</th>
+      <td>id_239</td>
+      <td>WIND_SPEED</td>
+      <td>2.2</td>
+      <td>3.2</td>
+      <td>2.5</td>
+      <td>3.6</td>
+      <td>5</td>
+      <td>4.2</td>
+      <td>5.7</td>
+      <td>4.9</td>
+      <td>3.6</td>
+    </tr>
+    <tr>
+      <th>4319</th>
+      <td>id_239</td>
+      <td>WS_HR</td>
+      <td>1.7</td>
+      <td>2.8</td>
+      <td>2.6</td>
+      <td>3.3</td>
+      <td>3.5</td>
+      <td>5</td>
+      <td>4.9</td>
+      <td>5.2</td>
+      <td>3.6</td>
+    </tr>
+  </tbody>
+</table>
+<p>4320 rows × 11 columns</p>
+</div>
+<p>根据任务描述，训练集记录的是每月前 20 天的数据，那么每月余下的数据便打乱后包含于测试集，同时只保留前 9 小时的数据，目标是根据这 9 个小时的数据预测出第 10 个小时的 PM 2.5 值。同理，<strong>测试集的 <code>NR</code> 稍后也需处理为 0</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data_train = data_train.replace(<span class="string">&#x27;NR&#x27;</span>,<span class="number">0.0</span>)</span><br><span class="line">data_test  = data_test.replace(<span class="string">&#x27;NR&#x27;</span>,<span class="number">0.0</span>)</span><br></pre></td></tr></table></figure>
+<p>我们的任务是：根据训练集数据，使用回归的方法，对模型进行训练，使得模型能够根据测试集中前 9 小时的数据预测出第 10 小时的 <code>PM2.5</code> 值。</p>
+<p>由于涉及的项较多，为简化任务，本次实验的<strong>模型均采用线性模型</strong>，那么考虑模型复杂程度可以分为以下两种模型：</p>
+<ol>
+<li>仅考虑 <code>PM2.5</code> 指标，根据前 9 小时的 <code>PM2.5</code> 指标预测第 10 小时的值；</li>
+<li>考虑所有指标对 <code>PM2.5</code> 的影响，根据前 9 小时所有指标预测第 10 小时的值。</li>
+</ol>
+<p>测试集中，前 9 小时的数据是连续的 9 小时，所以可以从训练集中提取连续的 9 小时作为训练样本，之后的 1 小时的 <code>PM2.5</code> 观测值作为标签，获得训练集。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data_train.iloc[:,<span class="number">3</span>:] = data_train.iloc[:,<span class="number">3</span>:].astype(<span class="built_in">float</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">X_train = []</span><br><span class="line">y_train = []</span><br><span class="line">x_train_pm25 = []</span><br><span class="line"><span class="keyword">for</span> date <span class="keyword">in</span> data_train.日期.unique():</span><br><span class="line">    data_daily = data_train[data_train[<span class="string">&#x27;日期&#x27;</span>]==date]</span><br><span class="line"><span class="comment">#     display(data_daily)</span></span><br><span class="line">    properties = data_daily.測項</span><br><span class="line"><span class="comment">#     display(properties)</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>+<span class="number">3</span>,<span class="number">16</span>+<span class="number">3</span>):</span><br><span class="line">        X_train.append(data_daily.iloc[:,i:(i+<span class="number">9</span>)].values)</span><br><span class="line">        x_train_pm25.append(data_daily.iloc[<span class="number">9</span>,i:(i+<span class="number">9</span>)].values)</span><br><span class="line">        y_train.append(data_daily[data_daily[<span class="string">&#x27;測項&#x27;</span>]==<span class="string">&#x27;PM2.5&#x27;</span>].iloc[:,(i+<span class="number">8</span>)].values[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+<p>就这样，我们获取到了基础的训练数据集，可以开始后续的模型训练。</p>
+<h1>Regression - Model1 : Simple Linear Model</h1>
+<h2 id="Definition">Definition</h2>
+<p>上面的分析已经提到，我们的模型为线性模型。以最简单的模型 1 为例，最后的模型应为如下形式：</p>
+<p>$$<br>
+f(\boldsymbol{x}) = w_1 \cdot x_1 + w_2 \cdot x_2 + \cdots + w_9 \cdot x_9 + b<br>
+$$</p>
+<p>其中 $y$ 为第 10 小时 PM2.5 预测值，$x_1,x_2,\cdots,x_9$ 为前 9 小时的 PM2.5 观测值。</p>
+<p>为了后续讨论方便，尽可能将模型的元素使用向量或矩阵的形式表示，原模型可写为：</p>
+<p>$$<br>
+f(\boldsymbol{x}) = \boldsymbol{w}^T\boldsymbol{x}+b<br>
+$$</p>
+<p>为便于后续讨论，将模型进一步简化表示，将偏置 $b$ 收入向量形式 $\boldsymbol{\hat{w}}=(\boldsymbol{w},b)$。全体数据集表示为一个矩阵，行列数量对应样本数、属性值数+1，其中每行对应一个样本，最后一个元素恒置为 1：</p>
+<p>$$<br>
+\boldsymbol{X} = \left(\begin{matrix}<br>
+x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1d} &amp; 1 \<br>
+x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2d} &amp; 1 \<br>
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots &amp; \vdots \<br>
+x_{m1} &amp; x_{m2} &amp; \cdots &amp; x_{md} &amp; 1<br>
+\end{matrix}\right)<br>
+= \left(\begin{matrix}<br>
+\boldsymbol{x}_1^T &amp; 1 \<br>
+\boldsymbol{x}_2^T &amp; 1 \<br>
+\vdots &amp; \vdots \<br>
+\boldsymbol{x}_m^T &amp; 1 \<br>
+\end{matrix}\right)<br>
+$$</p>
+<p>其中 $d=9$。</p>
+<p>我们的目标是，学习得到 $f(\boldsymbol{x}_i)$ 使得 $f(\boldsymbol{x}_i)\simeq y_i$</p>
+<h2 id="Loss-Function">Loss Function</h2>
+<p>模型在不断优化的过程中，需要对模型效果进行评估。在回归任务中，均方误差（MSE）是最常见的性能度量。</p>
+<p>采用均方误差作为损失函数，我们原来学习函数的问题转化为求取所有样本点到我们拟合的模型曲线上的欧式距离之和，并迭代优化模型使之最小。</p>
+<p>为了方便表示，将样本点标签（label，即我们预测的第 10 小时 PM2.5 值）也写成向量形式：$\boldsymbol{y} = (y_1;y_2;\cdots;y_m)$，损失函数可以表示为：</p>
+<p>$$<br>
+L = \dfrac{1}{m}(\boldsymbol{y} - \boldsymbol{X\hat{w}})^T(\boldsymbol{y} - \boldsymbol{X\hat{w}})<br>
+$$</p>
+<h2 id="Gradient-Descent">Gradient Descent</h2>
+<p>随机下降过程是利用样本学习参数的过程，将参数向梯度下降方向（损失函数值在某一点减少的方向）移动。</p>
+<p>梯度下降可以分为以下步骤：</p>
+<ol>
+<li>随机选取一个初始点 $\boldsymbol{\hat{w}}^0$ ；</li>
+<li>计算在该处参数 $\boldsymbol{\hat{w}}$ 对损失函数 $L$ 的（偏）微分 $\dfrac{\partial L}{\partial \boldsymbol{\hat{w}}}|_{\boldsymbol{\hat{w}}=\boldsymbol{\hat{w}}^i}$；</li>
+<li>更新 $\boldsymbol{\hat{w}}^i$：$\boldsymbol{\hat{w}}^{i+1} \leftarrow \boldsymbol{\hat{w}}^i - \eta\dfrac{\partial L}{\partial \boldsymbol{\hat{w}}}|_{\boldsymbol{\hat{w}}=\boldsymbol{\hat{w}}^i}$。其中 $\eta$ 为学习率，微分值为负则增加参数，若微分值为正则减少参数。重复步骤2-3，直至微分值为 $0$，得到 $\boldsymbol{\hat{w}}$ 的最优值 $\boldsymbol{\hat{w}}^\star$ 。</li>
+</ol>
+<p>梯度下降较为关键的步骤就是梯度（损失函数偏微分）的计算和参数更新，计算梯度的方法与损失函数的选择相关，前面我们选择了 MSE 作为损失函数。$L$ 对 $\boldsymbol{\hat{w}}$ 求偏导得：</p>
+<p>$$<br>
+\dfrac{\partial L}{\partial \boldsymbol{\hat{w}}} = \dfrac{2}{m} \boldsymbol{X}^T(\boldsymbol{X}\boldsymbol{\hat{w}}-\boldsymbol{y})<br>
+$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">grad_descent</span>(<span class="params">X,Y,epoch=<span class="number">20</span>,eta=<span class="number">0.0001</span>,w_old=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        X: 输入数据集, Numpy 数组 (Sample_count, Attr_count)</span></span><br><span class="line"><span class="string">        Y: 预测标签, Numpy 数组 (Sample_count, 1)</span></span><br><span class="line"><span class="string">        epoch: 迭代轮数</span></span><br><span class="line"><span class="string">        eta: 学习率</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    X = np.column_stack((X,np.ones(X.shape[<span class="number">0</span>])))</span><br><span class="line">    Y = Y.reshape((Y.shape[<span class="number">0</span>],<span class="number">1</span>))</span><br><span class="line">    w = w_old <span class="keyword">if</span> w_old <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> np.random.random(size=(X.shape[<span class="number">1</span>],<span class="number">1</span>)) <span class="comment"># 随机初始化参数 w（Step 1）</span></span><br><span class="line">    loss = []</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">iter</span> <span class="keyword">in</span> <span class="built_in">range</span>(epoch):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\r&#123;&#125;/&#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">iter</span>+<span class="number">1</span>,epoch),end=<span class="string">&quot;&quot;</span>)</span><br><span class="line">        gradient = <span class="number">2</span> * X.T.dot(X.dot(w)-Y) / X.shape[<span class="number">0</span>]                       <span class="comment"># 计算 L 对 w 的偏微分，即梯度。（Step 2）</span></span><br><span class="line">        w = w - eta * gradient                                                <span class="comment"># 更新参数 w （Step 3）</span></span><br><span class="line">        loss.append((Y-X.dot(w)).T.dot(Y-X.dot(w)).reshape(-<span class="number">1</span>)/ X.shape[<span class="number">0</span>])   <span class="comment"># 计算损失 L</span></span><br><span class="line">    <span class="keyword">return</span> w, loss</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">w,loss = grad_descent(np.array(x_train_pm25,dtype=<span class="built_in">float</span>),np.array(y_train,dtype=<span class="built_in">float</span>))</span><br></pre></td></tr></table></figure>
+<pre><code>20/20
+</code></pre>
+<p>通过迭代我们学习得到了模型参数 $\boldsymbol{\hat{w}}$ 和每一轮函数的损失值，我们可以通过可视化的方式直观展现函数损失</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">plot_loss</span>(<span class="params">loss,title=<span class="string">&quot;Loss Value per Iter&quot;</span></span>):</span><br><span class="line">    fig = plt.figure()</span><br><span class="line">    ax = fig.add_subplot()</span><br><span class="line">    ax.set_title(title)</span><br><span class="line">    ax.set_xlabel(<span class="string">&quot;iteration&quot;</span>)</span><br><span class="line">    ax.set_ylabel(<span class="string">&quot;Loss/MSE&quot;</span>)</span><br><span class="line">    ax.plot(<span class="built_in">range</span>(<span class="built_in">len</span>(loss)),np.array(loss).reshape(-<span class="number">1</span>))</span><br><span class="line">plot_loss(loss)</span><br><span class="line"><span class="built_in">print</span>(loss[-<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>[26.05574238]
+</code></pre>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202112051944500.png" alt="plt"></p>
+<p>可以看到，随着训练轮数的增加，损失值在不断下降，说明我们的模型在不断学习，向数据逼近。</p>
+<h2 id="参数调整：训练轮数-epoch">参数调整：训练轮数 epoch</h2>
+<p>如果我们进一步增加训练轮数，可以使得损失函数进一步收敛：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">w,loss = grad_descent(np.array(x_train_pm25,dtype=<span class="built_in">float</span>),np.array(y_train,dtype=<span class="built_in">float</span>),epoch=<span class="number">80</span>,w_old=w)</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line">plot_loss(loss)</span><br><span class="line"><span class="built_in">print</span>(loss[-<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>80/80
+[4.08627535]
+</code></pre>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202112051945527.png" alt="plt"></p>
+<p>函数收敛的速度不断降低，所以如果无限度增大训练轮数确实可以使得损失函数较小，但是有可能带来过拟合现象。所以调整训练轮数在适当值即可。</p>
+<h2 id="参数调整：学习率-eta">参数调整：学习率 eta</h2>
+<p>学习率能够控制参数更新速度，过大的学习率可能导致损失函数错过全局最优，甚至无法收敛；而较小的学习率可能导致损失函数下降较慢</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202111192335868.png" alt="image-20211119233528788"></p>
+<p>由于我们的参数矩阵是随机生成，为便于对比不同学习率的效果，我们控制每一次的初始参数都相同</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">w = np.random.random(size=(<span class="built_in">len</span>(x_train_pm25[<span class="number">0</span>])+<span class="number">1</span>,<span class="number">1</span>))</span><br><span class="line">w1,loss1 = grad_descent(np.array(x_train_pm25,dtype=<span class="built_in">float</span>),np.array(y_train,dtype=<span class="built_in">float</span>),epoch=<span class="number">50</span>,eta=<span class="number">0.0001</span>,w_old=w)</span><br><span class="line">w2,loss2 = grad_descent(np.array(x_train_pm25,dtype=<span class="built_in">float</span>),np.array(y_train,dtype=<span class="built_in">float</span>),epoch=<span class="number">50</span>,eta=<span class="number">0.001</span>,w_old=w)</span><br><span class="line">w3,loss3 = grad_descent(np.array(x_train_pm25,dtype=<span class="built_in">float</span>),np.array(y_train,dtype=<span class="built_in">float</span>),epoch=<span class="number">50</span>,eta=<span class="number">0.00001</span>,w_old=w)</span><br></pre></td></tr></table></figure>
+<pre><code>50/50
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">plot_loss(loss1,title=<span class="string">&quot;Loss per Iter: $\eta=10^&#123;-4&#125;$&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(loss1[-<span class="number">1</span>])</span><br><span class="line">plot_loss(loss2,title=<span class="string">&quot;Loss per Iter: $\eta=10^&#123;-3&#125;$&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(loss2[-<span class="number">1</span>])</span><br><span class="line">plot_loss(loss3,title=<span class="string">&quot;Loss per Iter: $\eta=10^&#123;-6&#125;$&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(loss3[-<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>[11.36702501]
+[8.90902162e+109]
+[37.52494183]
+</code></pre>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202112051945756.png" alt="plt"></p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202112051945668.png" alt="plt"></p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202112051945836.png" alt="plt"></p>
+<p>可以看到，当 $\eta=0.001$ 时，损失函数最终飙升，无法收敛，此时学习率过大；当 $\eta=0.000001$ 时，损失函数最初的收敛速度明显不如 $\eta=0.0001$ 时，且经过同样较大的迭代轮数后，损失函数值的收敛效果不如后者，学习率较小。</p>
+<p>所以，需要经过多次测试，比较模型在不同学习率下的表现，方能获得较好的学习效果。</p>
+<h2 id="模型预测">模型预测</h2>
+<p>通过参数调整测试，我们已经确定了较好的参数，这样就可以获取最终的模型，对目标数据进行预测。</p>
+<p>$$<br>
+f(\boldsymbol{X}) = \boldsymbol{\hat{w}X}<br>
+$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">w,loss = grad_descent(np.array(x_train_pm25,dtype=<span class="built_in">float</span>),np.array(y_train,dtype=<span class="built_in">float</span>),eta=<span class="number">0.00013</span>,epoch=<span class="number">300</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Final Loss: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(loss[-<span class="number">1</span>]))</span><br></pre></td></tr></table></figure>
+<pre><code>300/300Final Loss: [0.639463]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">X_test_pm25 = data_test[data_test[<span class="string">&#x27;測項&#x27;</span>]==<span class="string">&#x27;PM2.5&#x27;</span>].iloc[:,<span class="number">2</span>:].values.astype(<span class="built_in">float</span>)</span><br><span class="line">X = np.column_stack((X_test_pm25,np.ones(X_test_pm25.shape[<span class="number">0</span>])))</span><br><span class="line">Y = X.dot(w)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">result = pd.merge(data_test[data_test[<span class="string">&#x27;測項&#x27;</span>]==<span class="string">&#x27;PM2.5&#x27;</span>].iloc[:,<span class="number">0</span>].reset_index(drop=<span class="literal">True</span>),pd.DataFrame(Y),left_index=<span class="literal">True</span>,right_index=<span class="literal">True</span>,how=<span class="string">&#x27;outer&#x27;</span>)</span><br><span class="line">result.columns = [<span class="string">&#x27;id&#x27;</span>,<span class="string">&#x27;value&#x27;</span>]</span><br><span class="line">result.to_csv(OUT_DIR + <span class="string">&quot;submission.csv&quot;</span>,index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="结果">结果</h2>
+<p><strong>最终的 Public Score 是 6.28859（击败 Simple Baseline: 6.55912），Private Score 是 8.53027（击败 Simple Baseline: 8.73773）</strong></p>
+<h1>Regression - Model2 : Take more feature into consideration</h1>
+<h2 id="模型构建">模型构建</h2>
+<p>模型方面其实没有变化，但是这一步中，我们将考虑数据中给出的所有特征，并不局限于 PM 2.5 数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">grad_descent</span>(<span class="params">X,Y,epoch=<span class="number">20</span>,eta=<span class="number">0.0001</span>,w_old=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        X: 输入数据集, Numpy 矩阵 (Sample_count, Attr_count)</span></span><br><span class="line"><span class="string">        Y: 预测标签, Numpy 矩阵 (Sample_count, 1)</span></span><br><span class="line"><span class="string">        epoch: 迭代轮数</span></span><br><span class="line"><span class="string">        eta: 学习率</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    X = np.column_stack((X,np.ones(X.shape[<span class="number">0</span>])))</span><br><span class="line">    Y = Y.reshape((Y.shape[<span class="number">0</span>],<span class="number">1</span>))</span><br><span class="line">    w = w_old <span class="keyword">if</span> w_old <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> np.random.random(size=(X.shape[<span class="number">1</span>],<span class="number">1</span>)) <span class="comment"># 随机初始化参数 w（Step 1）</span></span><br><span class="line">    loss = []</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">iter</span> <span class="keyword">in</span> <span class="built_in">range</span>(epoch):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\r&#123;&#125;/&#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">iter</span>+<span class="number">1</span>,epoch),end=<span class="string">&quot;&quot;</span>)</span><br><span class="line">        gradient = <span class="number">2</span> * X.T.dot(X.dot(w)-Y) / X.shape[<span class="number">0</span>]                       <span class="comment"># 计算 L 对 w 的偏微分，即梯度。（Step 2）</span></span><br><span class="line">        w = w - eta * gradient                                                <span class="comment"># 更新参数 w （Step 3）</span></span><br><span class="line">        loss.append((Y-X.dot(w)).T.dot(Y-X.dot(w)).reshape(-<span class="number">1</span>)/ X.shape[<span class="number">0</span>])   <span class="comment"># 计算损失 L</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> w, loss</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">plot_loss</span>(<span class="params">loss,title=<span class="string">&quot;Loss Value per Iter&quot;</span></span>):</span><br><span class="line">    fig = plt.figure()</span><br><span class="line">    ax = fig.add_subplot()</span><br><span class="line">    ax.set_title(title)</span><br><span class="line">    ax.set_xlabel(<span class="string">&quot;iteration&quot;</span>)</span><br><span class="line">    ax.set_ylabel(<span class="string">&quot;Loss/MSE&quot;</span>)</span><br><span class="line">    ax.plot(<span class="built_in">range</span>(<span class="built_in">len</span>(loss)),np.array(loss).reshape(-<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">w,loss = grad_descent(np.array(X_train,dtype=<span class="built_in">float</span>).reshape(<span class="built_in">len</span>(X_train),-<span class="number">1</span>),np.array(y_train,dtype=<span class="built_in">float</span>),epoch=<span class="number">300</span>,eta=<span class="number">0.0000014</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>300/300
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plot_loss(loss)</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202112051945774.png" alt="plt"></p>
+<p>在这部分，我们略去 Model1 中已经涉及的参数调节过程，直接选取我多次实验后选取的最优参数，随后直接进行预测。</p>
+<h2 id="模型预测-2">模型预测</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">X_test = data_test.iloc[:,<span class="number">2</span>:].values.astype(<span class="built_in">float</span>)</span><br><span class="line"><span class="built_in">id</span> = data_test.日期.unique()</span><br><span class="line">X_test = X_test.reshape(<span class="built_in">len</span>(<span class="built_in">id</span>),-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">X = np.column_stack((X_test,np.ones(X_test.shape[<span class="number">0</span>])))</span><br><span class="line">Y = X.dot(w)</span><br><span class="line">result = pd.merge(pd.DataFrame(<span class="built_in">id</span>),pd.DataFrame(Y),left_index=<span class="literal">True</span>,right_index=<span class="literal">True</span>,how=<span class="string">&#x27;outer&#x27;</span>)</span><br><span class="line">result.columns = [<span class="string">&#x27;id&#x27;</span>,<span class="string">&#x27;value&#x27;</span>]</span><br><span class="line">result.to_csv(OUT_DIR + <span class="string">&quot;submission.csv&quot;</span>,index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="结果-2">结果</h2>
+<p>确定 $\eta = 1.4 \times 10^{-6}$ 是学习率的最优参数后，在 Kaggle 上进行了多次提交，发现设定迭代次数在 50000 次以内时，结果得分在 10 ~ 30；而设定迭代次数到 100000 次时， <strong>取得了 Public Score 为 6.406，Private Score 为 8.477，表现优于 Model1</strong> ，但是显然出现了 <strong>参数收敛较慢</strong> 的问题。</p>
+<p>考虑更多指标，本质上是增加了模型的复杂度，因为 Model2 的表示能力是大于且包含 Model1 的表示能力的（因为 Model1 的 9 个参数均是 Model2 的参数），所以 Model2 的理论性能是一定要高于 Model1 的。</p>
+<p>如果提升学习率，会使得损失函数无法收敛，所以在其他方面对模型还有优化空间。</p>
+<h1>Regression - Model3 : Normalize the Feature</h1>
+<p>在 Model2 中考虑了更多指标，提升了模型表现，但是带来了另一个问题：<strong>参数收敛较慢</strong>，造成该现象的原因可能是，我们引入了新的参数，而新的参数与 Model1 的特征的量纲完全不同，即我们只考虑 PM2.5 指标值，它的范围可能是 0 - 200，而如果考虑 WIND_DIRECTION，它的范围则是 0 ~ 360。对于不同范围的特征，参数的敏感程度是不同的，就可能带来不同参数收敛速度不同，造成整体参数收敛速度较慢。而如果将所有参数都标准化，就可以在一定程度上提升参数的收敛速度。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202112052001819.png" alt="avatar"></p>
+<h2 id="Normalizaiton">Normalizaiton</h2>
+<p>我们将采用 Min-Max Normalization，需要获取各参数的最大值、最小值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">X_large = np.array(X_train[<span class="number">0</span>])</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(X_train)):</span><br><span class="line">    X_large = np.column_stack((X_large,X_train[i]))</span><br><span class="line">X_max = np.<span class="built_in">max</span>(X_large,axis=<span class="number">1</span>)</span><br><span class="line">X_min = np.<span class="built_in">min</span>(X_large,axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>随后，对数据中的每一个元素都进行标准化操作。Min-Max Normalization 的方法是：</p>
+<p>$$<br>
+x^\star = \dfrac{x-\min{\boldsymbol({x})}}{\max{\boldsymbol({x})}-\min{\boldsymbol({x})}}<br>
+$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">X_norm = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(X_train)):</span><br><span class="line">    X_norm.append(((X_train[i].T-X_min)/(X_max-X_min)).T)</span><br></pre></td></tr></table></figure>
+<h2 id="模型构建-2">模型构建</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">w,loss = grad_descent(np.array(X_norm,dtype=<span class="built_in">float</span>).reshape(<span class="built_in">len</span>(X_norm),-<span class="number">1</span>),np.array(y_train,dtype=<span class="built_in">float</span>),epoch=<span class="number">1000</span>,eta=<span class="number">0.035</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>1000/1000
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plot_loss(loss)</span><br><span class="line"><span class="built_in">print</span>(loss[-<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>[20.63629716]
+</code></pre>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202112051945718.png" alt="plt"></p>
+<p>可以看到，对数据进行标准化操作后，参数收敛的速度没有比上一轮快，但是损失值远远比不标准化特征还要低，这可能是因为特征值被放缩导致欧式距离减小导致的。但是相比而言，损失值比不放缩数据更早收敛。</p>
+<h2 id="模型预测-3">模型预测</h2>
+<p>由于我们对训练集输入进行了标准化，那么我们对测试集输入也需要进行相同的操作，而这里标准化的最大值、最小值并不是取决于测试集，而是取决于训练集，这样才能<strong>使得两个数据集具有对等的放缩映射，模型参数才能生效</strong>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">X_test = data_test.iloc[:,<span class="number">2</span>:].values.astype(<span class="built_in">float</span>)</span><br><span class="line"><span class="built_in">id</span> = data_test.日期.unique()</span><br><span class="line">attr_count = <span class="built_in">int</span>(X_test.shape[<span class="number">0</span>]/<span class="built_in">len</span>(<span class="built_in">id</span>))</span><br><span class="line">X_test_list = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">int</span>(X_test.shape[<span class="number">0</span>]/attr_count)):</span><br><span class="line">    X_i = X_test[i*attr_count:(i+<span class="number">1</span>)*attr_count]</span><br><span class="line">    X_test_list.append(((X_i.T-X_min)/(X_max-X_min)).T)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">X_test = np.array(X_test_list).reshape(<span class="built_in">int</span>(X_test.shape[<span class="number">0</span>]/attr_count),-<span class="number">1</span>)</span><br><span class="line">X = np.column_stack((X_test,np.ones(X_test.shape[<span class="number">0</span>])))</span><br><span class="line">Y = X.dot(w)</span><br><span class="line">result = pd.merge(pd.DataFrame(<span class="built_in">id</span>),pd.DataFrame(Y),left_index=<span class="literal">True</span>,right_index=<span class="literal">True</span>,how=<span class="string">&#x27;outer&#x27;</span>)</span><br><span class="line">result.columns = [<span class="string">&#x27;id&#x27;</span>,<span class="string">&#x27;value&#x27;</span>]</span><br><span class="line">result.to_csv(OUT_DIR + <span class="string">&quot;submission.csv&quot;</span>,index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="结果-3">结果</h2>
+<p>迭代同样次数情况下，取得 <strong>Public Score 6.286，Private Score 8.221 成绩</strong>。</p>
+<h1>Regression - Model4 : Ordinary Least Squares</h1>
+<p>如果数据量较大，能够实现输入矩阵求逆，就可以不使用梯度下降的方法逐次迭代寻找最优，而是利用最小二乘法直接求取最优值。</p>
+<h2 id="模型构建-3">模型构建</h2>
+<p>前面我们已经得到<br>
+$$<br>
+\dfrac{\partial L}{\partial \boldsymbol{\hat{w}}} = \dfrac{2}{m} \boldsymbol{X}^T(\boldsymbol{X}\boldsymbol{\hat{w}}-\boldsymbol{y})<br>
+$$<br>
+我们可以令 $\dfrac{\partial L}{\partial \boldsymbol{\hat{w}}}=0$ ，即可得到最优解<br>
+$$<br>
+\boldsymbol{\hat{w}}^\star = (\boldsymbol{X}^T\boldsymbol{X})^{-1}\boldsymbol{X}^T\boldsymbol{y}<br>
+$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">ols</span>(<span class="params">X,Y</span>):</span><br><span class="line">    X = np.column_stack((X,np.ones(X.shape[<span class="number">0</span>])))</span><br><span class="line">    Y = Y.reshape((Y.shape[<span class="number">0</span>],<span class="number">1</span>))</span><br><span class="line">    w = np.linalg.inv(X.T.dot(X)).dot(X.T.dot(Y))</span><br><span class="line">    <span class="keyword">return</span> w</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">w = ols(np.array(X_norm,dtype=<span class="built_in">float</span>).reshape(<span class="built_in">len</span>(X_norm),-<span class="number">1</span>),np.array(y_train,dtype=<span class="built_in">float</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="模型预测-4">模型预测</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Y = X.dot(w)</span><br><span class="line">result = pd.merge(pd.DataFrame(<span class="built_in">id</span>),pd.DataFrame(Y),left_index=<span class="literal">True</span>,right_index=<span class="literal">True</span>,how=<span class="string">&#x27;outer&#x27;</span>)</span><br><span class="line">result.columns = [<span class="string">&#x27;id&#x27;</span>,<span class="string">&#x27;value&#x27;</span>]</span><br><span class="line">result.to_csv(OUT_DIR + <span class="string">&quot;submission.csv&quot;</span>,index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="结果-4">结果</h2>
+<p>采用最小二乘法直接求取闭式解的结果是：Public Score 6.290，Private Score 8.221，表现均比 Model2、3 好。</p>
+<h1>Summary</h1>
+<h2 id="Results">Results</h2>
+<p>本次竞赛就丰原站气象数据进行了回归预测，对模型进行了优化，最终表现总结如下表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Model</th>
+<th style="text-align:center">iteration</th>
+<th style="text-align:center">parameters &amp; Description</th>
+<th style="text-align:right">PubScore</th>
+<th style="text-align:right">PrivScore</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">GD Model 1</td>
+<td style="text-align:center">$10^2$</td>
+<td style="text-align:center">$\eta = 1.5 \times 10^{-4}$ ，仅考虑 PM2.5 指标</td>
+<td style="text-align:right">6.289</td>
+<td style="text-align:right">8.530</td>
+</tr>
+<tr>
+<td style="text-align:right">GD Model 2</td>
+<td style="text-align:center">$10^5$</td>
+<td style="text-align:center">$\eta = 1.4 \times 10^{-6}$ ，考虑所有提供的指标</td>
+<td style="text-align:right">6.406</td>
+<td style="text-align:right">8.422</td>
+</tr>
+<tr>
+<td style="text-align:right">GD Model 3</td>
+<td style="text-align:center">$10^5$</td>
+<td style="text-align:center">$\eta = 3.5 \times 10^{-2}$ ，对所有指标标准化</td>
+<td style="text-align:right">6.286</td>
+<td style="text-align:right">8.221</td>
+</tr>
+<tr>
+<td style="text-align:right">OLS Model</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">直接求解</td>
+<td style="text-align:right">6.290</td>
+<td style="text-align:right">8.220</td>
+</tr>
+<tr>
+<td style="text-align:right">Simple Baseline</td>
+<td style="text-align:center">Unknown</td>
+<td style="text-align:center">Unknown</td>
+<td style="text-align:right">6.559</td>
+<td style="text-align:right">8.738</td>
+</tr>
+<tr>
+<td style="text-align:right">Strong Baseline</td>
+<td style="text-align:center">Unknown</td>
+<td style="text-align:center">Unknown</td>
+<td style="text-align:right">5.560</td>
+<td style="text-align:right">7.142</td>
+</tr>
+</tbody>
+</table>
+<p>尝试的所有模型均突破了 Simple Baseline，但是距离 Strong Baseline 仍然还有一定距离。</p>
+<h2 id="Highlights">Highlights</h2>
+<ul>
+<li>相比于大部分他人做法，我<strong>采样获得的样本较多</strong>，获取了大多数连续的 8 小时作为样本，总计 3 840 样本。</li>
+<li>考虑了学习率、迭代轮数、特征选择、特征放缩等因素优化模型。</li>
+</ul>
+<h2 id="Lowlights">Lowlights</h2>
+<ul>
+<li>可以使用交叉验证进行模型选择</li>
+<li>没有进行本地测试准确率评估性能，仅参考 Loss</li>
+<li>考虑的样本、特征过多可能带来了噪声，可以考虑进行降维或进一步特征选择</li>
+<li>可以将学习率优化为自适应</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="https://download.mariozzj.cn/img/static/icon256.jpg"></a><div class="post-copyright__author_name">MarioBlog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div><div class="post-reward"><div class="reward-button" title="赞赏作者" onclick="AddRewardMask()"><i class="solitude fa-solid fa-heart"></i>赞赏作者</div><div class="reward-main"><ul class="reward-all"><span class="reward-title">感谢您的赞赏</span><ul class="reward-group"><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信" style="border-color: #07c160"></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝" style="border-color: #108ee9"></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/"><div class="reward-text">赞赏名单</div><div class="reward-dec">您的支持是对我实现写作价值的最大鼓励。</div></a></ul></div></div><script>function RemoveRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "none";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "none";
+    }
+}
+
+function AddRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "flex";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "flex";
+    }
+}</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">MarioBlog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ML/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>ML<span class="tagsPageCount">1</span></span></a><a class="post-meta__tags" href="/tags/Regression/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Regression<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/672ba085/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Linux 基础操作学习(1)：连接与文件操作</div></div></a></div><div class="next-post pull-right"><a href="/posts/2b373355/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Town of Salem 板子(1)：Classic</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span><span class="count"> ()</span></div></div><div class="comment-wrap"><div id="giscus-wrap"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="https://download.mariozzj.cn/img/static/icon256.jpg"></div><div class="author-info__description_group"><div class="author-info__description"></div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">MarioZZJ</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">EDA</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#load-data"><span class="toc-text">load data</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Regression - Model1 : Simple Linear Model</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Definition"><span class="toc-text">Definition</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Loss-Function"><span class="toc-text">Loss Function</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Gradient-Descent"><span class="toc-text">Gradient Descent</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B4%EF%BC%9A%E8%AE%AD%E7%BB%83%E8%BD%AE%E6%95%B0-epoch"><span class="toc-text">参数调整：训练轮数 epoch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B4%EF%BC%9A%E5%AD%A6%E4%B9%A0%E7%8E%87-eta"><span class="toc-text">参数调整：学习率 eta</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E9%A2%84%E6%B5%8B"><span class="toc-text">模型预测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-text">结果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Regression - Model2 : Take more feature into consideration</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA"><span class="toc-text">模型构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E9%A2%84%E6%B5%8B-2"><span class="toc-text">模型预测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C-2"><span class="toc-text">结果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Regression - Model3 : Normalize the Feature</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Normalizaiton"><span class="toc-text">Normalizaiton</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA-2"><span class="toc-text">模型构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E9%A2%84%E6%B5%8B-3"><span class="toc-text">模型预测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C-3"><span class="toc-text">结果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Regression - Model4 : Ordinary Least Squares</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA-3"><span class="toc-text">模型构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E9%A2%84%E6%B5%8B-4"><span class="toc-text">模型预测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C-4"><span class="toc-text">结果</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Summary</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Results"><span class="toc-text">Results</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Highlights"><span class="toc-text">Highlights</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lowlights"><span class="toc-text">Lowlights</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务"><img alt="调用大模型 API 解决简单信息处理任务" src="https://download.mariozzj.cn/img/picgo/202409041617877.png"></a><div class="content"><span class="title" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务">调用大模型 API 解决简单信息处理任务</span><span class="article-recent_post_categories" href="/posts/573fc6c3/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img alt="NJUHPC 运行 Python 程序简明流程" src="https://download.mariozzj.cn/img/picgo/202311021615799.png"></a><div class="content"><span class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</span><span class="article-recent_post_categories" href="/posts/6ab96d9d/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录" src="https://download.mariozzj.cn/img/picgo/202210151013511.png"></a><div class="content"><span class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</span><span class="article-recent_post_categories" href="/posts/fb1f3a84/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img alt="让 Markdown 成为写作的起点" src="https://download.mariozzj.cn/img/picgo/202204191318445.png"></a><div class="content"><span class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</span><span class="article-recent_post_categories" href="/posts/fd830caf/">工具干货</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor"><img alt="两种图算法：PageRank &amp; EigenFactor" src="https://download.mariozzj.cn/img/picgo/202204191304070.png"></a><div class="content"><span class="title" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor">两种图算法：PageRank &amp; EigenFactor</span><span class="article-recent_post_categories" href="/posts/1d43c0e5/">数科知识</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:i@mariozzj.cn" title="Mail"><i class="solitude  fab fa-envelope"></i></a><div class="nolazyload footer_mini_logo" id="footer_mini_logo" title="返回顶部" onclick="sco.toTop()"><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="返回顶部"></div><a class="deal_link" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.linkedin.com/in/mariozzj/" title="LinkedIn"><i class="solitude  fab fa-linkedin"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2020 - 2024 By&nbsp;<a class="footer-bar-link" href="/">MarioZZJ</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" alt="赣ICP备20002056号-2">赣ICP备20002056号-2</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261" alt="鄂公网安备42010602004261号">鄂公网安备42010602004261号</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Solitude">Solitude</a><a class="footer-bar-link cc" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><i class="solitude fa-solid fa-copyright"></i><i class="solitude fa-brands fa-creative-commons-by"></i><i class="solitude fa-brands fa-creative-commons-nc"></i><i class="solitude fa-brands fa-creative-commons-nd"></i></a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.12"></script><script src="/js/main.js?v=2.0.12"></script><script src="/js/third_party/waterfall.min.js?v=2.0.12"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/copy-tex.min.js"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    utils.wrap(item, 'div', {class: 'katex-wrap'})
+  })
+})();
+</script></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"><script>(()=>{
+    const getGiscusTheme = theme => {
+        return theme === 'dark' ? 'dark' : 'light'
+    }
+
+    const loadGiscus = () => {
+        const config = Object.assign({
+            src: 'https://giscus.app/client.js',
+            'data-repo': 'MarioZZJ/giscus',
+            'data-repo-id': 'R_kgDOMwtu9A',
+            'data-category-id': 'DIC_kwDOMwtu9M4CiaaK',
+            'data-mapping': 'pathname',
+            'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+            'data-reactions-enabled': '1',
+            crossorigin: 'anonymous',
+            async: true
+        },null)
+
+        const ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').appendChild(ele)
+    }
+
+    const changeGiscusTheme = theme => {
+        const sendMessage = message => {
+            const iframe = document.querySelector('iframe.giscus-frame')
+            if (!iframe) return
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app')
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: getGiscusTheme(theme)
+            }
+        });
+    }
+
+    utils.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+    if ('Giscus' === 'Giscus' || !true) {
+        if (true) {
+            const giscusWrap = document.getElementById('giscus-wrap')
+            if (giscusWrap) {
+                utils.loadComment(giscusWrap, loadGiscus)
+            }
+        } else {
+            loadGiscus()
+        }
+    } else {
+        window.loadOtherComment = loadGiscus
+    }
+})()</script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fa-solid fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=2.0.12"></script><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["posts/573fc6c3/","posts/6ab96d9d/","posts/fb1f3a84/","posts/fd830caf/","posts/1d43c0e5/","posts/9364d192/","posts/7f568f00/","posts/e0d78514/","posts/5c25bf34/","posts/75521d8e/","posts/8d6b8da8/","posts/2c01ed8b/","posts/4449c636/","posts/672ba085/","posts/28d53052/","posts/2b373355/","posts/2b373354/","posts/52d95125/","posts/aba3bc4e/","posts/16cc73c/","posts/569080df/","posts/ffffffff/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

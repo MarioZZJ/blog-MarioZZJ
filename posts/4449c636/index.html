@@ -1,0 +1,735 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Linux 基础操作学习(2)：Python 交互 | MarioBlog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://download.mariozzj.cn/img/static/icon256.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.12"><!-- inject head--><meta name="google-site-verification" content="google-site-verification=ATi1JuhDx8tMQDtqhsnoa90uIXlU2vjn6wRkMJMmNOw"><link rel="canonical" href="https://blog.mariozzj.cn/posts/4449c636/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"><!-- Open Graph--><meta name="description" content="Python OS SYS OS 库 之前的 Linux 基础教程 中提到了一些可用于目录操作、文件操作的命令，在理解上述知识的基础上我们便可以很快上手 Python os 库的大多数方法。在 Python OS 文件&amp;#x2F;目录方法 | 菜鸟教程 (runoob.com) 中列出了多达 64 个方法，这"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="MarioBlog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://download.mariozzj.cn/img/static/icon256.jpg"><link rel="apple-touch-icon" href="https://download.mariozzj.cn/img/static/icon256.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.12' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2020-05-17 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。"}},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: ["You'll make it.","You're gonna make it.","Good luck, stranger."],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false,
+    color: false,
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><div id="loading-box" onclick="preloader.endLoading();" style="zoom:1"><div class="loading-bg"><img class="loading-img nolazyload" src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="loading image"></div></div><script>const preloader = {
+    isLoaded: false,
+    endLoading: () => {
+        if (!preloader.isLoaded) {
+            document.getElementById('loading-box').classList.add('loaded');
+            preloader.isLoaded = true;
+            preloader.togglePaceDone();
+        }
+    },
+    initLoading: () => {
+        document.getElementById('loading-box').classList.remove('loaded');
+        preloader.isLoaded = false;
+        preloader.togglePaceDone();
+    },
+    togglePaceDone: () => {
+        document.getElementById('body').className = preloader.isLoaded ? 'pace-done' : '';
+    }
+}
+
+window.addEventListener('load', () => {
+    preloader.endLoading();
+});
+
+window.addEventListener('pjax:send', () => {
+    preloader.initLoading();
+});
+
+document.addEventListener('pjax:complete', () => {
+    preloader.endLoading();
+});
+
+setTimeout(() => {
+    preloader.endLoading();
+}, 5000);</script><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/Hexo-js/">Hexo.js<sup>1</sup></a><a href="/tags/Github/">Github<sup>1</sup></a><a href="/tags/Jupyter/">Jupyter<sup>1</sup></a><a href="/tags/Python/">Python<sup>4</sup></a><a href="/tags/NoSQL/">NoSQL<sup>1</sup></a><a href="/tags/Neo4J/">Neo4J<sup>1</sup></a><a href="/tags/SNA/">SNA<sup>1</sup></a><a href="/tags/igraph/">igraph<sup>1</sup></a><a href="/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/">桌面游戏<sup>2</sup></a><a href="/tags/ML/">ML<sup>1</sup></a><a href="/tags/Regression/">Regression<sup>1</sup></a><a href="/tags/Linux/">Linux<sup>3</sup></a><a href="/tags/Shell/">Shell<sup>3</sup></a><a href="/tags/%E6%B8%B8%E6%88%8F%E3%80%8A%E9%A5%A5%E8%8D%92%E3%80%8B/">游戏《饥荒》<sup>1</sup></a><a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/">云服务器应用<sup>6</sup></a><a href="/tags/%E8%81%94%E6%9C%BA%E6%B8%B8%E6%88%8F/">联机游戏<sup>1</sup></a><a href="/tags/SSH/">SSH<sup>1</sup></a><a href="/tags/UFW/">UFW<sup>1</sup></a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发<sup>1</sup></a><a href="/tags/Nginx/">Nginx<sup>1</sup></a><a href="/tags/frp/">frp<sup>1</sup></a><a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">内网穿透<sup>1</sup></a><a href="/tags/PageRank/">PageRank<sup>1</sup></a><a href="/tags/EigenFactor/">EigenFactor<sup>1</sup></a><a href="/tags/Algorithm/">Algorithm<sup>1</sup></a><a href="/tags/Markdown/">Markdown<sup>1</sup></a><a href="/tags/OpenAlex/">OpenAlex<sup>1</sup></a><a href="/tags/Spark/">Spark<sup>1</sup></a><a href="/tags/bsub/">bsub<sup>1</sup></a><a href="/tags/HPC/">HPC<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">MarioBlog</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">Linux 基础操作学习(2)：Python 交互</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="travellings_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html" title=""><i class="solitude fas fa-train"></i></a></div><div class="nav-button" id="foreverblog_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.foreverblog.cn/" title=""><i class="solitude fa-solid fa-blog"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="https://download.mariozzj.cn/img/picgo/202112211840892.png" alt="Linux 基础操作学习(2)：Python 交互"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/">计算机科学</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Linux</span></a><a class="post-meta__tags" href="/tags/Shell/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Shell</span></a></div></div></div></div><h1 class="post-title">Linux 基础操作学习(2)：Python 交互</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-wordcount"><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Python OS SYS</h1>
+<h2 id="OS-库">OS 库</h2>
+<p>之前的 <a href="https://blog.mariozzj.cn/posts/672ba085/#%E7%9B%AE%E5%BD%95%E6%93%8D%E4%BD%9C">Linux 基础教程</a> 中提到了一些可用于目录操作、文件操作的命令，在理解上述知识的基础上我们便可以很快上手 Python <code>os</code> 库的大多数方法。在 <a target="_blank" rel="noopener" href="https://www.runoob.com/python/os-file-methods.html">Python OS 文件/目录方法 | 菜鸟教程 (runoob.com)</a> 中列出了多达 64 个方法，这里选取几个常用方法介绍。</p>
+<h3 id="os-chdir"><code>os.chdir()</code></h3>
+<p>作用：改变当前工作目录（change directory），作用类似于 Shell 命令 <code>cd</code>。</p>
+<p>语法格式：<code>os.chdir(path)</code></p>
+<p>参数：</p>
+<ul>
+<li><code>path</code>：要切换到的路径</li>
+</ul>
+<p>返回值：如果允许访问返回 <code>True</code>，否则返回 <code>False</code>。</p>
+<h3 id="os-getcwd"><code>os.getcwd()</code></h3>
+<p>作用：返回当前工作目录（get current working directory），作用类似于 Shell 命令 <code>pwd</code>。</p>
+<p>语法格式：<code>os.getcwd()</code></p>
+<p>返回值：返回当前进程的工作目录</p>
+<h3 id="os-listdir"><code>os.listdir()</code></h3>
+<p>作用：返回指定文件夹包含的文件或文件夹的名字的列表（list directory），作用类似于 Shell 命令 <code>ls</code>。</p>
+<p>语法格式：<code>os.listdir(path)</code></p>
+<p>参数：</p>
+<ul>
+<li><code>path</code>：需要列出的目录路径</li>
+</ul>
+<p>返回值：指定路径 <code>path</code> 下包含的文件或文件夹的名字的列表</p>
+<h3 id="os-mkdir"><code>os.mkdir()</code></h3>
+<p>作用：以指定权限模式创建文件夹（make directory），作用类似于 Shell 命令 <code>mkdir</code>。</p>
+<p>语法格式：<code>os.mkdir(path[,mode])</code></p>
+<p>参数：</p>
+<ul>
+<li><code>path</code>：要创建的目录路径</li>
+<li><code>mode</code>：八进制整数，为目录设置的权限数字模式。默认为 0777。</li>
+</ul>
+<h3 id="os-mkdirs"><code>os.mkdirs()</code></h3>
+<p>作用：以递归方式创建文件夹（make directories），作用类似于 Shell 命令 <code>mkdir -p</code>。</p>
+<p>语法格式：<code>os.mkdirs(path[,mode])</code></p>
+<p>参数：同 <code>os.mkdir()</code></p>
+<h3 id="os-remove"><code>os.remove()</code></h3>
+<p>作用：删除指定路径的文件（remove），作用类似于 Shell 命令 <code>rm</code>。</p>
+<p>语法格式：<code>os.remove(path)</code></p>
+<p>参数：</p>
+<ul>
+<li><code>path</code>：要删除的文件路径</li>
+</ul>
+<p>返回值：无返回值，但如果 <code>path</code> 是一个文件夹，会抛出 <code>OSError</code>。</p>
+<h3 id="os-rmdir"><code>os.rmdir()</code></h3>
+<p>作用：删除指定路径的空目录（remove directory），作用类似于 Shell 命令 <code>rmdir</code>。</p>
+<p>语法格式：<code>os.rmdir(path)</code></p>
+<p>参数：</p>
+<ul>
+<li><code>path</code>：要删除的空目录路径</li>
+</ul>
+<p>返回值：无返回值，但如果 <code>path</code> 是非空目录，会抛出 <code>OSError</code>。</p>
+<h3 id="os-removedirs"><code>os.removedirs()</code></h3>
+<p>作用：递归地删除目录，如果子文件夹成功删除继续尝试父文件夹，直到抛出 <code>Error</code>。作用类似 <code>rmdir -p</code></p>
+<p>语法格式：<code>os.removedirs(path)</code></p>
+<p>参数：</p>
+<ul>
+<li><code>path</code>：要删除的目录路径</li>
+</ul>
+<h3 id="os-open"><code>os.open()</code></h3>
+<p>作用：以指定打开选项打开一个文件。</p>
+<p>语法格式：<code>os.open(file,flags)</code></p>
+<p>参数：</p>
+<ul>
+<li><code>file</code>：要打开的文件路径</li>
+<li><code>flags</code>：打开模式参数，可以是以下选项，多个则使用 <code>|</code> 隔开：
+<ul>
+<li><code>os.O_RDONLY</code>: 以只读的方式打开</li>
+<li><code>os.O_WRONLY</code>: 以只写的方式打开</li>
+<li><code>os.O_RDWR</code> : 以读写的方式打开</li>
+<li><code>os.O_NONBLOCK</code>: 打开时不阻塞</li>
+<li><code>os.O_APPEND</code>: 以追加的方式打开</li>
+<li><code>os.O_CREAT</code>: 创建并打开一个新文件</li>
+<li><code>os.O_TRUNC</code>: 打开一个文件并截断它的长度为零（必须有写权限）</li>
+<li><code>os.O_EXCL</code>: 如果指定的文件存在，返回错误</li>
+<li><code>os.O_SHLOCK</code>: 自动获取共享锁</li>
+<li><code>os.O_EXLOCK</code>: 自动获取独立锁</li>
+<li><code>os.O_DIRECT</code>: 消除或减少缓存效果</li>
+<li><code>os.O_FSYNC</code> : 同步写入</li>
+<li><code>os.O_NOFOLLOW</code>: 不追踪软链接</li>
+</ul>
+</li>
+<li><code>mode</code>：权限，默认为 0777，可以用以下选项按位生成：
+<ul>
+<li><code>stat.S_IXOTH</code>: 其他用户有执行权0o001</li>
+<li><code>stat.S_IWOTH</code>: 其他用户有写权限0o002</li>
+<li><code>stat.S_IROTH</code>: 其他用户有读权限0o004</li>
+<li><code>stat.S_IRWXO</code>: 其他用户有全部权限(权限掩码)0o007</li>
+<li><code>stat.S_IXGRP</code>: 组用户有执行权限0o010</li>
+<li><code>stat.S_IWGRP</code>: 组用户有写权限0o020</li>
+<li><code>stat.S_IRGRP</code>: 组用户有读权限0o040</li>
+<li><code>stat.S_IRWXG</code>: 组用户有全部权限(权限掩码)0o070</li>
+<li><code>stat.S_IXUSR</code>: 拥有者具有执行权限0o100</li>
+<li><code>stat.S_IWUSR</code>: 拥有者具有写权限0o200</li>
+<li><code>stat.S_IRUSR</code>: 拥有者具有读权限0o400</li>
+<li><code>stat.S_IRWXU</code>: 拥有者有全部权限(权限掩码)0o700</li>
+<li><code>stat.S_ISVTX</code>: 目录里文件目录只有拥有者才可删除更改0o1000</li>
+<li><code>stat.S_ISGID</code>: 执行此文件其进程有效组为文件所在组0o2000</li>
+<li><code>stat.S_ISUID</code>: 执行此文件其进程有效用户为文件所有者0o4000</li>
+<li><code>stat.S_IREAD</code>: windows下设为只读</li>
+<li><code>stat.S_IWRITE</code>: windows下取消只读</li>
+</ul>
+</li>
+</ul>
+<p>返回值：返回新打开文件的描述符。</p>
+<h3 id="os-close"><code>os.close()</code></h3>
+<p>作用：关闭指定的文件描述符</p>
+<p>语法格式：<code>os.close(fd)</code></p>
+<p>参数：</p>
+<ul>
+<li><code>fd</code>：文件描述符</li>
+</ul>
+<h3 id="os-dup2"><code>os.dup2()</code></h3>
+<p>作用：将指定文件描述符复制到指定文件描述符</p>
+<p>语法格式：<code>os.dup2(fd1,fd2)</code></p>
+<p>参数：</p>
+<ul>
+<li><code>fd1</code>：要被复制的文件描述符</li>
+<li><code>fd2</code>：复制的文件描述符</li>
+</ul>
+<h3 id="os-rename"><code>os.rename()</code></h3>
+<p>作用：重命名文件或目录</p>
+<p>语法格式：<code>os.rename(src, dst)</code></p>
+<p>参数：</p>
+<ul>
+<li><code>src</code>：要修改的目录名</li>
+<li><code>dst</code>：修改后的目录名</li>
+</ul>
+<h3 id="os-path"><code>os.path</code></h3>
+<p><code>os.path</code> 模块主要用于获取文件的路径，具有很多方法，详见 <a target="_blank" rel="noopener" href="https://www.runoob.com/python/python-os-path.html">Python os.path() 模块 | 菜鸟教程 (runoob.com)</a>。</p>
+<h3 id="os-walk"><code>os.walk()</code></h3>
+<p>作用：<strong>迭代</strong>遍历目录，返回指定目录及其子目录下的文件名</p>
+<p>语法格式：<code>os.walk(top[, topdown=True[, onerror=None[, followlinks=False]]])</code></p>
+<p>参数：</p>
+<ul>
+<li><code>top</code>：要遍历的目录的地址</li>
+<li><code>topdown</code>：默认为 <code>True</code>，优先遍历 <code>top</code> 目录，否则优先遍历子目录</li>
+<li><code>onerror</code>：默认为 <code>None</code>，可填入 callable 对象以供 <code>walk()</code> 异常时调用</li>
+<li><code>followlinks</code>：默认为 <code>False</code>；若为 <code>True</code>，则会遍历目录下的快捷方式（软连接）所指向的目录。</li>
+</ul>
+<p>返回值：返回一个生成器，是一个三元组 <code>(root, dirs, files)</code></p>
+<ul>
+<li><code>root</code>：当前正在遍历的这个文件夹本身的地址</li>
+<li><code>dirs</code>：一个 <code>list</code>，内容是该文件夹中所有目录的名字（不包括子目录）</li>
+<li><code>files</code>：一个 <code>list</code>，内容是该文件夹中所有的文件（不包括子目录）</li>
+</ul>
+<p><code>walk()</code> 与 <code>listdir()</code> 主要的不同点：<strong>迭代</strong>。即前者会访问子目录</p>
+<h2 id="SYS-库">SYS 库</h2>
+<p><code>sys</code> 库同样也是 Python 的内置库，下面介绍几个该库常见的方法或成员变量。</p>
+<h3 id="sys-argv"><code>sys.argv</code></h3>
+<p>获取脚本执行参数列表。一般来说 Python 程序执行参数的第一个参数（<code>sys.argv[0]</code>）是当前文件名。</p>
+<h3 id="sys-path"><code>sys.path</code></h3>
+<p>获取 Python 目录列表。列表中的这些目录供 Python 在其中查找安装的其他模块。在 Python 启动时，<code>sys.path</code> 根据内建规则和 <code>PYTHONPATH</code> 变量进行初始化。这个列表的第一个元素表示当前目录，在交互环境下通常是空字符串。</p>
+<h3 id="sys-platform"><code>sys.platform</code></h3>
+<p>获取当前运行的平台。如 <code>win32</code>、<code>linux</code>。</p>
+<h3 id="sys-stdin"><code>sys.stdin</code></h3>
+<p>Python 的标准输入通道，默认为键盘输入字符。可以将该属性的值改为文件，这样，调用标准输入的方法（如 <code>input()</code>）就会改为从文件读入。</p>
+<p>如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;input.txt&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">	sys.stdin = f</span><br><span class="line">	x = <span class="built_in">input</span>()</span><br><span class="line">    <span class="comment"># 随后屏幕不会提示输入内容，而是直接从文件读取第一行不包含换行符的内容</span></span><br></pre></td></tr></table></figure>
+<h3 id="sys-stdout"><code>sys.stdout</code></h3>
+<p>Python 的标准输出通道，默认为屏幕。也可以将该属性的值进行更改，调整输出流。</p>
+<h3 id="sys-err"><code>sys.err</code></h3>
+<p>Python 的标准错误输出流，默认为屏幕。</p>
+<h2 id="实战">实战</h2>
+<h3 id="使用-Python-打印命令行参数">使用 Python 打印命令行参数</h3>
+<ol>
+<li>在 <code>home/datawhale</code> 目录下，昵称文件夹中新建 <code>test5.py</code></li>
+<li>脚本使用 <code>sys</code> 模块实现打印命令行参数功能</li>
+</ol>
+<p>实操：</p>
+<ol>
+<li>
+<p>创建文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ touch test5.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>编辑脚本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ vim test5.py</span><br></pre></td></tr></table></figure>
+<p>脚本内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">for</span> arg <span class="keyword">in</span> sys.argv:</span><br><span class="line">    <span class="built_in">print</span>(arg)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>脚本运行与结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ python test5.py argument1 argument2</span><br><span class="line">test5.py</span><br><span class="line">argument1</span><br><span class="line">argument2</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="使用-Python-扫描文件目录">使用 Python 扫描文件目录</h3>
+<ol>
+<li>在 <code>home/datawhale</code> 目录下，昵称文件夹中新建 <code>test5.py</code></li>
+<li>脚本使用 <code>os</code> 模块实现打印 <code>/usr/bin</code> 路径下所有以 m 开头的文件</li>
+</ol>
+<p>实操：</p>
+<ol>
+<li>
+<p>创建文件（略）</p>
+</li>
+<li>
+<p>编辑脚本</p>
+<p>脚本内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">for</span> filename <span class="keyword">in</span> os.listdir(<span class="string">&#x27;/usr/bin&#x27;</span>):</span><br><span class="line">    <span class="comment"># listdir 展示列表包含目录和文件，所以需要条件过滤</span></span><br><span class="line">    <span class="keyword">if</span> filename[<span class="number">0</span>] == <span class="string">&#x27;m&#x27;</span> <span class="keyword">and</span> os.path.isfile(<span class="string">&#x27;/usr/bin/&#x27;</span>+filename):</span><br><span class="line">        <span class="built_in">print</span>(filename)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>脚本运行与结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ python test5.py</span><br><span class="line">makedb</span><br><span class="line">make</span><br><span class="line">md5sum</span><br><span class="line">mkdir</span><br><span class="line">mkfifo</span><br><span class="line">mknod</span><br><span class="line">mktemp</span><br><span class="line">mv</span><br><span class="line">mesg</span><br><span class="line">mount</span><br><span class="line">msgattrib</span><br><span class="line">msgcat</span><br><span class="line">msgcmp</span><br><span class="line">msgcomm</span><br><span class="line">msgconv</span><br><span class="line">msgen</span><br><span class="line">msgexec</span><br><span class="line">msgfilter</span><br><span class="line">msgfmt</span><br><span class="line">msggrep</span><br><span class="line">msghack</span><br><span class="line">msginit</span><br><span class="line">msgmerge</span><br><span class="line">msgunfmt</span><br><span class="line">msguniq</span><br><span class="line">miniterm.py</span><br><span class="line">modutil</span><br><span class="line">mcookie</span><br><span class="line">more</span><br><span class="line">man</span><br><span class="line">mountpoint</span><br><span class="line">mkinitrd</span><br><span class="line">machinectl</span><br><span class="line">mapscrn</span><br><span class="line">mailq.postfix</span><br><span class="line">mailq</span><br><span class="line">manpath</span><br><span class="line">mandb</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<hr>
+<h1>Python 模块化</h1>
+<p>Python 模块是一个 Python 脚本文件，其中可包含自定义的对象、方法、变量等，供其他 Python 脚本使用。</p>
+<h2 id="引入模块">引入模块</h2>
+<h3 id="import-语句"><code>import</code> 语句</h3>
+<p>Python 脚本文件的后缀是 <code>.py</code>，通过 <code>import</code> 语句，可以实现对 Python 模块的引入。</p>
+<p>如之前提到的 <code>sys</code> 库，当我们 <code>import sys</code> 时，实际上就引入了 Python 标准库中的 <code>sys.py</code> 模块。引入之后就可以使用 <code>sys.*</code> 调用 <code>sys.py</code> 中的方法或变量。</p>
+<p>也可以使用 <code>as</code> 子句将引入的模块重命名。<code>import sys as syst</code></p>
+<h3 id="name-属性"><code>__name__</code> 属性</h3>
+<p>**当一个模块被另一程序第一次引入时，其主程序将运行。**如果我们想在模块被引入时模块中的某一程序块不被执行，可以使用 <code>__name__</code> 属性来使该程序块仅在该模块自身运行时执行。如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Filename: using_name.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;程序自身在运行&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;我来自另一模块&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">python using_name.py</span></span><br><span class="line">程序自身在运行</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">python</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; import using_name</span></span><br><span class="line">我来自另一模块</span><br></pre></td></tr></table></figure>
+<h3 id="from-import-语句"><code>from ... import ...</code> 语句</h3>
+<p>使用该语句可以从模块中导入指定部分到当前命名空间，如我们仅仅想引入 <code>sys</code> 中的 <code>sys.argv</code>，可以使用 <code>from sys import argv</code>，后面可以直接使用 <code>argv</code> 变量（而不是使用 <code>sys.argv</code>）。</p>
+<p>这里也支持引入某模块的所有子对象，即 <code>from [module_name] import *</code>，但是一般不这么做，因为在很多库中子对象较多，会占用较大命名空间，随后自其他来源创建或引入的命名可能会与之矛盾。</p>
+<h2 id="包">包</h2>
+<p>包是一种管理 Python 模块命名空间的形式，它是一个分层次的文件目录结构，定义了一个由模块及子包，和子包下的子包等组成的 Python 应用环境。</p>
+<p>形如 <code>A.B</code> 的模块中，<code>A</code> 一般为包名，<code>B</code> 为包 <code>A</code> 的子模块。在文件系统中体现为名为 <code>A</code> 的文件夹下的 <code>B.py</code>。</p>
+<p>为了避免非包文件夹被识别为包，只有目录下包含 <code>__init__.py</code> 的文件夹才会被识别为一个包。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/Package_a/</span><br><span class="line">    |----    __init__.py</span><br><span class="line">    |----           B.py</span><br><span class="line">    |----    not_package_folder # 没有 init，不是包</span><br><span class="line">                  | -------    C.py</span><br></pre></td></tr></table></figure>
+<h2 id="实战：在目录下创建包目录，并导入">实战：在目录下创建包目录，并导入</h2>
+<ol>
+<li>
+<p>在 <code>home/datawhale</code> 目录下，昵称文件夹中新建 <code>affairs</code> 文件夹和 <code>test6.py</code> 文件，<code>affairs</code> 文件夹中新建 <code>affairs.py</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/home/datawhale/</span><br><span class="line">     MarioZZJ/</span><br><span class="line">     	test6.py</span><br><span class="line">     	affairs/</span><br><span class="line">     		affairs.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>affairs.py</code> 可完成 <a target="_blank" rel="noopener" href="https://mirror.coggle.club/dataset/affairs.txt">https://mirror.coggle.club/dataset/affairs.txt</a> 的读取（<code>pandas.read_csv()</code>）</p>
+</li>
+<li>
+<p><code>test6.py</code> 可以导入 <code>affairs.py</code> 代码，并进行命令行解析，输出 <code>affairs.txt</code> 的具体第几行内容（行数由命令行参数指定）</p>
+</li>
+</ol>
+<p>实操：</p>
+<ol>
+<li>
+<p>新建文件和文件夹</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ touch test6.py</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ mkdir affairs</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ cd affairs</span><br><span class="line">[I have no name!@i-ym8u2kyp affairs]$ touch affairs.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>编辑 <code>affairs.py</code> 脚本，内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">parse_line</span>(<span class="params">line_num</span>):</span><br><span class="line">        txt = pd.read_csv(<span class="string">&#x27;https://mirror.coggle.club/dataset/affairs.txt&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> line_num &gt; <span class="built_in">len</span>(txt):</span><br><span class="line">                <span class="keyword">raise</span> ValueError(<span class="string">&quot;Input line number exceeded lenth of file.&quot;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">return</span> txt.iloc[line_num]</span><br></pre></td></tr></table></figure>
+<p>因为 <code>affairs.py</code> 模块在 <code>affairs</code> 文件夹中，而 <code>test6.py</code> 与 <code>affairs</code> 文件夹在同一层级，所以需要通过引入 <code>affairs</code> 包的子模块 <code>affairs</code> 实现模块引入，而目前 <code>affairs</code> 文件夹下没有 <code>__init__.py</code> ，该目录不能被识别为包，所以需要创建：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp affairs]$ touch __init__.py</span><br><span class="line">[I have no name!@i-ym8u2kyp affairs]$ ls</span><br><span class="line">affairs.py  __init__.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>编辑 <code>test6.py</code> 脚本，内容：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ cat test6.py</span><br><span class="line"><span class="keyword">from</span> affairs <span class="keyword">import</span> affairs</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>: <span class="comment"># 输入参数为字符串，需转换为整数。因为行数比索引值多 1，须加 1</span></span><br><span class="line">	<span class="built_in">print</span>(affairs.parse_line(<span class="built_in">int</span>(sys.argv[<span class="number">1</span>]))+<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>运行 <code>test6.py</code> 脚本实现文件第 10 行的输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ python3 test6.py <span class="number">10</span></span><br><span class="line">rate_marriage     <span class="number">4.0</span></span><br><span class="line">age              <span class="number">23.0</span></span><br><span class="line">yrs_married       <span class="number">3.5</span></span><br><span class="line">children          <span class="number">1.0</span></span><br><span class="line">religious         <span class="number">3.0</span></span><br><span class="line">affairs           <span class="number">2.0</span></span><br><span class="line">Name: <span class="number">10</span>, dtype: float64</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<hr>
+<h1>Linux 后台运行、关闭与查看后台任务</h1>
+<h2 id=""><code>&amp;</code></h2>
+<p>在命令的最后添加 <code>&amp;</code>，即可将该命令放到后台执行，此时交互终端可以进行其他操作，而不是默认打印当前命令的输出并等待到进程结束。如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 test.py &amp;</span><br></pre></td></tr></table></figure>
+<p>含 <code>&amp;</code> 的后台运行任务在后台执行，要求<strong>当前终端不能关闭</strong>。如果终端被关闭（除使用 <code>Ctrl+D</code> 关闭的方法外），执行的这条命令也会随之终止。</p>
+<h2 id="nohup"><code>nohup</code></h2>
+<p>在命令之前添加 <code>nohup</code>，可将该命令放到后台执行。与 <code>&amp;</code> 有所不同的是，使用 <code>nohup</code> 执行的后台任务在账户退出/终端关闭时仍然继续执行。如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nohup python3 test.py</span><br><span class="line"><span class="comment"># 此时终端会提示：</span></span><br><span class="line">nohup: ignoring <span class="built_in">input</span> <span class="keyword">and</span> appending output to ‘nohup.out’</span><br></pre></td></tr></table></figure>
+<p>如上，使用 <code>nohup</code> 后会提示忽略输入，输出日志将打印到工作目录下的 <code>nohup.out</code> 文件。此时如果关闭终端，命令仍然会在后台执行。如果不关闭终端，此时的终端是无法交互的。所以如果既要让命令在退出后仍可运行，又想继续和终端交互，可以将 <code>nohup</code> 和 <code>&amp;</code> 一起使用，即：<code>nohup [command] &amp;</code>。</p>
+<p>如果想指定输出文件的位置（而不是 <code>nohup.out</code>），可以利用 Linux 的<strong>输出重定向</strong>符号 <code>&gt;</code>：<code>nohup [command] &gt; output.log &amp;</code></p>
+<h2 id="Ctrl-Z"><code>Ctrl+Z</code></h2>
+<p>在命令执行过程中，按下 <code>Ctrl+Z</code> 可以挂起进程，此时该进程处于<strong>暂停</strong>状态，即不继续执行进程且稍后可以恢复。</p>
+<h2 id="jobs"><code>jobs</code></h2>
+<p>使用 <code>jobs</code> 命令可以显示当前控制台创建的任务。 jobs 的状态可以是 <code>running</code>， <code>stopped</code>， <code>Terminated</code>。如使用 <code>jobs -l</code> 可以查看所有后台运行任务的 <code>pid</code>，这样可以根据 <code>pid</code> 操作对应进程。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ jobs -l</span><br><span class="line">[1]+ 18860 Running                 python3 test_temp.py &amp;</span><br></pre></td></tr></table></figure>
+<p>（<code>[ ]</code> 内为进程 job 号，如这里为 1；后面为 <code>pid</code>，如这里为 18860）</p>
+<h2 id="bg"><code>bg</code></h2>
+<p>使用 <code>bg</code> 命令可以将后台<strong>暂停</strong>的命令变为在后台<strong>继续执行</strong>。（back go）</p>
+<p>语法格式： <code>bg &lt;jobid&gt;</code></p>
+<p>该命令可以和 <code>Ctrl+Z</code> 、<code>jobs</code> 较好配合使用。一般常用的做法如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ nohup python3 test_temp.py # 单独 nohup 执行命令</span><br><span class="line">nohup: ignoring input and appending output to ‘nohup.out’</span><br><span class="line">^Z # 使用 Ctrl + Z 挂起进程</span><br><span class="line">[1]+  Stopped                 nohup python3 test_temp.py # 进程的状态为 Stopped</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ jobs -l # jobs 查看所有后台进程，1 状态 stopped</span><br><span class="line">[1]+ 20145 Stopped                 nohup python3 test_temp.py</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ bg 1 # bg 让 1 在后台继续执行</span><br><span class="line">[1]+ nohup python3 test_temp.py &amp;</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ jobs -l # jobs 查看所有后台进程，1 状态 running</span><br><span class="line">[1]+ 20145 Running                 nohup python3 test_temp.py &amp;</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$</span><br></pre></td></tr></table></figure>
+<h2 id="fg"><code>fg</code></h2>
+<p>使用 <code>fg</code> 命令可以将后台命令变为在<strong>前台</strong>执行。（fore go）</p>
+<p>语法格式：<code>fg [jobid]</code></p>
+<h2 id="kill"><code>kill</code></h2>
+<p>使用 <code>kill</code> 命令可以结束（kill）进程。</p>
+<p>语法格式：</p>
+<ol>
+<li><code>kill %&lt;jobid&gt;</code></li>
+<li><code>kill &lt;pid&gt;</code></li>
+</ol>
+<h2 id="tmux">tmux</h2>
+<p><code>tmux</code> 是一个终端复用软件，使用 <code>tmux</code> 可以实现在一个终端登录远程主机，并在该终端窗口中运行多个终端对话，也可按需使终端会话运行于后台或是按需接入、断开会话。下面列出 tmux 的主要操作，更多详细操作可参见 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/wangqiguo/p/8905081.html">Tmux终端复用详解 (cnblogs.com)</a> 。</p>
+<h3 id="安装">安装</h3>
+<p>以我所使用的 CentOS 系统为例，需要先安装 <code>tmux</code> 才可使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y tmux</span><br></pre></td></tr></table></figure>
+<h3 id="创建会话">创建会话</h3>
+<p>使用 <code>tmux</code> 即可打开软件（单独使用 <code>tmux</code> 命令会创建一个会话，以数字命名），可以加上命令 <code>new -s</code> 对创建的会话进行命名：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tmux new -s name</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202112211127110.png" alt="tmux 界面"></p>
+<h3 id="列出创建的所有会话">列出创建的所有会话</h3>
+<p>添加命令 <code>ls</code> 即可列出创建的所有会话</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp ~]$ tmux ls</span><br><span class="line">0: 1 windows (created Tue Dec 21 11:13:19 2021) [120x34]</span><br><span class="line">name: 1 windows (created Tue Dec 21 11:25:02 2021) [88x15] (attached)</span><br><span class="line">[I have no name!@i-ym8u2kyp ~]$</span><br></pre></td></tr></table></figure>
+<h3 id="登录一个会话">登录一个会话</h3>
+<p>添加命令 <code>attach</code> （或简写为 <code>a</code>）并附加参数 <code>-t &lt;会话名&gt;</code> 即可使用 tmux 登录一个已知会话。</p>
+<h3 id="退出会话">退出会话</h3>
+<ul>
+<li>依次按 <code>Ctrl+b</code>、<code>d</code> 即可退出会话，但不关闭该会话。</li>
+<li>按 <code>Ctrl+d</code> 退出并直接关闭该会话</li>
+<li><code>tmux kill-session -t &lt;会话名&gt;</code> 可以销毁指定会话。</li>
+</ul>
+<h3 id="快捷键">快捷键</h3>
+<p>进入 tmux 面板后，按 <code>Ctrl+b</code> 再按其他按键，即可进行一系列快捷操作：</p>
+<table>
+<thead>
+<tr>
+<th>Ctrl+b</th>
+<th>按键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>?</code></td>
+<td>显示快捷键帮助</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>[space]</code></td>
+<td>采用下一个内置布局，这个很有意思，在多屏时，用这个就会将多有屏幕竖着展示</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>!</code></td>
+<td>把当前窗口变为新窗口</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>&quot;</code></td>
+<td>模向分隔窗口</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>%</code></td>
+<td>纵向分隔窗口</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>q</code></td>
+<td>显示分隔窗口的编号</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>o</code></td>
+<td>跳到下一个分隔窗口。多屏之间的切换</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>↑</code>/<code>↓</code></td>
+<td>上一个及下一个分隔窗口</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>C</code>+<code>↑</code>/<code>↓</code>/<code>←</code>/<code>→</code></td>
+<td>调整分隔窗口大小</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>&amp;</code></td>
+<td>确认后退出当前 tmux</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>[</code></td>
+<td>复制模式，即将当前屏幕移到上一个的位置上，其他所有窗口都向前移动一个。</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>c</code></td>
+<td>创建新窗口</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>n</code></td>
+<td>选择下一个窗口</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>l</code></td>
+<td>最后使用的窗口</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>p</code></td>
+<td>选择前一个窗口</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>w</code></td>
+<td>以菜单方式显示及选择窗口</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>s</code></td>
+<td>以菜单方式显示和选择会话。这个常用到，可以选择进入哪个 tmux</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>t</code></td>
+<td>显示时钟。然后按 <code>enter</code> 键后就会恢复到 shell 终端状态</td>
+</tr>
+<tr>
+<td><code>ctrl</code>+<code>b</code></td>
+<td><code>d</code></td>
+<td>脱离当前会话；这样可以暂时返回 Shell 界面，输入 <code>tmux attach</code> 能够重新进入之前的会话</td>
+</tr>
+</tbody>
+</table>
+<h2 id="实战：在-Linux-系统后台运行应用程序，并打印日志">实战：在 Linux 系统后台运行应用程序，并打印日志</h2>
+<ol>
+<li>在 <code>home/datawhale</code> 目录下，昵称文件夹中新建 <code>sleep.py</code> 文件，该脚本能一直运行并每隔 10 秒输出当前时间</li>
+<li>使用适当的命令能使该程序后台运行，并将输出结果写入 txt 文件。</li>
+</ol>
+<p>实操：</p>
+<ol>
+<li>
+<p>创建脚本，内容如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="literal">True</span>):</span><br><span class="line">    <span class="built_in">print</span>(time.strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>,time.localtime()))</span><br><span class="line">    time.sleep(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>利用 <code>nohup</code>、<code>&amp;</code> 命令和输出重定向实现后台运行，并查看日志</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ nohup python3 sleep.py &gt; output.log &amp; # 后台运行</span><br><span class="line">[1] 15563</span><br><span class="line">nohup: ignoring input and redirecting stderr to stdout</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ jobs -l # 查看 job，刚才的任务正在运行</span><br><span class="line">[1]+ 15563 Running                 nohup python3 sleep.py &gt; output.log &amp;</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ cat output.log # 查看输出内容，结果为空！！</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$</span><br></pre></td></tr></table></figure>
+<p>出现问题：使用 <code>cat</code> 查看输出的日志内容，为空！</p>
+<p>查询资料后发现原因：Python 的两个输出流 <code>stdout</code> 和 <code>stderr</code> 都是默认指向屏幕，我们的命令将其输出重定向到文件，但是二者机制不同。<code>stderr</code> 无缓存，程序每往 <code>stderr</code> 输出时都会立刻输出到指定的目标，而 <code>stdout</code> 有缓存，只有遇到需要清空缓存的情况才会向目标输出（如输出为屏幕时的换行，程序结束时的缓存清空等），为使运行过程中输出内容可以实时输出至日志，可以为 <code>python</code> 命令附加 <code>-u</code> 参数以取消缓存。</p>
+<p>重新操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ nohup python3 -u sleep.py &gt; outlog.txt &amp;</span><br><span class="line">[1] 18442</span><br><span class="line">nohup: ignoring input and redirecting stderr to stdout</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ jobs -l</span><br><span class="line">[1]+ 18442 Running                 nohup python3 -u sleep.py &gt; outlog.txt &amp;</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$ cat outlog.txt</span><br><span class="line">2021-12-21 15:29:44</span><br><span class="line">2021-12-21 15:29:54</span><br><span class="line">[I have no name!@i-ym8u2kyp MarioZZJ]$</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="https://download.mariozzj.cn/img/static/icon256.jpg"></a><div class="post-copyright__author_name">MarioBlog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div><div class="post-reward"><div class="reward-button" title="赞赏作者" onclick="AddRewardMask()"><i class="solitude fa-solid fa-heart"></i>赞赏作者</div><div class="reward-main"><ul class="reward-all"><span class="reward-title">感谢您的赞赏</span><ul class="reward-group"><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信" style="border-color: #07c160"></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝" style="border-color: #108ee9"></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/"><div class="reward-text">赞赏名单</div><div class="reward-dec">您的支持是对我实现写作价值的最大鼓励。</div></a></ul></div></div><script>function RemoveRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "none";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "none";
+    }
+}
+
+function AddRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "flex";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "flex";
+    }
+}</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">MarioBlog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Linux<span class="tagsPageCount">3</span></span></a><a class="post-meta__tags" href="/tags/Shell/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Shell<span class="tagsPageCount">3</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/2c01ed8b/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Linux 基础操作学习(3)：文件操作进阶</div></div></a></div><div class="next-post pull-right"><a href="/posts/672ba085/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Linux 基础操作学习(1)：连接与文件操作</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span><span class="count"> ()</span></div></div><div class="comment-wrap"><div id="giscus-wrap"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="https://download.mariozzj.cn/img/static/icon256.jpg"></div><div class="author-info__description_group"><div class="author-info__description"></div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">MarioZZJ</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Python OS SYS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#OS-%E5%BA%93"><span class="toc-text">OS 库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#os-chdir"><span class="toc-text">os.chdir()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-getcwd"><span class="toc-text">os.getcwd()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-listdir"><span class="toc-text">os.listdir()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-mkdir"><span class="toc-text">os.mkdir()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-mkdirs"><span class="toc-text">os.mkdirs()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-remove"><span class="toc-text">os.remove()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-rmdir"><span class="toc-text">os.rmdir()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-removedirs"><span class="toc-text">os.removedirs()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-open"><span class="toc-text">os.open()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-close"><span class="toc-text">os.close()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-dup2"><span class="toc-text">os.dup2()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-rename"><span class="toc-text">os.rename()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-path"><span class="toc-text">os.path</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#os-walk"><span class="toc-text">os.walk()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SYS-%E5%BA%93"><span class="toc-text">SYS 库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sys-argv"><span class="toc-text">sys.argv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sys-path"><span class="toc-text">sys.path</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sys-platform"><span class="toc-text">sys.platform</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sys-stdin"><span class="toc-text">sys.stdin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sys-stdout"><span class="toc-text">sys.stdout</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sys-err"><span class="toc-text">sys.err</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98"><span class="toc-text">实战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Python-%E6%89%93%E5%8D%B0%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0"><span class="toc-text">使用 Python 打印命令行参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Python-%E6%89%AB%E6%8F%8F%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95"><span class="toc-text">使用 Python 扫描文件目录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Python 模块化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%85%A5%E6%A8%A1%E5%9D%97"><span class="toc-text">引入模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#import-%E8%AF%AD%E5%8F%A5"><span class="toc-text">import 语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#name-%E5%B1%9E%E6%80%A7"><span class="toc-text">__name__ 属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#from-import-%E8%AF%AD%E5%8F%A5"><span class="toc-text">from ... import ... 语句</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%85"><span class="toc-text">包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%EF%BC%9A%E5%9C%A8%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%88%9B%E5%BB%BA%E5%8C%85%E7%9B%AE%E5%BD%95%EF%BC%8C%E5%B9%B6%E5%AF%BC%E5%85%A5"><span class="toc-text">实战：在目录下创建包目录，并导入</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Linux 后台运行、关闭与查看后台任务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-text">&amp;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#nohup"><span class="toc-text">nohup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ctrl-Z"><span class="toc-text">Ctrl+Z</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jobs"><span class="toc-text">jobs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bg"><span class="toc-text">bg</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#fg"><span class="toc-text">fg</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kill"><span class="toc-text">kill</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tmux"><span class="toc-text">tmux</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%BC%9A%E8%AF%9D"><span class="toc-text">创建会话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E5%88%9B%E5%BB%BA%E7%9A%84%E6%89%80%E6%9C%89%E4%BC%9A%E8%AF%9D"><span class="toc-text">列出创建的所有会话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E4%B8%80%E4%B8%AA%E4%BC%9A%E8%AF%9D"><span class="toc-text">登录一个会话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%80%E5%87%BA%E4%BC%9A%E8%AF%9D"><span class="toc-text">退出会话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-text">快捷键</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%EF%BC%9A%E5%9C%A8-Linux-%E7%B3%BB%E7%BB%9F%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%EF%BC%8C%E5%B9%B6%E6%89%93%E5%8D%B0%E6%97%A5%E5%BF%97"><span class="toc-text">实战：在 Linux 系统后台运行应用程序，并打印日志</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务"><img alt="调用大模型 API 解决简单信息处理任务" src="https://download.mariozzj.cn/img/picgo/202409041617877.png"></a><div class="content"><span class="title" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务">调用大模型 API 解决简单信息处理任务</span><span class="article-recent_post_categories" href="/posts/573fc6c3/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img alt="NJUHPC 运行 Python 程序简明流程" src="https://download.mariozzj.cn/img/picgo/202311021615799.png"></a><div class="content"><span class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</span><span class="article-recent_post_categories" href="/posts/6ab96d9d/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录" src="https://download.mariozzj.cn/img/picgo/202210151013511.png"></a><div class="content"><span class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</span><span class="article-recent_post_categories" href="/posts/fb1f3a84/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img alt="让 Markdown 成为写作的起点" src="https://download.mariozzj.cn/img/picgo/202204191318445.png"></a><div class="content"><span class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</span><span class="article-recent_post_categories" href="/posts/fd830caf/">工具干货</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor"><img alt="两种图算法：PageRank &amp; EigenFactor" src="https://download.mariozzj.cn/img/picgo/202204191304070.png"></a><div class="content"><span class="title" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor">两种图算法：PageRank &amp; EigenFactor</span><span class="article-recent_post_categories" href="/posts/1d43c0e5/">数科知识</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:i@mariozzj.cn" title="Mail"><i class="solitude  fab fa-envelope"></i></a><div class="nolazyload footer_mini_logo" id="footer_mini_logo" title="返回顶部" onclick="sco.toTop()"><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="返回顶部"></div><a class="deal_link" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.linkedin.com/in/mariozzj/" title="LinkedIn"><i class="solitude  fab fa-linkedin"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2020 - 2024 By&nbsp;<a class="footer-bar-link" href="/">MarioZZJ</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" alt="赣ICP备20002056号-2">赣ICP备20002056号-2</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261" alt="鄂公网安备42010602004261号">鄂公网安备42010602004261号</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Solitude">Solitude</a><a class="footer-bar-link cc" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><i class="solitude fa-solid fa-copyright"></i><i class="solitude fa-brands fa-creative-commons-by"></i><i class="solitude fa-brands fa-creative-commons-nc"></i><i class="solitude fa-brands fa-creative-commons-nd"></i></a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.12"></script><script src="/js/main.js?v=2.0.12"></script><script src="/js/third_party/waterfall.min.js?v=2.0.12"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"><script>(()=>{
+    const getGiscusTheme = theme => {
+        return theme === 'dark' ? 'dark' : 'light'
+    }
+
+    const loadGiscus = () => {
+        const config = Object.assign({
+            src: 'https://giscus.app/client.js',
+            'data-repo': 'MarioZZJ/giscus',
+            'data-repo-id': 'R_kgDOMwtu9A',
+            'data-category-id': 'DIC_kwDOMwtu9M4CiaaK',
+            'data-mapping': 'pathname',
+            'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+            'data-reactions-enabled': '1',
+            crossorigin: 'anonymous',
+            async: true
+        },null)
+
+        const ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').appendChild(ele)
+    }
+
+    const changeGiscusTheme = theme => {
+        const sendMessage = message => {
+            const iframe = document.querySelector('iframe.giscus-frame')
+            if (!iframe) return
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app')
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: getGiscusTheme(theme)
+            }
+        });
+    }
+
+    utils.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+    if ('Giscus' === 'Giscus' || !true) {
+        if (true) {
+            const giscusWrap = document.getElementById('giscus-wrap')
+            if (giscusWrap) {
+                utils.loadComment(giscusWrap, loadGiscus)
+            }
+        } else {
+            loadGiscus()
+        }
+    } else {
+        window.loadOtherComment = loadGiscus
+    }
+})()</script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fa-solid fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=2.0.12"></script><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["posts/573fc6c3/","posts/6ab96d9d/","posts/fb1f3a84/","posts/fd830caf/","posts/1d43c0e5/","posts/9364d192/","posts/7f568f00/","posts/e0d78514/","posts/5c25bf34/","posts/75521d8e/","posts/8d6b8da8/","posts/2c01ed8b/","posts/4449c636/","posts/672ba085/","posts/28d53052/","posts/2b373355/","posts/2b373354/","posts/52d95125/","posts/aba3bc4e/","posts/16cc73c/","posts/569080df/","posts/ffffffff/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

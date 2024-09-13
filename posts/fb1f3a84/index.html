@@ -1,0 +1,340 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>下载 OpenAlex 数据集并配置 PySpark 的一次记录 | MarioBlog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://download.mariozzj.cn/img/static/icon256.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.12"><!-- inject head--><meta name="google-site-verification" content="google-site-verification=ATi1JuhDx8tMQDtqhsnoa90uIXlU2vjn6wRkMJMmNOw"><link rel="canonical" href="https://blog.mariozzj.cn/posts/fb1f3a84/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"><!-- Open Graph--><meta name="description" content="关于 OpenAlex 数据集 2015 年微软发布了微软学术知识图谱（MAG）数据集[^1]，因其海量、全面的特点被广泛应用于各类研究，但好景不长，2021 年该数据集停止维护。2022 年，OpenAlex 数据集应运而生[^2]，该数据集继承了大量来自 MAG 的数据，同时整合了来自 Open"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="MarioBlog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://download.mariozzj.cn/img/static/icon256.jpg"><link rel="apple-touch-icon" href="https://download.mariozzj.cn/img/static/icon256.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.12' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2020-05-17 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。"}},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: ["You'll make it.","You're gonna make it.","Good luck, stranger."],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false,
+    color: false,
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><div id="loading-box" onclick="preloader.endLoading();" style="zoom:1"><div class="loading-bg"><img class="loading-img nolazyload" src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="loading image"></div></div><script>const preloader = {
+    isLoaded: false,
+    endLoading: () => {
+        if (!preloader.isLoaded) {
+            document.getElementById('loading-box').classList.add('loaded');
+            preloader.isLoaded = true;
+            preloader.togglePaceDone();
+        }
+    },
+    initLoading: () => {
+        document.getElementById('loading-box').classList.remove('loaded');
+        preloader.isLoaded = false;
+        preloader.togglePaceDone();
+    },
+    togglePaceDone: () => {
+        document.getElementById('body').className = preloader.isLoaded ? 'pace-done' : '';
+    }
+}
+
+window.addEventListener('load', () => {
+    preloader.endLoading();
+});
+
+window.addEventListener('pjax:send', () => {
+    preloader.initLoading();
+});
+
+document.addEventListener('pjax:complete', () => {
+    preloader.endLoading();
+});
+
+setTimeout(() => {
+    preloader.endLoading();
+}, 5000);</script><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/Hexo-js/">Hexo.js<sup>1</sup></a><a href="/tags/Github/">Github<sup>1</sup></a><a href="/tags/Jupyter/">Jupyter<sup>1</sup></a><a href="/tags/Python/">Python<sup>4</sup></a><a href="/tags/NoSQL/">NoSQL<sup>1</sup></a><a href="/tags/Neo4J/">Neo4J<sup>1</sup></a><a href="/tags/SNA/">SNA<sup>1</sup></a><a href="/tags/igraph/">igraph<sup>1</sup></a><a href="/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/">桌面游戏<sup>2</sup></a><a href="/tags/ML/">ML<sup>1</sup></a><a href="/tags/Regression/">Regression<sup>1</sup></a><a href="/tags/Linux/">Linux<sup>3</sup></a><a href="/tags/Shell/">Shell<sup>3</sup></a><a href="/tags/%E6%B8%B8%E6%88%8F%E3%80%8A%E9%A5%A5%E8%8D%92%E3%80%8B/">游戏《饥荒》<sup>1</sup></a><a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/">云服务器应用<sup>6</sup></a><a href="/tags/%E8%81%94%E6%9C%BA%E6%B8%B8%E6%88%8F/">联机游戏<sup>1</sup></a><a href="/tags/SSH/">SSH<sup>1</sup></a><a href="/tags/UFW/">UFW<sup>1</sup></a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发<sup>1</sup></a><a href="/tags/Nginx/">Nginx<sup>1</sup></a><a href="/tags/frp/">frp<sup>1</sup></a><a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">内网穿透<sup>1</sup></a><a href="/tags/PageRank/">PageRank<sup>1</sup></a><a href="/tags/EigenFactor/">EigenFactor<sup>1</sup></a><a href="/tags/Algorithm/">Algorithm<sup>1</sup></a><a href="/tags/Markdown/">Markdown<sup>1</sup></a><a href="/tags/OpenAlex/">OpenAlex<sup>1</sup></a><a href="/tags/Spark/">Spark<sup>1</sup></a><a href="/tags/bsub/">bsub<sup>1</sup></a><a href="/tags/HPC/">HPC<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">MarioBlog</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">下载 OpenAlex 数据集并配置 PySpark 的一次记录</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="travellings_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html" title=""><i class="solitude fas fa-train"></i></a></div><div class="nav-button" id="foreverblog_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.foreverblog.cn/" title=""><i class="solitude fa-solid fa-blog"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="https://download.mariozzj.cn/img/picgo/202210151013511.png" alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/OpenAlex/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>OpenAlex</span></a><a class="post-meta__tags" href="/tags/Spark/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Spark</span></a></div></div></div></div><h1 class="post-title">下载 OpenAlex 数据集并配置 PySpark 的一次记录</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-wordcount"><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>关于 OpenAlex 数据集</h1>
+<p>2015 年微软发布了微软学术知识图谱（MAG）数据集[^1]，因其海量、全面的特点被广泛应用于各类研究，但好景不长，2021 年该数据集停止维护。2022 年，OpenAlex 数据集应运而生[^2]，该数据集继承了大量来自 MAG 的数据，同时整合了来自 OpenCitations[^3]、AMiner[^4]、PID Graph[^5]、Open Research Knowledge Graph[^6]、Semantic Scholar[^7]、OpenAIRE research graph[^8] 的数据。</p>
+<p>该数据集开放下载，将科学研究中的重要环节实体化，共分为 Works、Authors、Concepts、Institutions、Venues 等多个实体，并建立关联，每日更新。详见 <a target="_blank" rel="noopener" href="https://docs.openalex.org/">OpenAlex 文档</a><br>
+<img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202210151055844.png" alt="OpenAlex Entities"></p>
+<p>因为研究需要，我需要对 OpenAlex 进行下载配置。阅读文档后发现数据的获取较为轻松，因此记录一下。</p>
+<h1>下载 OpenAlex</h1>
+<p>OpenAlex 官方最推荐的使用方法是通过 API 调用的方式获取需要的部分数据，但是这对我来说或许有些麻烦，且不利于我了解整个数据集，因此计划将 OpenAlex 快照下载至高性能计算服务器进行进一步分析。</p>
+<p>OpenAlex 数据集存储在 Amazon S3 上，以 gzip 压缩的 json 文件格式存储，根据数据的更新日期，对不同实体数据文件分区存储，同一分区下根据数据规模划分为若干文件，每个文件大小不超过 2 GB。</p>
+<h2 id="安装-AWS-CLI">安装 AWS CLI</h2>
+<p>由于数据集存储在 Amazon S3 上，下载需要通过亚马逊 Web 服务命令行界面（Amazon Web Service Command Line Interface，AWSCLI）下载。根据 <a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">AWS CLI 下载示例</a>，以 Linux 为例，需要执行以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">curl <span class="string">&quot;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&quot;</span> -o <span class="string">&quot;awscliv2.zip&quot;</span> <span class="comment"># 下载安装包</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">unzip awscliv2.zip <span class="comment"># 解压</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> ./aws/install <span class="comment"># 执行安装</span></span></span><br></pre></td></tr></table></figure>
+<p>安装完成后，执行 <code>aws</code> 命令检查是否成功安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">aws --version</span></span><br><span class="line">aws-cli/2.7.24 Python/3.8.8 Linux/4.14.133-113.105.amzn2.x86_64 botocore/2.4.5</span><br></pre></td></tr></table></figure>
+<h2 id="下载数据集">下载数据集</h2>
+<p>安装完 AWS CLI 后即可执行命令下载数据集快照。需注意：整个快照的大小为 330 GB 或更多（可以通过运行 <code>aws s3 ls --summarize --human-readable --no-sign-request --recursive &quot;s3://openalex/&quot;</code> 命令查看当前版本快照大小），需要保证磁盘有足够的存储空间，同时确保网络能够保证完成这段时间的下载。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">aws s3 <span class="built_in">sync</span> <span class="string">&quot;s3://openalex&quot;</span> <span class="string">&quot;openalex-snapshot&quot;</span> --no-sign-request</span></span><br></pre></td></tr></table></figure>
+<p>所有的数据会被下载至 <code>openalex-snapshot</code> 文件夹中。最终该文件夹的目录形式如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">openalex-snapshot/</span><br><span class="line">├── LICENSE.txt</span><br><span class="line">├── RELEASE_NOTES.txt</span><br><span class="line">└── data</span><br><span class="line">    ├── authors</span><br><span class="line">    │   ├── manifest</span><br><span class="line">    │   └── updated_date=2021-12-28</span><br><span class="line">    │       ├── 0000_part_00.gz</span><br><span class="line">    │       └── 0001_part_00.gz</span><br><span class="line">    ├── concepts</span><br><span class="line">    │   ├── manifest</span><br><span class="line">    │   └── updated_date=2021-12-28</span><br><span class="line">    │       ├── 0000_part_00.gz</span><br><span class="line">    │       └── 0001_part_00.gz</span><br><span class="line">    ├── institutions</span><br><span class="line">    │   ├── manifest</span><br><span class="line">    │   └── updated_date=2021-12-28</span><br><span class="line">    │       ├── 0000_part_00.gz</span><br><span class="line">    │       └── 0001_part_00.gz</span><br><span class="line">    ├── venues</span><br><span class="line">    │   ├── manifest</span><br><span class="line">    │   └── updated_date=2021-12-28</span><br><span class="line">    │       ├── 0000_part_00.gz</span><br><span class="line">    │       └── 0001_part_00.gz</span><br><span class="line">    └── works</span><br><span class="line">        ├── manifest</span><br><span class="line">        └── updated_date=2021-12-28</span><br><span class="line">            ├── 0000_part_00.gz</span><br><span class="line">            └── 0001_part_00.gz</span><br></pre></td></tr></table></figure>
+<h1>本地处理转化 TSV</h1>
+<p>下载的文件分布于多个文件夹、文件中，且以 gzip 压缩的 json 文件形式存储，可能不便于后续 Spark 计算性能的发挥，所以需要将数据文件进行合并，并转化为 TSV 形式（数据内容含逗号，因此采用制表符作为分隔符）。</p>
+<p>由于文件存储形式为 json，需要实现这些 json 文件到关系型数据的转化。这里参照 <a target="_blank" rel="noopener" href="https://docs.openalex.org/download-snapshot/upload-to-your-database/load-to-a-relational-database/postgres-schema-diagram">OpenAlex Postgres schema diagram</a> 进行导入，文档中还给出了 <a target="_blank" rel="noopener" href="https://gist.github.com/richard-orr/152d828356a7c47ed7e3e22d2253708d">CSV 转换脚本</a>，但是经过测试，发现该脚本存在一些缺陷，可能对后续 spark 读取带来困难，因此我对脚本的缺陷部分进行了调整：</p>
+<ul>
+<li>调整所有读取、写入的文件方法，规定编码集为 <code>utf-8</code>；</li>
+<li>调整分隔符为制表符，取消压缩过程；</li>
+<li>对处理 json 的方法 <code>json.dumps()</code> 添加参数 <code>ensure_ascii=False</code>，确保不会将特殊字符转为 Unicode。（<a target="_blank" rel="noopener" href="https://gist.github.com/richard-orr/152d828356a7c47ed7e3e22d2253708d?permalink_comment_id=4336113#gistcomment-4336113">反馈</a>后，作者已修复）</li>
+<li>对于所有的 id，源文件为完整 url，不便于之后的聚合、连接等操作时提升速度，因此均转换为 int 类型。</li>
+</ul>
+<p>最终得到了 <a target="_blank" rel="noopener" href="https://gist.github.com/MarioZZJ/3373ecd492af16728ac6c726d8639acd">调整问题后的 TSV 转换脚本</a>。在 <code>openalex-snapshot</code> 文件夹外运行指令即可（注意需保证 python 版本不低于 3.8，以支持海象运算符）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">python3 flatten-openalex-jsonl.py</span> </span><br></pre></td></tr></table></figure>
+<p>这将会在 <code>csv-files</code> 文件夹生成 27 个 tsv 文件，文件名同下图 Schema 中的表名。生成的 tsv</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202210151148705.png" alt="OpenAlex Postgres schema"></p>
+<h1>配置 PySpark</h1>
+<p>文件生成后，即可配置 PySpark 进行读取。虽然 PySpark 可以直接读取 json，但是实践发现由于 schema 设置和解析等问题，初始化过程较慢，不如 tsv。在 tsv 中我们的表结构是确定的，因此可以在读入时直接告知 spark 该表的 schema，这样可以加速初始化过程。如 works_concepts 表的读取过程：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># spark 是已经创建的 SparkSession，StructType 等是 pyspark.sql.types 中的类</span></span><br><span class="line">WorksConcepts = spark.read.<span class="built_in">format</span>(<span class="string">&#x27;csv&#x27;</span>).options(</span><br><span class="line">    header=<span class="string">&#x27;true&#x27;</span>, delimiter=<span class="string">&#x27;\t&#x27;</span> <span class="comment"># 分隔符为制表符</span></span><br><span class="line">    ).schema(</span><br><span class="line">        StructType(</span><br><span class="line">        ).add(</span><br><span class="line">            StructField(<span class="string">&#x27;work_id&#x27;</span>, StringType(), <span class="literal">True</span>)</span><br><span class="line">        ).add(</span><br><span class="line">            StructField(<span class="string">&#x27;concept_id&#x27;</span>, StringType(), <span class="literal">True</span>)</span><br><span class="line">        ).add(</span><br><span class="line">            StructField(<span class="string">&#x27;score&#x27;</span>, FloatType(), <span class="literal">True</span>)</span><br><span class="line">        )</span><br><span class="line">    ).load(<span class="string">&#x27;xxx/csv-files/works_concepts.tsv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>当然可以对方法和数据进行封装，最终得到基础的 <a target="_blank" rel="noopener" href="https://github.com/whuscity/pySparkDemo_OpenAlex/blob/main/spark_openalex_init.py">OpenAlex PySpark 初始化脚本</a>，在需要使用前调用运行即可。</p>
+<p>[^1]:Arnab Sinha, Zhihong Shen, Yang Song, Hao Ma, Darrin Eide, Bo-June (Paul) Hsu, and Kuansan Wang. 2015. An Overview of Microsoft Academic Service (MAS) and Applications. In Proceedings of the 24th International Conference on World Wide Web (WWW '15 Companion). Association for Computing Machinery, New York, NY, USA, 243–246. <a target="_blank" rel="noopener" href="https://doi.org/10.1145/2740908.2742839">https://doi.org/10.1145/2740908.2742839</a><br>
+[^2]:Priem, J., Piwowar, H., &amp; Orr, R. (2022). OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts. ArXiv. <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2205.01833">https://arxiv.org/abs/2205.01833</a><br>
+[^3]:Peroni, S., Shotton, D., Vitali, F. (2017). One Year of the OpenCitations Corpus. In: , et al. The Semantic Web – ISWC 2017. ISWC 2017. Lecture Notes in Computer Science(), vol 10588. Springer, Cham. <a target="_blank" rel="noopener" href="https://doi.org/10.1007/978-3-319-68204-4_19">https://doi.org/10.1007/978-3-319-68204-4_19</a><br>
+[^4]:Jie Tang, Jing Zhang, Limin Yao, Juanzi Li, Li Zhang, and Zhong Su. 2008. ArnetMiner: extraction and mining of academic social networks. In Proceedings of the 14th ACM SIGKDD international conference on Knowledge discovery and data mining (KDD '08). Association for Computing Machinery, New York, NY, USA, 990–998. <a target="_blank" rel="noopener" href="https://doi.org/10.1145/1401890.1402008">https://doi.org/10.1145/1401890.1402008</a><br>
+[^5]:Fenner, M., &amp; Aryani, A. (2019). Introducing the PID graph. <a target="_blank" rel="noopener" href="https://doi.org/10.5438/JWVF-8A66">https://doi.org/10.5438/JWVF-8A66</a><br>
+[^6]:Mohamad Yaser Jaradeh, Allard Oelen, Kheir Eddine Farfar, Manuel Prinz, Jennifer D’Souza, Gábor Kismihók, Markus Stocker, and Sören Auer. 2019. Open Research Knowledge Graph: Next Generation Infrastructure for Semantic Scholarly Knowledge. In Proceedings of the 10th International Conference on Knowledge Capture (K-CAP '19). Association for Computing Machinery, New York, NY, USA, 243–246. <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3360901.3364435">https://doi.org/10.1145/3360901.3364435</a><br>
+[^7]:Waleed Ammar, Dirk Groeneveld, Chandra Bhagavatula, Iz Beltagy, Miles Crawford, Doug Downey, Jason Dunkelberger, Ahmed Elgohary, Sergey Feldman, Vu Ha, Rodney Kinney, Sebastian Kohlmeier, Kyle Lo, Tyler Murray, Hsu-Han Ooi, Matthew Peters, Joanna Power, Sam Skjonsberg, Lucy Wang, et al… 2018. Construction of the Literature Graph in Semantic Scholar. In Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 3 (Industry Papers), pages 84–91, New Orleans - Louisiana. Association for Computational Linguistics.<br>
+[^8]:Manghi, P., Atzori, C., Bardi, A., Schirrwagen, J., Dimitropoulos, H., … Summan, F. (2019).<br>
+OpenAIRE Research Graph Dump. Zenodo. <a target="_blank" rel="noopener" href="https://doi.org/10.5281/zenodo.3516918">https://doi.org/10.5281/zenodo.3516918</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="https://download.mariozzj.cn/img/static/icon256.jpg"></a><div class="post-copyright__author_name">MarioBlog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div><div class="post-reward"><div class="reward-button" title="赞赏作者" onclick="AddRewardMask()"><i class="solitude fa-solid fa-heart"></i>赞赏作者</div><div class="reward-main"><ul class="reward-all"><span class="reward-title">感谢您的赞赏</span><ul class="reward-group"><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信" style="border-color: #07c160"></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝" style="border-color: #108ee9"></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/"><div class="reward-text">赞赏名单</div><div class="reward-dec">您的支持是对我实现写作价值的最大鼓励。</div></a></ul></div></div><script>function RemoveRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "none";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "none";
+    }
+}
+
+function AddRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "flex";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "flex";
+    }
+}</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">MarioBlog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/OpenAlex/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>OpenAlex<span class="tagsPageCount">1</span></span></a><a class="post-meta__tags" href="/tags/Spark/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Spark<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/6ab96d9d/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">NJUHPC 运行 Python 程序简明流程</div></div></a></div><div class="next-post pull-right"><a href="/posts/fd830caf/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">让 Markdown 成为写作的起点</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span><span class="count"> ()</span></div></div><div class="comment-wrap"><div id="giscus-wrap"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="https://download.mariozzj.cn/img/static/icon256.jpg"></div><div class="author-info__description_group"><div class="author-info__description"></div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">MarioZZJ</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">关于 OpenAlex 数据集</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">下载 OpenAlex</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-AWS-CLI"><span class="toc-text">安装 AWS CLI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">下载数据集</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">本地处理转化 TSV</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">配置 PySpark</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务"><img alt="调用大模型 API 解决简单信息处理任务" src="https://download.mariozzj.cn/img/picgo/202409041617877.png"></a><div class="content"><span class="title" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务">调用大模型 API 解决简单信息处理任务</span><span class="article-recent_post_categories" href="/posts/573fc6c3/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img alt="NJUHPC 运行 Python 程序简明流程" src="https://download.mariozzj.cn/img/picgo/202311021615799.png"></a><div class="content"><span class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</span><span class="article-recent_post_categories" href="/posts/6ab96d9d/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录" src="https://download.mariozzj.cn/img/picgo/202210151013511.png"></a><div class="content"><span class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</span><span class="article-recent_post_categories" href="/posts/fb1f3a84/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img alt="让 Markdown 成为写作的起点" src="https://download.mariozzj.cn/img/picgo/202204191318445.png"></a><div class="content"><span class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</span><span class="article-recent_post_categories" href="/posts/fd830caf/">工具干货</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor"><img alt="两种图算法：PageRank &amp; EigenFactor" src="https://download.mariozzj.cn/img/picgo/202204191304070.png"></a><div class="content"><span class="title" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor">两种图算法：PageRank &amp; EigenFactor</span><span class="article-recent_post_categories" href="/posts/1d43c0e5/">数科知识</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:i@mariozzj.cn" title="Mail"><i class="solitude  fab fa-envelope"></i></a><div class="nolazyload footer_mini_logo" id="footer_mini_logo" title="返回顶部" onclick="sco.toTop()"><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="返回顶部"></div><a class="deal_link" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.linkedin.com/in/mariozzj/" title="LinkedIn"><i class="solitude  fab fa-linkedin"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2020 - 2024 By&nbsp;<a class="footer-bar-link" href="/">MarioZZJ</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" alt="赣ICP备20002056号-2">赣ICP备20002056号-2</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261" alt="鄂公网安备42010602004261号">鄂公网安备42010602004261号</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Solitude">Solitude</a><a class="footer-bar-link cc" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><i class="solitude fa-solid fa-copyright"></i><i class="solitude fa-brands fa-creative-commons-by"></i><i class="solitude fa-brands fa-creative-commons-nc"></i><i class="solitude fa-brands fa-creative-commons-nd"></i></a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.12"></script><script src="/js/main.js?v=2.0.12"></script><script src="/js/third_party/waterfall.min.js?v=2.0.12"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"><script>(()=>{
+    const getGiscusTheme = theme => {
+        return theme === 'dark' ? 'dark' : 'light'
+    }
+
+    const loadGiscus = () => {
+        const config = Object.assign({
+            src: 'https://giscus.app/client.js',
+            'data-repo': 'MarioZZJ/giscus',
+            'data-repo-id': 'R_kgDOMwtu9A',
+            'data-category-id': 'DIC_kwDOMwtu9M4CiaaK',
+            'data-mapping': 'pathname',
+            'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+            'data-reactions-enabled': '1',
+            crossorigin: 'anonymous',
+            async: true
+        },null)
+
+        const ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').appendChild(ele)
+    }
+
+    const changeGiscusTheme = theme => {
+        const sendMessage = message => {
+            const iframe = document.querySelector('iframe.giscus-frame')
+            if (!iframe) return
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app')
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: getGiscusTheme(theme)
+            }
+        });
+    }
+
+    utils.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+    if ('Giscus' === 'Giscus' || !true) {
+        if (true) {
+            const giscusWrap = document.getElementById('giscus-wrap')
+            if (giscusWrap) {
+                utils.loadComment(giscusWrap, loadGiscus)
+            }
+        } else {
+            loadGiscus()
+        }
+    } else {
+        window.loadOtherComment = loadGiscus
+    }
+})()</script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fa-solid fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=2.0.12"></script><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["posts/573fc6c3/","posts/6ab96d9d/","posts/fb1f3a84/","posts/fd830caf/","posts/1d43c0e5/","posts/9364d192/","posts/7f568f00/","posts/e0d78514/","posts/5c25bf34/","posts/75521d8e/","posts/8d6b8da8/","posts/2c01ed8b/","posts/4449c636/","posts/672ba085/","posts/28d53052/","posts/2b373355/","posts/2b373354/","posts/52d95125/","posts/aba3bc4e/","posts/16cc73c/","posts/569080df/","posts/ffffffff/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

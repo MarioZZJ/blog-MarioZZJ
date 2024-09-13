@@ -1,0 +1,566 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jupyter——轻量级数据处理分析利器 | MarioBlog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://download.mariozzj.cn/img/static/icon256.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.12"><!-- inject head--><meta name="google-site-verification" content="google-site-verification=ATi1JuhDx8tMQDtqhsnoa90uIXlU2vjn6wRkMJMmNOw"><link rel="canonical" href="https://blog.mariozzj.cn/posts/16cc73c/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"><!-- Open Graph--><meta name="description" content="之前初学Python时，老师推荐的是Jetbrains出品的PyCharm作为IDE，对初学者而言感觉PyCharm非常实用，但是随着学习的深入也逐渐能感觉到使用PyCharm的一些缺陷： 不为项目创建虚拟环境的话，开启项目需要花费较多时间导入包；而创建虚拟环境又需要花时间安装包，且徒占内存。 脚"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="MarioBlog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://download.mariozzj.cn/img/static/icon256.jpg"><link rel="apple-touch-icon" href="https://download.mariozzj.cn/img/static/icon256.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.12' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2020-05-17 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。"}},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: ["You'll make it.","You're gonna make it.","Good luck, stranger."],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false,
+    color: false,
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><div id="loading-box" onclick="preloader.endLoading();" style="zoom:1"><div class="loading-bg"><img class="loading-img nolazyload" src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="loading image"></div></div><script>const preloader = {
+    isLoaded: false,
+    endLoading: () => {
+        if (!preloader.isLoaded) {
+            document.getElementById('loading-box').classList.add('loaded');
+            preloader.isLoaded = true;
+            preloader.togglePaceDone();
+        }
+    },
+    initLoading: () => {
+        document.getElementById('loading-box').classList.remove('loaded');
+        preloader.isLoaded = false;
+        preloader.togglePaceDone();
+    },
+    togglePaceDone: () => {
+        document.getElementById('body').className = preloader.isLoaded ? 'pace-done' : '';
+    }
+}
+
+window.addEventListener('load', () => {
+    preloader.endLoading();
+});
+
+window.addEventListener('pjax:send', () => {
+    preloader.initLoading();
+});
+
+document.addEventListener('pjax:complete', () => {
+    preloader.endLoading();
+});
+
+setTimeout(() => {
+    preloader.endLoading();
+}, 5000);</script><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/Hexo-js/">Hexo.js<sup>1</sup></a><a href="/tags/Github/">Github<sup>1</sup></a><a href="/tags/Jupyter/">Jupyter<sup>1</sup></a><a href="/tags/Python/">Python<sup>4</sup></a><a href="/tags/NoSQL/">NoSQL<sup>1</sup></a><a href="/tags/Neo4J/">Neo4J<sup>1</sup></a><a href="/tags/SNA/">SNA<sup>1</sup></a><a href="/tags/igraph/">igraph<sup>1</sup></a><a href="/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/">桌面游戏<sup>2</sup></a><a href="/tags/ML/">ML<sup>1</sup></a><a href="/tags/Regression/">Regression<sup>1</sup></a><a href="/tags/Linux/">Linux<sup>3</sup></a><a href="/tags/Shell/">Shell<sup>3</sup></a><a href="/tags/%E6%B8%B8%E6%88%8F%E3%80%8A%E9%A5%A5%E8%8D%92%E3%80%8B/">游戏《饥荒》<sup>1</sup></a><a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/">云服务器应用<sup>6</sup></a><a href="/tags/%E8%81%94%E6%9C%BA%E6%B8%B8%E6%88%8F/">联机游戏<sup>1</sup></a><a href="/tags/SSH/">SSH<sup>1</sup></a><a href="/tags/UFW/">UFW<sup>1</sup></a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发<sup>1</sup></a><a href="/tags/Nginx/">Nginx<sup>1</sup></a><a href="/tags/frp/">frp<sup>1</sup></a><a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">内网穿透<sup>1</sup></a><a href="/tags/PageRank/">PageRank<sup>1</sup></a><a href="/tags/EigenFactor/">EigenFactor<sup>1</sup></a><a href="/tags/Algorithm/">Algorithm<sup>1</sup></a><a href="/tags/Markdown/">Markdown<sup>1</sup></a><a href="/tags/OpenAlex/">OpenAlex<sup>1</sup></a><a href="/tags/Spark/">Spark<sup>1</sup></a><a href="/tags/bsub/">bsub<sup>1</sup></a><a href="/tags/HPC/">HPC<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">MarioBlog</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">Jupyter——轻量级数据处理分析利器</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="travellings_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html" title=""><i class="solitude fas fa-train"></i></a></div><div class="nav-button" id="foreverblog_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.foreverblog.cn/" title=""><i class="solitude fa-solid fa-blog"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="https://download.mariozzj.cn/img/picgo/202110091016118.jpeg" alt="Jupyter——轻量级数据处理分析利器"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7%E5%B9%B2%E8%B4%A7/">工具干货</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Jupyter/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Jupyter</span></a><a class="post-meta__tags" href="/tags/Python/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Python</span></a></div></div></div></div><h1 class="post-title">Jupyter——轻量级数据处理分析利器</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-wordcount"><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>之前初学Python时，老师推荐的是Jetbrains出品的PyCharm作为IDE，对初学者而言感觉PyCharm非常实用，但是随着学习的深入也逐渐能感觉到使用PyCharm的一些缺陷：</p>
+<ol>
+<li>不为项目创建虚拟环境的话，开启项目需要花费较多时间导入包；而创建虚拟环境又需要花时间安装包，且徒占内存。</li>
+<li>脚本文件是一次性全部运行的。虽然可以使用debug功能打断点，但是如果发现一小部分出错还是需要重新全部运行。在模型训练等过程中这种情况可能是致命的。</li>
+<li>仅在科学模式下能实时预览matplotlib等可视化库绘制的图片，比较麻烦。</li>
+<li>代码注释仅有<code>#</code>和<code>'''</code>两种形式，且不能富文本编辑，难以辅助代码扩展和可理解。</li>
+</ol>
+<p>因此，需要一款能够解决上述问题的IDE来加快数据科学学习和应用过程——Jupyter Notebook。</p>
+<h1>Jupyter Notebook</h1>
+<h2 id="Jupyter-Notebook简介">Jupyter Notebook简介</h2>
+<blockquote>
+<p>Jupyter Notebook是基于网页的用于交互计算的应用程序。其可被应用于全过程计算：开发、文档编写、运行代码和展示结果。</p>
+<p>——<a target="_blank" rel="noopener" href="https://jupyter-notebook.readthedocs.io/">JupyterNotebook文档</a></p>
+</blockquote>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091020979.jpeg" alt="Jupyter Notebook"></p>
+<p>与PyCharm不同，Jupyter Notebook没有独立的GUI界面和桌面应用程序，是通过浏览器来使用的。Jupyter Notebook既可以安装在本机电脑上通过本地服务器访问，也可以安装在远程服务器上远程使用。</p>
+<p>Jupyter Notebook解析的文件后缀名为<code>.ipynb</code>。该类文件是以json形式书写，但在Jupyter Notebook页面内主要解析为三种类型的块（cell）：代码块（code）、文档块（markdown）、纯文本（Raw NBConvert）。</p>
+<ul>
+<li>
+<p><strong>代码块</strong>包含代码片和输出片。Jupyter Notebook原名IPython Notebook，对Python语言提供支持，书写的Python代码支持代码高亮，支持注释、缩进、Tab补全等基础功能。输出部分，相比于Pycharm等接近cmd只支持文字输出，Jupyter在浏览器中可以渲染出DataFrame表格、可交互的PyeCharts图形、Matplotlib图片等基于html、svg、png等格式的输出。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091020560.jpeg" alt="Code Cell"></p>
+</li>
+<li>
+<p><strong>文档块</strong>原生支持Markdown语法，可以进行简单的富文本编辑和多媒体插入，同时也支持Latex语法的解析，可以输入数学说明。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091020806.jpeg" alt="Markdown Cell"></p>
+</li>
+</ul>
+<p>用户可以自由控制插入代码块和文档块，形成交错易于解释说明，同时也可自由控制代码运行顺序，环境启动后运行的代码块中保留的变量不会被删除，可以跨代码块在其他块中使用。</p>
+<p>您可以访问Jupyter官网，在线<a target="_blank" rel="noopener" href="https://jupyter.org/try">试用</a>JupyterNotebook。</p>
+<h2 id="安装与启动">安装与启动</h2>
+<p><a target="_blank" rel="noopener" href="https://jupyter.org/install.html">Jupyter官网</a>也给出了安装教程，摘录如下：</p>
+<p>如果您已经安装了<code>conda</code>，可以使用conda进行安装。在CMD/Terminal输入如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install -c conda-forge notebook</span><br></pre></td></tr></table></figure>
+<p>或者，如果您想使用<code>pip</code>安装，在安装好pip之后可以在CMD/Terminal输入如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install notebook</span><br></pre></td></tr></table></figure>
+<p>安装完成后，在CMD/Terminal中输入如下命令即可启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook</span><br></pre></td></tr></table></figure>
+<p>一般而言，系统会帮您在默认浏览器打开Jupyter Notebook主界面（文件系统），如果没有自动打开，您也可以参照命令行输出在浏览器自行进入。</p>
+<h1>简单使用</h1>
+<h2 id="基础操作">基础操作</h2>
+<h3 id="文件列表页面">文件列表页面</h3>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091021795.jpeg" alt="Notebook 文件列表"></p>
+<p>在目录页面，用户可以新建空脚本文件进行编辑，也可以新建终端以Shell操作目录（因此，可以进行包的安装）。Jupyter Notebook会对ipynb脚本文件进行渲染，但同时也能够以纯文本打开其他文件。在此页面选中文件可以选择终止运行、复制、重命名、打开、下载、删除等操作。</p>
+<h3 id="脚本页面">脚本页面</h3>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091021998.jpeg" alt="Jupyter Notebook 脚本页面"></p>
+<p>脚本页面，用户可以点击文件名进行文件的重命名，可以通过菜单栏和功能区进行一些操作。就基础操作而言，用户可以使用功能区的<code>+</code>按钮添加单元格，使用运行按钮执行代码块或渲染文档块，使用下拉栏调整块的类型。</p>
+<p>当然，也可以通过单击代码块旁的运行键来执行代码块。</p>
+<h2 id="基础快捷键">基础快捷键</h2>
+<p>Jupyter Notebook的快捷键较多，这里按单元格的两种模式分别归纳。单元格模式可分为命令模式和编辑模式，主要区别在单元格框线的颜色以及内容是否可编辑，如图。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091022481.jpeg" alt="Jupyter Notebook 单元格模式"></p>
+<h3 id="命令模式">命令模式</h3>
+<ul>
+<li>
+<p><code>Enter</code>：转为编辑模式</p>
+</li>
+<li>
+<p><code>Shift</code>+<code>Enter</code>：运行本单元格并选中下个单元格</p>
+</li>
+<li>
+<p><code>Ctrl</code>+<code>Enter</code>：运行本单元格</p>
+</li>
+<li>
+<p><code>Alt</code>+<code>Enter</code>：运行本单元格并在下方插入新单元格</p>
+</li>
+<li>
+<p><code>Y</code>：单元格变为代码状态</p>
+</li>
+<li>
+<p><code>M</code>：单元格变为文档状态</p>
+</li>
+<li>
+<p><code>↑</code> / <code>K</code>：选中上方单元格</p>
+</li>
+<li>
+<p><code>↓</code> / <code>J</code>：选中下方单元格</p>
+</li>
+<li>
+<p><code>A</code>：在上方插入新单元格</p>
+</li>
+<li>
+<p><code>B</code>：在下方插入新单元格</p>
+</li>
+<li>
+<p><code>C</code> / <code>X</code> / <code>V</code> ：复制 / 剪切 / 粘贴单元格</p>
+</li>
+<li>
+<p><code>D</code>：删除单元格</p>
+</li>
+<li>
+<p>长按<code>Shift</code>可连续选中</p>
+<p>仅列举部分常用快捷键。如需获取<strong>全部快捷键</strong>，可以在命令模式下按<code>H</code>进入<strong>快捷键帮助</strong>查看所有的快捷键。</p>
+</li>
+</ul>
+<h3 id="编辑模式">编辑模式</h3>
+<ul>
+<li><code>Esc</code>：进入命令模式</li>
+<li><code>Shift</code>+<code>Enter</code>：运行本单元格并选中下个单元格</li>
+<li><code>Ctrl</code>+<code>Enter</code>：运行本单元格</li>
+<li><code>Alt</code>+<code>Enter</code>：运行本单元格并在下方插入新单元格</li>
+<li><code>Tab</code>：缩进 / 代码补全</li>
+<li><code>Shift</code>+<code>Tab</code>：查看工具提示</li>
+<li><code>Ctrl</code>+<code>]</code>：缩进</li>
+<li><code>Ctrl</code>+<code>[</code>：取消缩进</li>
+<li><code>Ctrl</code>+<code>/</code>：注释当前行 / 选中内容</li>
+<li><code>Ctrl</code>+<code>Z</code>：撤销</li>
+<li><code>Ctrl</code>+<code>Y</code>：重做</li>
+<li><code>Ctrl</code>+<code>A</code>：全选</li>
+<li><code>Ctrl</code>+<code>S</code>：保存</li>
+</ul>
+<h3 id="文件操作">文件操作</h3>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091023354.jpeg" alt="Notebook 脚本下载"></p>
+<p>可以在菜单栏的Files菜单中选择各类文件操作，如新建、打开、保存等。</p>
+<p>您可以给脚本设置检查点，便于版本回溯和重置。</p>
+<p>同时也可以将其下载或导出为其他格式，便于分享、打印、发布等操作。在之后的进阶操作中还会再提及。</p>
+<h1>进阶技巧</h1>
+<h2 id="启动命令参数">启动命令参数</h2>
+<p>在<a href="##%E5%AE%89%E8%A3%85%E4%B8%8E%E5%90%AF%E5%8A%A8">安装与启动</a>中已经介绍过在CMD/Terminal中的启动方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook</span><br></pre></td></tr></table></figure>
+<p>执行命令后，终端会显示一系列服务器信息：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$</span> jupyter notebook</span><br><span class="line">[<span class="type">I</span> <span class="number">08</span>:<span class="number">58</span>:<span class="number">24.417</span> <span class="type">NotebookApp</span>] Serving notebooks from local directory: /Users/catherine</span><br><span class="line">[<span class="type">I</span> <span class="number">08</span>:<span class="number">58</span>:<span class="number">24.417</span> <span class="type">NotebookApp</span>] <span class="number">0</span> active kernels</span><br><span class="line">[<span class="type">I</span> <span class="number">08</span>:<span class="number">58</span>:<span class="number">24.417</span> <span class="type">NotebookApp</span>] The Jupyter Notebook is running at: http://localhost:<span class="number">8888</span>/</span><br><span class="line">[<span class="type">I</span> <span class="number">08</span>:<span class="number">58</span>:<span class="number">24.417</span> <span class="type">NotebookApp</span>] Use Control<span class="literal">-C</span> to stop this server and shut down all kernels (twice to skip confirmation).</span><br></pre></td></tr></table></figure>
+<p>出现以上信息表示服务开启成功，浏览器会自动打开窗口进入主界面。</p>
+<h3 id="端口">端口</h3>
+<p>默认情况下一个Jupyter Notebook进程会占用一个端口，默认从8888开始，如果端口被占用则选用邻近端口如8889、8890等。我们可以在启动时指定端口：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook --port &lt;port_number&gt;</span><br></pre></td></tr></table></figure>
+<p>其中<code>&lt;port_number&gt;</code>为指定的端口号。</p>
+<h3 id="文件目录">文件目录</h3>
+<p>一般而言打开Jupyter Notebook会进入默认的文件路径，有的时候我们想要打开不再默认路径下的脚本文件，就可以选择指定目录启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter notebook &lt;dir&gt;</span><br></pre></td></tr></table></figure>
+<p>其中<code>&lt;dir&gt;</code>为需要打开的目录，可以是相对路径也可以是绝对路径。</p>
+<p>例如，在Windows下，我们可以在文件资源管理器的地址栏输入cmd来快速启动命令行，随后仅需键入<code>jupyter notebook ./</code>即可在Jupyter Notebook中打开当前目录。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091024858.gif" alt="启动操作"></p>
+<p>或者，如果需要直接更改默认文件目录，只需要进行配置文件的修改。方法如下：</p>
+<ol>
+<li>
+<p>首先，在命令行输入命令得到jupyter notebook的安装地址：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ jupyter notebook --generate-config</span><br><span class="line"></span><br><span class="line">Overwrite C:\Users\PM\.jupyter\jupyter_notebook_config.py with default config? [y/N]y</span><br><span class="line">Writing default config to: C:\Users\PM\.jupyter\jupyter_notebook_config.py</span><br></pre></td></tr></table></figure>
+<p>可以看到返回中给出了jupyter notebook的安装地址，配置文件在此目录下。</p>
+</li>
+<li>
+<p>前往该目录，使用vim等文本编辑方法编辑目录下的<code>jupyter_notebook_config.py</code>文件，找到如下代码段：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## The directory to use for notebooks and kernels.</span></span><br><span class="line"><span class="comment">#c.NotebookApp.notebook_dir = &#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>将第二行内容取消注释，并将引号内更改为您需要指定的工作空间地址即可。</p>
+<p>随后重新启动Jupyter Notebook即可在指定空间打开。</p>
+</li>
+</ol>
+<h2 id="主题更换方法">主题更换方法</h2>
+<h3 id="基于Jupyterthemes">基于Jupyterthemes</h3>
+<p>Jupyter Notebook默认主题为浅色主题，虽然文字显示清晰，但长时间使用可能对眼睛刺激较大。我们可以借用Jupyterthemes插件来为Notebook更换合适的主题。</p>
+<p>首先在CMD/Terminal输入如下命令安装Jupyterthemes插件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install jupyterthemes</span><br></pre></td></tr></table></figure>
+<p>安装完成后即可使用。该库在使用时仅取两首字母<code>jt</code>为命令。完整的命令格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">jt  [-h] [-l] [-t THEME] [-f MONOFONT] [-fs MONOSIZE] [-nf NBFONT]</span><br><span class="line">    [-nfs NBFONTSIZE] [-tf TCFONT] [-tfs TCFONTSIZE] [-dfs DFFONTSIZE]</span><br><span class="line">    [-m MARGINS] [-cursw CURSORWIDTH] [-cursc CURSORCOLOR] [-vim]</span><br><span class="line">    [-cellw CELLWIDTH] [-lineh LINEHEIGHT] [-altp] [-altmd] [-altout]</span><br><span class="line">    [-P] [-T] [-N] [-r] [-dfonts]</span><br></pre></td></tr></table></figure>
+<p>例如，使用如下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jt -t monokai -ofs 10 -nfs 13 -tfs 13 -fs 12 -T -N -lineh 140</span><br></pre></td></tr></table></figure>
+<p>表明使用monokai主题，输出字体大小10，notebook字体大小13，文档块字体大小13，代码字体大小12，展示工具栏，展示文档名和logo，行高140。</p>
+<p>完整的参数解释见<a target="_blank" rel="noopener" href="https://github.com/dunovank/jupyter-themes">jupyter-theme</a>官方仓库。</p>
+<p>使用<code>jt -l</code>命令可以查看目前安装的主题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ jt -l</span><br><span class="line"></span><br><span class="line">Available Themes:</span><br><span class="line">   chesterish</span><br><span class="line">   grade3</span><br><span class="line">   gruvboxd</span><br><span class="line">   gruvboxl</span><br><span class="line">   monokai</span><br><span class="line">   oceans16</span><br><span class="line">   onedork</span><br><span class="line">   solarizedd</span><br><span class="line">   solarizedl</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091024596.jpeg" alt="主题展示"></p>
+<p>上图展示了部分主题样式基本情况，可根据喜好自行更换主题。</p>
+<p>使用<code>jt -r</code>命令则可以重置主题。</p>
+<h3 id="基于Stylish">基于Stylish</h3>
+<p>因为Jupyter Notebook是在浏览器呈现，那么任意形式的更换样式表就可以实现对主题的修改。例如较为著名的Stylish插件的社区中就有很多开发者分享了自己定制的Jupyter Notebook主题，这些主题的呈现效果整体上优于jupyterthemes。</p>
+<p><a target="_blank" rel="noopener" href="https://userstyles.org/">Stylish官网</a></p>
+<p><a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/detail/stylish-custom-themes-for/fjnbnpbmkenffdnngjfgmeleoegfcffe">Stylish-Chrome插件下载</a></p>
+<p>而且，如果您熟练掌握CSS语法，也可以自行基于Stylish定制合适的Jupyter Notebook主题。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091024781.jpeg" alt="Stylish 暗黑主题效果"></p>
+<h2 id="魔法命令">魔法命令</h2>
+<p>魔法命令在代码块中执行，但是不属于Python语言的代码。使用魔法命令可以在执行代码的同时执行附加效果。</p>
+<h3 id="执行Shell命令">执行Shell命令</h3>
+<p>执行Shell命令并不是魔法命令的一部分，但是功能类似。</p>
+<p>在代码块中键入<code>!</code>+shell命令即可在当前目录执行。</p>
+<p>典型的应用场景例如，当我们需要使用某个包但是Jupyter Notebook所用环境中并没有此包，那么就可以利用此特性，在Notebook内完成包的安装。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!pip install selenium</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">Collecting selenium</span><br><span class="line">  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/80/d6/4294f0b4bce4de0abf13e17190289f9d0613b0a44e5dd6a7f5ca98459853/selenium-3.141.0-py2.py3-none-any.whl (904 kB)</span><br><span class="line">     |████████████████████████████████| 904 kB 1.2 MB/s eta 0:00:01</span><br><span class="line">Requirement already satisfied: urllib3 in /root/anaconda3/lib/python3.8/site-packages (from selenium) (1.25.9)</span><br><span class="line">Installing collected packages: selenium</span><br><span class="line">Successfully installed selenium-3.141.0</span><br></pre></td></tr></table></figure>
+<p>或者，我们共享脚本给他人运行时，需要其下载一些文件，就可以使用wget命令来下载：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!wget https://tianchi-competition.oss-cn-hangzhou.aliyuncs.com/<span class="number">531810</span>/test_a.csv.<span class="built_in">zip</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">--2021-01-08 21:51:25--  https://tianchi-competition.oss-cn-hangzhou.aliyuncs.com/531810/test_a.csv.zip</span><br><span class="line">Resolving tianchi-competition.oss-cn-hangzhou.aliyuncs.com (tianchi-competition.oss-cn-hangzhou.aliyuncs.com)... 118.31.232.194</span><br><span class="line">Connecting to tianchi-competition.oss-cn-hangzhou.aliyuncs.com (tianchi-competition.oss-cn-hangzhou.aliyuncs.com)|118.31.232.194|:443... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 61986708 (59M) [application/zip]</span><br><span class="line">Saving to: ‘test_a.csv.zip’</span><br><span class="line"></span><br><span class="line">100%[======================================&gt;] 61,986,708  14.6MB/s   in 4.0s   </span><br><span class="line"></span><br><span class="line">2021-01-08 21:51:30 (14.9 MB/s) - ‘test_a.csv.zip’ saved [61986708/619867</span><br></pre></td></tr></table></figure>
+<h3 id="常用魔法命令">常用魔法命令</h3>
+<h4 id="run">%run</h4>
+<figure class="highlight plaintext"><figcaption><span>command</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%run 脚本文件地址</span><br></pre></td></tr></table></figure>
+<p>可以在接下来的代码块中运行指定的脚本文件。</p>
+<h4 id="time系列">%time系列</h4>
+<figure class="highlight plaintext"><figcaption><span>command</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">%time &#123;一行代码&#125;</span><br><span class="line">%%time </span><br><span class="line">&#123;代码块剩余内容&#125;</span><br><span class="line"></span><br><span class="line">%timeit &#123;一行代码&#125;</span><br><span class="line">%%timeit</span><br><span class="line">&#123;代码块剩余内容&#125;</span><br></pre></td></tr></table></figure>
+<p>使用%time和%%time可以计算一行/一个单元格内的代码执行一次所需的时间。这在模型训练和大文件读取时是很实用的，有助于使用者把握时间和环境性能。</p>
+<p>而%timeit和%%timeit会将指定代码内容执行很多次，最后计算出平均运行所需时间，一般用于算法的评估。</p>
+<h4 id="whos">%whos</h4>
+<p>该命令可以查看本脚本中仍在占用内存的变量的类型和值等情况</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">j = <span class="number">9</span></span><br><span class="line">i = <span class="number">10</span></span><br><span class="line">s = <span class="string">&quot;This is a String&quot;</span></span><br><span class="line"></span><br><span class="line">%whos</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Variable   Type         Data/Info</span><br><span class="line">---------------------------------</span><br><span class="line">i          int          10</span><br><span class="line">j          int          9</span><br><span class="line">np         module       &lt;module &#x27;numpy&#x27; from &#x27;/ro&lt;...&gt;kages/numpy/__init__.py&#x27;&gt;</span><br><span class="line">pd         module       &lt;module &#x27;pandas&#x27; from &#x27;/r&lt;...&gt;ages/pandas/__init__.py&#x27;&gt;</span><br><span class="line">s          str          This is a String</span><br></pre></td></tr></table></figure>
+<h4 id="del-reset">%del %reset</h4>
+<p>使用<code>%del</code>可以删除某个变量；使用<code>%reset</code>可以清除所有变量。</p>
+<h4 id="load">%load</h4>
+<p>使用<code>%load</code>可以加载脚本文件内容并填充到代码块中。值得一提的是%load后不仅可以接本地计算机上的绝对地址和相对地址，还可以接其他服务器的地址，例如使用%load获取某网页的原代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%load http://crafts.mariozzj.cn/</span><br></pre></td></tr></table></figure>
+<h4 id="matplotlib-inline">%matplotlib inline</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">plt.plot(np.arange(<span class="number">20</span>))</span><br></pre></td></tr></table></figure>
+<p>在使用matplotlib绘图之前写上这样一行魔法命令可以让绘制出的图片直接显示在输出区域。</p>
+<h2 id="导出">导出</h2>
+<p>Jupyter Notebook的代码块和文档块可以以合适的形式导出，导出的格式包括HTML、LaTeX、Markdown、PDF等。</p>
+<p>导出的Markdown中，普通文档块成为Markdown文档，而代码块成为Markdown的代码块，输出部分也成为代码块（输出的图片、表格等不在代码块内，但是仍然会有效保存）。</p>
+<p>导出的PDF是经由LaTeX转化的，最大限度地保留了原始脚本的呈现效果，在代码块和输出区旁会显示In/Out+编号，调整适配到合适的纸张大小。需要注意的是在Jupyter Notebook中直接导出PDF，不支持显示中文，但是也有可以导出含中文PDF的方法。</p>
+<ol>
+<li>
+<p>经由md导出PDF</p>
+<p>在Jupyter Notebook中以markdown格式导出文件后，使用Typora等markdown文本编辑器再对格式进行转换，可以生成PDF以供打印或导出。由于转换为PDF的过程是在编辑器中进行的，所以最终格式是由编辑器决定的，而且不会保留IN/OUT标注等信息。</p>
+</li>
+<li>
+<p>经由LaTeX导出PDF</p>
+<p>在Jupyter Notebook中可以以LaTeX格式导出，随后可以用LaTeX编辑器进行转换，或者采取以下步骤以使转换的PDF支持显示中文：</p>
+<ol>
+<li>
+<p>安装MiKTeX。<a target="_blank" rel="noopener" href="https://miktex.org/download">下载链接</a></p>
+</li>
+<li>
+<p>生成LaTeX文件，可以在CMD/Terminal中进入脚本文件所在目录，输入<code>jupyter nbconvert --to latex 文件名.ipynb</code>，等待后生成文件名.tex文件。</p>
+</li>
+<li>
+<p>使用文本编辑器打开文件名.tex文件，在<code>\documentclass&#123;article&#125;</code>后或<code>\documentclass[11pt]&#123;article&#125;</code>后或<code>\documentclass[11pt]&#123;ctexart&#125;</code>后插入以下两行语句，保存。</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\usepackage</span>&#123;fontspec, xunicode, xltxtra&#125;</span><br><span class="line"><span class="keyword">\usepackage</span>&#123;ctex&#125;</span><br><span class="line"><span class="keyword">\setmainfont</span>&#123;Microsoft YaHei&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">   </span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>再在CMD/Terminal中输入<code>xelatex 文件名.tex</code>即可完成转化，生成的文件名.pdf在同目录下。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091025604.gif" alt="转换操作"></p>
+</li>
+</ol>
+<h1>升级体验</h1>
+<p>Jupyter Notebook 已经展现出了它在数据分析与处理方面的便捷性，但是使用下来还是有一些体验可以优化，例如：</p>
+<ul>
+<li>相比于传统 IDE，文件目录和脚本操作页面是分开的，如果需要切换文件可能比较麻烦</li>
+<li>Notebook 需要先单独在终端启动，才具有查看 <code>.ipynb</code> 文件的能力，不能直接双击打开</li>
+</ul>
+<p>这里提供两个能够缓解上述使用痛点的工具，因为只是升级体验，这两个工具的基本使用和 Notebook 类似，就不再赘述。</p>
+<h2 id="JupyterLab">JupyterLab</h2>
+<p>Jupyter Lab 和 Jupyter Notebook 一样同属于 Jupyter Project，二者在使用上几乎一致，个人认为 Jupyter Lab 是在 Notebook 基础上进行了升级。</p>
+<h3 id="安装与启动-2">安装与启动</h3>
+<p><a target="_blank" rel="noopener" href="https://jupyter.org/install.html">Jupyter官网</a> 也给出了安装教程，摘录如下：</p>
+<p>如果您已经安装了<code>conda</code>，可以使用conda进行安装。在 CMD/Terminal 输入如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install -c conda-forge jupyterlab</span><br></pre></td></tr></table></figure>
+<p>或者，如果您想使用<code>pip</code>安装，在安装好pip之后可以在 CMD/Terminal 输入如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install jupyterlab</span><br></pre></td></tr></table></figure>
+<p>安装完成后，在 CMD/Terminal 中输入如下命令即可启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jupyter-lab</span><br></pre></td></tr></table></figure>
+<p>一般而言，系统会帮您在默认浏览器打开 Jupyter Lab 主界面（文件系统），如果没有自动打开，您也可以参照命令行输出在浏览器自行进入。</p>
+<h3 id="界面展示">界面展示</h3>
+<p>Lab 最主要变化在于在页面左侧加入了文件目录，打开的标签页以内嵌标签页而不是浏览器标签页展示。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091104518.png" alt="Jupyterlab 主界面"></p>
+<p>对 <code>.ipynb</code> 文件的操作，Lab 和 Notebook 完全相同，因此切换成本很低！</p>
+<p>同时，Jupyter Lab 支持渲染 csv 等结构化数据为<strong>表格形式</strong>，对纯文本文件也可以直接编辑。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091106880.png" alt="Jupyter Lab 表格渲染"></p>
+<h2 id="VS-Code">VS Code</h2>
+<p>VS Code 是一款强大轻量级 IDE，支持丰富的语言拓展，同时还有多种强力插件。</p>
+<h3 id="安装与启动-3">安装与启动</h3>
+<p>如果没有安装 VS Code，可以前往官方页面下载安装： <a target="_blank" rel="noopener" href="https://code.visualstudio.com/Download">Download Visual Studio Code - Mac, Linux, Windows</a></p>
+<p>如果已安装 VS Code，但是没有安装 Python，可以在扩展页面安装：</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091151070.png" alt="VSC安装扩展-Python"></p>
+<p>VS Code 安装 Jupyter 扩展后，就可以支持渲染 <code>.ipynb</code> 文件了，在扩展页面安装即可：</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091154620.png" alt="VSC安装扩展-Jupyter"></p>
+<h3 id="界面展示-2">界面展示</h3>
+<p>VS Code 对 <code>.ipynb</code> 脚本的页面操作也很类似，同时也支持文件树、版本控制等，相对而言功能更加强大。</p>
+<p>VS Code 相对于 Notebook 的提升在于：<strong>增加了文件目录</strong>，同时能够在文件夹中<strong>直接双击</strong> <code>.ipynb</code> <strong>文件打开预览</strong>，不需要启动服务就可以渲染查看。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202110091156617.png" alt="VSCode 主界面"></p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="https://download.mariozzj.cn/img/static/icon256.jpg"></a><div class="post-copyright__author_name">MarioBlog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div><div class="post-reward"><div class="reward-button" title="赞赏作者" onclick="AddRewardMask()"><i class="solitude fa-solid fa-heart"></i>赞赏作者</div><div class="reward-main"><ul class="reward-all"><span class="reward-title">感谢您的赞赏</span><ul class="reward-group"><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信" style="border-color: #07c160"></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝" style="border-color: #108ee9"></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/"><div class="reward-text">赞赏名单</div><div class="reward-dec">您的支持是对我实现写作价值的最大鼓励。</div></a></ul></div></div><script>function RemoveRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "none";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "none";
+    }
+}
+
+function AddRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "flex";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "flex";
+    }
+}</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">MarioBlog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Jupyter/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Jupyter<span class="tagsPageCount">1</span></span></a><a class="post-meta__tags" href="/tags/Python/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Python<span class="tagsPageCount">4</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/aba3bc4e/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Neo4J 基本教程 —— 一切基于关系，而不受关系限制</div></div></a></div><div class="next-post pull-right"><a href="/posts/569080df/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">使用 Hexo 搭建属于自己的博客</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span><span class="count"> ()</span></div></div><div class="comment-wrap"><div id="giscus-wrap"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="https://download.mariozzj.cn/img/static/icon256.jpg"></div><div class="author-info__description_group"><div class="author-info__description"></div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">MarioZZJ</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Jupyter Notebook</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Jupyter-Notebook%E7%AE%80%E4%BB%8B"><span class="toc-text">Jupyter Notebook简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%B8%8E%E5%90%AF%E5%8A%A8"><span class="toc-text">安装与启动</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">简单使用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C"><span class="toc-text">基础操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%88%97%E8%A1%A8%E9%A1%B5%E9%9D%A2"><span class="toc-text">文件列表页面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC%E9%A1%B5%E9%9D%A2"><span class="toc-text">脚本页面</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-text">基础快捷键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-text">命令模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%BE%91%E6%A8%A1%E5%BC%8F"><span class="toc-text">编辑模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="toc-text">文件操作</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">进阶技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0"><span class="toc-text">启动命令参数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3"><span class="toc-text">端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95"><span class="toc-text">文件目录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E9%A2%98%E6%9B%B4%E6%8D%A2%E6%96%B9%E6%B3%95"><span class="toc-text">主题更换方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EJupyterthemes"><span class="toc-text">基于Jupyterthemes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EStylish"><span class="toc-text">基于Stylish</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AD%94%E6%B3%95%E5%91%BD%E4%BB%A4"><span class="toc-text">魔法命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8CShell%E5%91%BD%E4%BB%A4"><span class="toc-text">执行Shell命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E9%AD%94%E6%B3%95%E5%91%BD%E4%BB%A4"><span class="toc-text">常用魔法命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#run"><span class="toc-text">%run</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#time%E7%B3%BB%E5%88%97"><span class="toc-text">%time系列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#whos"><span class="toc-text">%whos</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#del-reset"><span class="toc-text">%del %reset</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#load"><span class="toc-text">%load</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#matplotlib-inline"><span class="toc-text">%matplotlib inline</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%BC%E5%87%BA"><span class="toc-text">导出</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">升级体验</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JupyterLab"><span class="toc-text">JupyterLab</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%B8%8E%E5%90%AF%E5%8A%A8-2"><span class="toc-text">安装与启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%8C%E9%9D%A2%E5%B1%95%E7%A4%BA"><span class="toc-text">界面展示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VS-Code"><span class="toc-text">VS Code</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%B8%8E%E5%90%AF%E5%8A%A8-3"><span class="toc-text">安装与启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%8C%E9%9D%A2%E5%B1%95%E7%A4%BA-2"><span class="toc-text">界面展示</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务"><img alt="调用大模型 API 解决简单信息处理任务" src="https://download.mariozzj.cn/img/picgo/202409041617877.png"></a><div class="content"><span class="title" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务">调用大模型 API 解决简单信息处理任务</span><span class="article-recent_post_categories" href="/posts/573fc6c3/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img alt="NJUHPC 运行 Python 程序简明流程" src="https://download.mariozzj.cn/img/picgo/202311021615799.png"></a><div class="content"><span class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</span><span class="article-recent_post_categories" href="/posts/6ab96d9d/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录" src="https://download.mariozzj.cn/img/picgo/202210151013511.png"></a><div class="content"><span class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</span><span class="article-recent_post_categories" href="/posts/fb1f3a84/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img alt="让 Markdown 成为写作的起点" src="https://download.mariozzj.cn/img/picgo/202204191318445.png"></a><div class="content"><span class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</span><span class="article-recent_post_categories" href="/posts/fd830caf/">工具干货</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor"><img alt="两种图算法：PageRank &amp; EigenFactor" src="https://download.mariozzj.cn/img/picgo/202204191304070.png"></a><div class="content"><span class="title" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor">两种图算法：PageRank &amp; EigenFactor</span><span class="article-recent_post_categories" href="/posts/1d43c0e5/">数科知识</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:i@mariozzj.cn" title="Mail"><i class="solitude  fab fa-envelope"></i></a><div class="nolazyload footer_mini_logo" id="footer_mini_logo" title="返回顶部" onclick="sco.toTop()"><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="返回顶部"></div><a class="deal_link" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.linkedin.com/in/mariozzj/" title="LinkedIn"><i class="solitude  fab fa-linkedin"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2020 - 2024 By&nbsp;<a class="footer-bar-link" href="/">MarioZZJ</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" alt="赣ICP备20002056号-2">赣ICP备20002056号-2</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261" alt="鄂公网安备42010602004261号">鄂公网安备42010602004261号</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Solitude">Solitude</a><a class="footer-bar-link cc" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><i class="solitude fa-solid fa-copyright"></i><i class="solitude fa-brands fa-creative-commons-by"></i><i class="solitude fa-brands fa-creative-commons-nc"></i><i class="solitude fa-brands fa-creative-commons-nd"></i></a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.12"></script><script src="/js/main.js?v=2.0.12"></script><script src="/js/third_party/waterfall.min.js?v=2.0.12"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/copy-tex.min.js"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    utils.wrap(item, 'div', {class: 'katex-wrap'})
+  })
+})();
+</script></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"><script>(()=>{
+    const getGiscusTheme = theme => {
+        return theme === 'dark' ? 'dark' : 'light'
+    }
+
+    const loadGiscus = () => {
+        const config = Object.assign({
+            src: 'https://giscus.app/client.js',
+            'data-repo': 'MarioZZJ/giscus',
+            'data-repo-id': 'R_kgDOMwtu9A',
+            'data-category-id': 'DIC_kwDOMwtu9M4CiaaK',
+            'data-mapping': 'pathname',
+            'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+            'data-reactions-enabled': '1',
+            crossorigin: 'anonymous',
+            async: true
+        },null)
+
+        const ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').appendChild(ele)
+    }
+
+    const changeGiscusTheme = theme => {
+        const sendMessage = message => {
+            const iframe = document.querySelector('iframe.giscus-frame')
+            if (!iframe) return
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app')
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: getGiscusTheme(theme)
+            }
+        });
+    }
+
+    utils.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+    if ('Giscus' === 'Giscus' || !true) {
+        if (true) {
+            const giscusWrap = document.getElementById('giscus-wrap')
+            if (giscusWrap) {
+                utils.loadComment(giscusWrap, loadGiscus)
+            }
+        } else {
+            loadGiscus()
+        }
+    } else {
+        window.loadOtherComment = loadGiscus
+    }
+})()</script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fa-solid fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=2.0.12"></script><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["posts/573fc6c3/","posts/6ab96d9d/","posts/fb1f3a84/","posts/fd830caf/","posts/1d43c0e5/","posts/9364d192/","posts/7f568f00/","posts/e0d78514/","posts/5c25bf34/","posts/75521d8e/","posts/8d6b8da8/","posts/2c01ed8b/","posts/4449c636/","posts/672ba085/","posts/28d53052/","posts/2b373355/","posts/2b373354/","posts/52d95125/","posts/aba3bc4e/","posts/16cc73c/","posts/569080df/","posts/ffffffff/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

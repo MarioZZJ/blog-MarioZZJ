@@ -1,0 +1,429 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>玩转服务器 | Web 应用部署上线全流程（Ubuntu + Nginx + MySQL + Flask） | MarioBlog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://download.mariozzj.cn/img/static/icon256.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.12"><!-- inject head--><meta name="google-site-verification" content="google-site-verification=ATi1JuhDx8tMQDtqhsnoa90uIXlU2vjn6wRkMJMmNOw"><link rel="canonical" href="https://blog.mariozzj.cn/posts/7f568f00/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"><!-- Open Graph--><meta name="description" content="你可能听过 LAMP &amp;#x2F; LNMP，这是搭建动态 Web 应用的常见环境组合，实质上是 Linux（系统）+ Apache &amp;#x2F; Nginx（Web 服务器） + MySQL（数据库）+ PHP（编程语言）环境的统称，这套组合较为流行，能够组合解决 Web 应用部署问题。 当我们在 PC 上完成 We"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="MarioBlog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://download.mariozzj.cn/img/static/icon256.jpg"><link rel="apple-touch-icon" href="https://download.mariozzj.cn/img/static/icon256.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.12' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2020-05-17 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。"}},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: ["You'll make it.","You're gonna make it.","Good luck, stranger."],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false,
+    color: false,
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><div id="loading-box" onclick="preloader.endLoading();" style="zoom:1"><div class="loading-bg"><img class="loading-img nolazyload" src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="loading image"></div></div><script>const preloader = {
+    isLoaded: false,
+    endLoading: () => {
+        if (!preloader.isLoaded) {
+            document.getElementById('loading-box').classList.add('loaded');
+            preloader.isLoaded = true;
+            preloader.togglePaceDone();
+        }
+    },
+    initLoading: () => {
+        document.getElementById('loading-box').classList.remove('loaded');
+        preloader.isLoaded = false;
+        preloader.togglePaceDone();
+    },
+    togglePaceDone: () => {
+        document.getElementById('body').className = preloader.isLoaded ? 'pace-done' : '';
+    }
+}
+
+window.addEventListener('load', () => {
+    preloader.endLoading();
+});
+
+window.addEventListener('pjax:send', () => {
+    preloader.initLoading();
+});
+
+document.addEventListener('pjax:complete', () => {
+    preloader.endLoading();
+});
+
+setTimeout(() => {
+    preloader.endLoading();
+}, 5000);</script><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/Hexo-js/">Hexo.js<sup>1</sup></a><a href="/tags/Github/">Github<sup>1</sup></a><a href="/tags/Jupyter/">Jupyter<sup>1</sup></a><a href="/tags/Python/">Python<sup>4</sup></a><a href="/tags/NoSQL/">NoSQL<sup>1</sup></a><a href="/tags/Neo4J/">Neo4J<sup>1</sup></a><a href="/tags/SNA/">SNA<sup>1</sup></a><a href="/tags/igraph/">igraph<sup>1</sup></a><a href="/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/">桌面游戏<sup>2</sup></a><a href="/tags/ML/">ML<sup>1</sup></a><a href="/tags/Regression/">Regression<sup>1</sup></a><a href="/tags/Linux/">Linux<sup>3</sup></a><a href="/tags/Shell/">Shell<sup>3</sup></a><a href="/tags/%E6%B8%B8%E6%88%8F%E3%80%8A%E9%A5%A5%E8%8D%92%E3%80%8B/">游戏《饥荒》<sup>1</sup></a><a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/">云服务器应用<sup>6</sup></a><a href="/tags/%E8%81%94%E6%9C%BA%E6%B8%B8%E6%88%8F/">联机游戏<sup>1</sup></a><a href="/tags/SSH/">SSH<sup>1</sup></a><a href="/tags/UFW/">UFW<sup>1</sup></a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发<sup>1</sup></a><a href="/tags/Nginx/">Nginx<sup>1</sup></a><a href="/tags/frp/">frp<sup>1</sup></a><a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">内网穿透<sup>1</sup></a><a href="/tags/PageRank/">PageRank<sup>1</sup></a><a href="/tags/EigenFactor/">EigenFactor<sup>1</sup></a><a href="/tags/Algorithm/">Algorithm<sup>1</sup></a><a href="/tags/Markdown/">Markdown<sup>1</sup></a><a href="/tags/OpenAlex/">OpenAlex<sup>1</sup></a><a href="/tags/Spark/">Spark<sup>1</sup></a><a href="/tags/bsub/">bsub<sup>1</sup></a><a href="/tags/HPC/">HPC<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">MarioBlog</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">玩转服务器 | Web 应用部署上线全流程（Ubuntu + Nginx + MySQL + Flask）</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="travellings_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html" title=""><i class="solitude fas fa-train"></i></a></div><div class="nav-button" id="foreverblog_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.foreverblog.cn/" title=""><i class="solitude fa-solid fa-blog"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="https://download.mariozzj.cn/img/picgo/202202221929984.png" alt="玩转服务器 | Web 应用部署上线全流程（Ubuntu + Nginx + MySQL + Flask）"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/%E7%8E%A9%E8%BD%AC%E6%9C%8D%E5%8A%A1%E5%99%A8/">玩转服务器</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>云服务器应用</span></a><a class="post-meta__tags" href="/tags/Web-%E5%BC%80%E5%8F%91/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Web 开发</span></a><a class="post-meta__tags" href="/tags/Nginx/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Nginx</span></a></div></div></div></div><h1 class="post-title">玩转服务器 | Web 应用部署上线全流程（Ubuntu + Nginx + MySQL + Flask）</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-wordcount"><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>你可能听过 LAMP / LNMP，这是搭建动态 Web 应用的常见环境组合，实质上是 Linux（系统）+ Apache / Nginx（Web 服务器） + MySQL（数据库）+ PHP（编程语言）环境的统称，这套组合较为流行，能够组合解决 Web 应用部署问题。</p>
+<p>当我们在 PC 上完成 Web 应用的开发，想要利用服务器发布到互联网上供更多人访问时，需要先完成服务器软件环境的准备，大体上就可以按照 LNMP 的思路进行：</p>
+<h1>服务器系统安装：Ubuntu</h1>
+<p>见 <a href="https://blog.mariozzj.cn/posts/75521d8e/#%E7%B3%BB%E7%BB%9F%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85">玩转服务器 | 购置自己的第一台服务器 | MarioZZJ’s blog</a></p>
+<p>后续教程也以 Ubuntu 系统为例</p>
+<h1>Web 服务器安装：Nginx</h1>
+<p>这里我们安装 Nginx，后续教程也利用 Nginx 展开</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> apt install nginx -y</span></span><br></pre></td></tr></table></figure>
+<p>安装后，执行 <code>nginx -v</code> 查看 Nginx 版本，如正确打印版本则安装成功。</p>
+<p>然后设置防火墙，以使得 Nginx 服务可以通过防火墙，这里以 ufw 为例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> ufw allow <span class="string">&#x27;Nginx Full&#x27;</span></span></span><br></pre></td></tr></table></figure>
+<p>最后设置开机启动 Nginx：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> nginx</span></span><br></pre></td></tr></table></figure>
+<h1>数据库服务安装：MySQL</h1>
+<p>如果 Web 项目需要用到数据库，在服务器上安装同版本数据库即可，下面以 MySQL 为例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> apt install mysql-server -y</span></span><br></pre></td></tr></table></figure>
+<p>安装完成后，查看服务状态检验是否安装成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> systemctl status mysql</span></span><br><span class="line"></span><br><span class="line">● mysql.service - MySQL Community Server</span><br><span class="line">     Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: enabled)</span><br><span class="line">     Active: active (running) since Sat 2022-02-19 12:31:43 CST; 3min 28s ago</span><br><span class="line">   Main PID: 592500 (mysqld)</span><br><span class="line">     Status: &quot;Server is operational&quot;</span><br><span class="line">      Tasks: 38 (limit: 4603)</span><br><span class="line">     Memory: 358.1M</span><br><span class="line">     CGroup: /system.slice/mysql.service</span><br><span class="line">             └─592500 /usr/sbin/mysqld</span><br></pre></td></tr></table></figure>
+<p>随后，我们配置防火墙，让 MySQL 服务通过防火墙：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> ufw allow mysql</span></span><br></pre></td></tr></table></figure>
+<p>完成后，我们运行 MySQL 的安全脚本，完成安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> mysql_secure_installation</span></span><br></pre></td></tr></table></figure>
+<p>这里主要是一些配置的设置，其中包括密码设置、远程访问许可等。如果允许了远程访问并打开了防火墙端口，后续可以在 PC 上直接使用数据库管理软件远程连接访问。</p>
+<p>安装完成后，配置开机启动 MySQL 服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo systemctl enable mysql</span><br></pre></td></tr></table></figure>
+<h1>编程语言环境安装：Python</h1>
+<p>服务器应当安装与原 Web 应用开发环境相同的编程语言环境。</p>
+<h2 id="安装语言环境">安装语言环境</h2>
+<p>这里以 Python 为例完成安装，Ubuntu 安装时自带 Python，如需安装可执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> apt install python</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装项目依赖">安装项目依赖</h2>
+<p>在本地项目根目录打开终端，键入命令，生成 <code>requirements.txt</code> 依赖文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">pip freeze &gt; ./requirements.txt</span></span><br></pre></td></tr></table></figure>
+<p><code>requirements.txt</code> 的形式如下，揭示项目需要依赖的第三方库及其版本。</p>
+<p>随后我们可以将整个项目复制到服务器我们指定的目录下，可以用 Git、XFtp、SCP 等方式，在服务器的项目目录下执行命令，可按照 <code>requirements.txt</code> 安装依赖的包：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">pip install -r ./requirements.txt</span></span><br></pre></td></tr></table></figure>
+<h1>服务启动：Flask</h1>
+<h2 id="启动-Web-应用服务：调试方式">启动 Web 应用服务：调试方式</h2>
+<p>以 Python 常用 Web 框架 Flask 为例，在本地调试环境下，我们一般通过运行根目录下的 <code>app.py</code> 启动服务。在服务器这边，我们也可以使用命令启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">python app.py</span></span><br><span class="line"> * Serving Flask app &#x27;app&#x27; (lazy loading)</span><br><span class="line"> * Environment: production</span><br><span class="line">   WARNING: This is a development server. Do not use it in a production deployment.</span><br><span class="line">   Use a production WSGI server instead.</span><br><span class="line"> * Debug mode: off</span><br><span class="line"> * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)</span><br></pre></td></tr></table></figure>
+<p>根据提示，服务在服务器上是成功启动了。但是要想通过像在本地调试一样，在互联网上发布 Web 应用并通过公网访问，还需要几步调整。</p>
+<h2 id="监听外部网络-IP">监听外部网络 IP</h2>
+<p>根据提示输出 <code> Running on http://127.0.0.1:5000/</code> 可知，Flask 服务仅仅可以在本地服务器地址 127.0.0.1 访问。当我们开发项目调试时，访问项目的就是本机，本机能够正常访问；而目前这个状态下，只有服务器自己能访问，其他设备作为外网设备并不能访问服务。解决的方法是修改对应的 <code>host</code> 参数，将其指定为 <code>0.0.0.0</code>，这样系统就会监听任意 IP 地址而不仅仅是本机。</p>
+<p>体现在 Flask 框架脚本代码中，修改 <code>run()</code> 方法，将</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.run()</span><br></pre></td></tr></table></figure>
+<p>修改为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="防火墙放行端口">防火墙放行端口</h2>
+<p>目前我们还没有绑定域名，需要通过服务启动时指定的端口访问，而服务器防火墙不一定放行了指定的端口。以 ufw 为例，放行该项目的 <code>5000</code> 端口，执行下述命令即可：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> ufw delete allow 5000</span></span><br><span class="line">Rule deleted</span><br><span class="line">Rule deleted (v6)</span><br></pre></td></tr></table></figure>
+<p>放行端口，监听所有 IP 均设置好后，再次启动项目，我们就可以在浏览器中输入 <code>http://&lt;ip地址&gt;:&lt;端口号&gt;</code> 访问项目：</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202202210019746.png" alt="公网访问项目"></p>
+<h2 id="Gunicorn-启动">Gunicorn 启动</h2>
+<p>最开始的提示信息中，有两行这样的信息：</p>
+<blockquote>
+<p>WARNING: This is a development server.</p>
+<p>Do not use it in a production deployment.  Use a production WSGI server instead.</p>
+</blockquote>
+<p>意思是这样的启动方式仅供调试使用，生产环境下，建议使用 WSGI 服务。这是因为 Flask 自带的 WSGI 性能一般，只用于调试（但是足够应付少量访问），我们可以使用 Gunicorn 方式启动服务。</p>
+<p>首先安装 <code>gunicorn</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">pip install gunicorn</span></span><br></pre></td></tr></table></figure>
+<p>然后使用 gunicorn 命令启动，首先了解 gunicorn 命令常用参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-c CONFIG, --config=CONFIG</span><br><span class="line"># 设定配置文件。</span><br><span class="line">-b BIND, --bind=BIND</span><br><span class="line"># 设定服务需要绑定的端口。建议使用HOST:PORT。</span><br><span class="line">-w WORKERS, --workers=WORKERS</span><br><span class="line"># 设置工作进程数。建议服务器每一个核心可以设置2-4个。</span><br><span class="line">-k MODULE</span><br><span class="line"># 选定异步工作方式使用的模块。</span><br></pre></td></tr></table></figure>
+<p>随后在项目根目录，执行类似下面的命令即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ gunicorn -w 3 -b 0.0.0.0:5000 app:app</span><br><span class="line"># 此处app:app中，第一个app为flask项目实例所在的包，第二个app为生成的flask项目实例</span><br></pre></td></tr></table></figure>
+<h2 id="后台启动、开机自启">后台启动、开机自启</h2>
+<p>事实上，远程通过上述方式启动的服务进程，需要保持远程终端连接，否则当连接断开（长时间未交互、网络不通畅等情况），进程可能被终止，Web 应用无法提供持续性服务。</p>
+<p>所以，如果我们想让我们的 Web 应用稳定地在服务器上运行，应当使用后台运行的方式。具体方法很多，如 <code>nohup</code>、<code>screen</code>、<code>tmux</code> 等命令。这里以 <code>nohup</code> 为例，在命令前添加 <code>nohup</code> 即可让命令后台执行。为保存运行日志，在命令尾端也添加输出重定向符号 <code>&gt;</code>，将原本打印到屏幕的输出重定向至我们指定的文件；最后加 <code>&amp;</code> 让我们可以继续与该终端交互：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">nohup</span> gunicorn -w 3 -b 0.0.0.0:5000 app:app &gt; runtest.log &amp;</span></span><br><span class="line">[1] 387135</span><br></pre></td></tr></table></figure>
+<p>当我们确认 Web 应用在服务器上正常运行，想要之后稳定地提供服务，可以将命令设为开机启动，这样如果服务器出现需要重启的情况，系统重新启动后也会自动启动 Web 应用，不用繁复操作。具体方法是编辑 <code>/etc/rc.local</code>，在文件结尾追加需要开机时启动的命令即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo vim /etc/rc.local</span><br></pre></td></tr></table></figure>
+<p>需要注意，<code>rc.local</code> 执行命令的用户是 <code>root</code>，目录不是项目根目录，所以贴入的脚本需要调整，例如，我贴入的是 <code>nohup gunicorn --chdir /home/mariozzj/github/COS-Viewer -w 6 -b 0.0.0.0:5000 app:app &gt; /home/mariozzj/github/COS-Viewer/runtest.log &amp;</code>（更改了执行地址），同时 <code>root</code> 账户安装了对应的依赖。</p>
+<p>完成之后，每次重启服务器，我们都无需单独去启动 Web 项目，服务器会根据 <code>rc.local</code> 开机自动执行脚本。</p>
+<h1>绑定域名</h1>
+<p>完成上述步骤，只要拥有 ip 地址、端口号，网络上的其他人就能够使用我们 Web 应用提供的服务了。但是要求其他人记住无规则的 ip 地址和端口号较为困难，所以我们还可以将一个容易识记的域名绑定到我们的服务上来，让其他人仅输入域名即可访问我们的服务。</p>
+<h2 id="购买域名">购买域名</h2>
+<p>我们可以前往我们购买云服务器的服务商处（也可选择其他服务商）购买域名，以腾讯云为例，进入 <a target="_blank" rel="noopener" href="https://dnspod.cloud.tencent.com/">DNSPOD</a>，搜索我们感兴趣的域名是否被他人注册，如果未被注册即可购买域名。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202202212259040.png" alt="域名认证提示信息"></p>
+<p>在我国使用域名需经实名审查，按要求提交实名信息后，等待服务商、管局通知后，待服务商启动域名解析服务，即可进入下一步域名解析。</p>
+<h2 id="域名解析">域名解析</h2>
+<p>域名解析是将拥有的域名或其子域名指向特定的 IP 地址 / 域名地址 / 机构等，向 DNS 登记，这样其他人访问域名时，DNS 就会提供给客户端我们设定好的终点。</p>
+<p>进入服务商的域名控制台，添加记录，填写子域名前缀，选择记录类型为 A（指向 IPV4 地址），记录值填入服务器的 IP 地址：</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202202220038684.png" alt="域名解析记录添加"></p>
+<p>操作后，该地址即可指向服务器。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">ping test.mariozzj.asia</span>           </span><br><span class="line">Pinging test.mariozzj.asia [88.88.88.88] with 32 bytes of data:</span><br></pre></td></tr></table></figure>
+<h1>反向代理：Nginx</h1>
+<p>完成域名解析后，我们就实现了域名到服务器 IP 的映射。使用 <code>&lt;域名&gt;:&lt;端口号&gt;</code> 就可以访问我们的项目。利用反向代理，我们可以让其他人仅通过记忆域名，免填写端口号访问项目（端口为默认端口 80 / 443），这也有利于我们在一台服务器上部署多个项目的情况。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202202221108764.png" alt="反向代理"></p>
+<p>反向代理简单来说就是启用一个反向代理服务，负责监听一个外来端口，根据客户端提供的信息找出特定的服务端服务提供给客户端，客户端不知道这个服务端服务实际在哪个端口。这里我们以 Nginx 为例设置反向代理：</p>
+<h2 id="安装-Nginx">安装 Nginx</h2>
+<p>执行命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> apt install nginx -y</span></span><br></pre></td></tr></table></figure>
+<p>安装后，检查是否安装成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> nginx -v</span></span><br><span class="line">nginx version: nginx/1.18.0 (Ubuntu)</span><br></pre></td></tr></table></figure>
+<h2 id="防火墙配置允许-Nginx">防火墙配置允许 Nginx</h2>
+<p>使用 ufw，执行命令允许 Nginx 服务通过防火墙：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> ufw allow <span class="string">&#x27;Nginx Full&#x27;</span></span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可用应用服务为 <code>Nginx HTTP</code>、<code>Nginx HTTPS</code>、<code>Nginx Full</code>，分别对应 80、443、80&amp;443端口服务</p>
+</blockquote>
+<p>检查是否配置成功：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> ufw status</span></span><br><span class="line">Status: active</span><br><span class="line"></span><br><span class="line">To                         Action      From</span><br><span class="line">--                         ------      ----</span><br><span class="line">22                         ALLOW       Anywhere</span><br><span class="line">Nginx Full                 ALLOW       Anywhere</span><br><span class="line">3306/tcp                   ALLOW       Anywhere</span><br><span class="line">22 (v6)                    ALLOW       Anywhere (v6)</span><br><span class="line">Nginx Full (v6)            ALLOW       Anywhere (v6)</span><br><span class="line">3306/tcp (v6)              ALLOW       Anywhere (v6)</span><br></pre></td></tr></table></figure>
+<h2 id="开机启动-Nginx">开机启动 Nginx</h2>
+<p>执行 start 命令可以在 Nginx 关闭的情况下启动：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> systemctl start nginx</span></span><br></pre></td></tr></table></figure>
+<p>如果要在开机时自动启动 Nginx，也可用 <code>systemctl</code> 配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> nginx</span></span><br></pre></td></tr></table></figure>
+<p>启动 Nginx 后，访问服务器 IP 地址，或对应域名，即可看到 Nginx 默认页面</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202202221545509.png" alt="Nginx 默认页面"></p>
+<h2 id="配置反向代理">配置反向代理</h2>
+<p>在 <code>/etc/nginx/sites-available</code> 下存放着 Nginx 服务器块配置文件，我们可以新建一个配置文件用于当前 Web 应用的反向代理：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> /etc/nginx/sites-available</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> <span class="built_in">touch</span> test.mariozzj.asia <span class="comment"># 添加文件</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> vim test.mariozzj.asia   <span class="comment"># 编辑文件</span></span></span><br></pre></td></tr></table></figure>
+<p>文件输入以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">  listen 80;</span><br><span class="line">  server_name  test.mariozzj.asia;</span><br><span class="line">  index  index.php index.html index.htm;</span><br><span class="line"></span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_pass  http://127.0.0.1:5000; # 转发规则，将来自域名的访问代理至5000端口的应用</span><br><span class="line">    proxy_set_header Host $proxy_host; # 修改转发请求头，使应用可以收到真实的请求</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>保存文件后，我们还需要将这个配置文件软链接到 <code>/etc/nginx/sites-enabled</code> 以启用。执行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> <span class="built_in">ln</span> -s /etc/nginx/sites-available/test.mariozzj.asia /etc/nginx/sites-enabled/</span></span><br></pre></td></tr></table></figure>
+<p>创建完软链接，为使配置文件生效，我们可以重启服务器，也可以重启 Nginx 服务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> systemctl restart nginx</span></span><br></pre></td></tr></table></figure>
+<p>配置生效后，我们就可以不指定端口直接访问我们的 Web 应用了：</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202202221626565.png" alt="纯域名访问应用"></p>
+<h1>合法化、安全化</h1>
+<h2 id="域名备案">域名备案</h2>
+<p>根据国家相关法规的相关要求，使用域名需要备案，如果域名是首次购买且映射到国内的服务器，则需要进行备案，否则随时可能被服务商暂停接入。备案一般只需备案二级域名，即我们购买的主域名，对其子域名无需单独备案。关于备案的相关流程可以查看 <a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/243/37402">网站备案 首次备案 - 备案资料填写流程 - 文档中心 - 腾讯云 (tencent.com)</a>。</p>
+<p>备案流程完成之后，可以根据回函提示，在网站页面底端添加备案相关信息：</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202202221644105.png" alt="备案信息"></p>
+<h2 id="SSL-证书申请与部署">SSL 证书申请与部署</h2>
+<p>你可能留意到，之前访问应用时，浏览器会提示“不安全”，这是因为我们是以 http 方式访问，如果我们换用 https 方式访问，保障 Web 应用安全性的同时（体现在密文传输等），也能使得 Web 应用得到更广支持。</p>
+<p>首先，我们可以前往域名服务商控制台，为域名申请证书（也可利用 Certbot 等服务获取部署证书）：</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202202221711069.png" alt="申请证书"></p>
+<p>证书签发后，我们可以在证书列表下载证书，对应 Nginx 的证书文件夹有四个文件，将其中文件名为 <code>&lt;域名&gt;.key</code> 代表的私钥文件和文件名为 <code>&lt;域名&gt;_bundle.crt</code> 代表的证书文件放在 <code>/etc/nginx/certs</code> 目录下（如无 certs 目录可自行创建）</p>
+<p>然后，编辑我们在上一节编辑过的配置文件，将其修改为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">  listen 80;</span><br><span class="line">  listen 443 ssl; # 监听 HTTPS 的 443 端口</span><br><span class="line">  ssl on;</span><br><span class="line">  ssl_certificate /etc/nginx/certs/test.mariozzj.asia_bundle.crt; # 证书地址</span><br><span class="line">  ssl_certificate_key /etc/nginx/certs/test.mariozzj.asia.key;    # 私钥地址</span><br><span class="line">  ssl_session_timeout 5m;</span><br><span class="line">  ssl_protocols TLSv1.2 TLSv1.3;</span><br><span class="line">  ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;</span><br><span class="line">  ssl_prefer_server_ciphers on;</span><br><span class="line"></span><br><span class="line">  server_name  test.mariozzj.asia;</span><br><span class="line">  index  index.php index.html index.htm;</span><br><span class="line"></span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_pass  http://127.0.0.1:5000; # 转发规则</span><br><span class="line">    proxy_set_header Host $proxy_host; # 修改转发请求头，使应用可以收到真实的请求</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后重启服务，这样，我们就完成了证书的部署，以 https 方式提供我们的 web 服务了！</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="https://download.mariozzj.cn/img/static/icon256.jpg"></a><div class="post-copyright__author_name">MarioBlog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div><div class="post-reward"><div class="reward-button" title="赞赏作者" onclick="AddRewardMask()"><i class="solitude fa-solid fa-heart"></i>赞赏作者</div><div class="reward-main"><ul class="reward-all"><span class="reward-title">感谢您的赞赏</span><ul class="reward-group"><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信" style="border-color: #07c160"></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝" style="border-color: #108ee9"></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/"><div class="reward-text">赞赏名单</div><div class="reward-dec">您的支持是对我实现写作价值的最大鼓励。</div></a></ul></div></div><script>function RemoveRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "none";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "none";
+    }
+}
+
+function AddRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "flex";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "flex";
+    }
+}</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">MarioBlog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>云服务器应用<span class="tagsPageCount">6</span></span></a><a class="post-meta__tags" href="/tags/Web-%E5%BC%80%E5%8F%91/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Web 开发<span class="tagsPageCount">1</span></span></a><a class="post-meta__tags" href="/tags/Nginx/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Nginx<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/9364d192/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">玩转服务器 | 使用 frp 实现内网穿透</div></div></a></div><div class="next-post pull-right"><a href="/posts/e0d78514/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">玩转服务器 | 服务器的简单防火墙管理</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span><span class="count"> ()</span></div></div><div class="comment-wrap"><div id="giscus-wrap"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="https://download.mariozzj.cn/img/static/icon256.jpg"></div><div class="author-info__description_group"><div class="author-info__description"></div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">MarioZZJ</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">服务器系统安装：Ubuntu</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Web 服务器安装：Nginx</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">数据库服务安装：MySQL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">编程语言环境安装：Python</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%AF%AD%E8%A8%80%E7%8E%AF%E5%A2%83"><span class="toc-text">安装语言环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%A1%B9%E7%9B%AE%E4%BE%9D%E8%B5%96"><span class="toc-text">安装项目依赖</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">服务启动：Flask</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8-Web-%E5%BA%94%E7%94%A8%E6%9C%8D%E5%8A%A1%EF%BC%9A%E8%B0%83%E8%AF%95%E6%96%B9%E5%BC%8F"><span class="toc-text">启动 Web 应用服务：调试方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E5%90%AC%E5%A4%96%E9%83%A8%E7%BD%91%E7%BB%9C-IP"><span class="toc-text">监听外部网络 IP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E6%94%BE%E8%A1%8C%E7%AB%AF%E5%8F%A3"><span class="toc-text">防火墙放行端口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Gunicorn-%E5%90%AF%E5%8A%A8"><span class="toc-text">Gunicorn 启动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E5%8F%B0%E5%90%AF%E5%8A%A8%E3%80%81%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF"><span class="toc-text">后台启动、开机自启</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">绑定域名</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%AD%E4%B9%B0%E5%9F%9F%E5%90%8D"><span class="toc-text">购买域名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90"><span class="toc-text">域名解析</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">反向代理：Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Nginx"><span class="toc-text">安装 Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E9%85%8D%E7%BD%AE%E5%85%81%E8%AE%B8-Nginx"><span class="toc-text">防火墙配置允许 Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8-Nginx"><span class="toc-text">开机启动 Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="toc-text">配置反向代理</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">合法化、安全化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%9F%E5%90%8D%E5%A4%87%E6%A1%88"><span class="toc-text">域名备案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSL-%E8%AF%81%E4%B9%A6%E7%94%B3%E8%AF%B7%E4%B8%8E%E9%83%A8%E7%BD%B2"><span class="toc-text">SSL 证书申请与部署</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务"><img alt="调用大模型 API 解决简单信息处理任务" src="https://download.mariozzj.cn/img/picgo/202409041617877.png"></a><div class="content"><span class="title" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务">调用大模型 API 解决简单信息处理任务</span><span class="article-recent_post_categories" href="/posts/573fc6c3/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img alt="NJUHPC 运行 Python 程序简明流程" src="https://download.mariozzj.cn/img/picgo/202311021615799.png"></a><div class="content"><span class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</span><span class="article-recent_post_categories" href="/posts/6ab96d9d/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录" src="https://download.mariozzj.cn/img/picgo/202210151013511.png"></a><div class="content"><span class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</span><span class="article-recent_post_categories" href="/posts/fb1f3a84/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img alt="让 Markdown 成为写作的起点" src="https://download.mariozzj.cn/img/picgo/202204191318445.png"></a><div class="content"><span class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</span><span class="article-recent_post_categories" href="/posts/fd830caf/">工具干货</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor"><img alt="两种图算法：PageRank &amp; EigenFactor" src="https://download.mariozzj.cn/img/picgo/202204191304070.png"></a><div class="content"><span class="title" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor">两种图算法：PageRank &amp; EigenFactor</span><span class="article-recent_post_categories" href="/posts/1d43c0e5/">数科知识</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:i@mariozzj.cn" title="Mail"><i class="solitude  fab fa-envelope"></i></a><div class="nolazyload footer_mini_logo" id="footer_mini_logo" title="返回顶部" onclick="sco.toTop()"><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="返回顶部"></div><a class="deal_link" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.linkedin.com/in/mariozzj/" title="LinkedIn"><i class="solitude  fab fa-linkedin"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2020 - 2024 By&nbsp;<a class="footer-bar-link" href="/">MarioZZJ</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" alt="赣ICP备20002056号-2">赣ICP备20002056号-2</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261" alt="鄂公网安备42010602004261号">鄂公网安备42010602004261号</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Solitude">Solitude</a><a class="footer-bar-link cc" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><i class="solitude fa-solid fa-copyright"></i><i class="solitude fa-brands fa-creative-commons-by"></i><i class="solitude fa-brands fa-creative-commons-nc"></i><i class="solitude fa-brands fa-creative-commons-nd"></i></a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.12"></script><script src="/js/main.js?v=2.0.12"></script><script src="/js/third_party/waterfall.min.js?v=2.0.12"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"><script>(()=>{
+    const getGiscusTheme = theme => {
+        return theme === 'dark' ? 'dark' : 'light'
+    }
+
+    const loadGiscus = () => {
+        const config = Object.assign({
+            src: 'https://giscus.app/client.js',
+            'data-repo': 'MarioZZJ/giscus',
+            'data-repo-id': 'R_kgDOMwtu9A',
+            'data-category-id': 'DIC_kwDOMwtu9M4CiaaK',
+            'data-mapping': 'pathname',
+            'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+            'data-reactions-enabled': '1',
+            crossorigin: 'anonymous',
+            async: true
+        },null)
+
+        const ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').appendChild(ele)
+    }
+
+    const changeGiscusTheme = theme => {
+        const sendMessage = message => {
+            const iframe = document.querySelector('iframe.giscus-frame')
+            if (!iframe) return
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app')
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: getGiscusTheme(theme)
+            }
+        });
+    }
+
+    utils.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+    if ('Giscus' === 'Giscus' || !true) {
+        if (true) {
+            const giscusWrap = document.getElementById('giscus-wrap')
+            if (giscusWrap) {
+                utils.loadComment(giscusWrap, loadGiscus)
+            }
+        } else {
+            loadGiscus()
+        }
+    } else {
+        window.loadOtherComment = loadGiscus
+    }
+})()</script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fa-solid fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=2.0.12"></script><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["posts/573fc6c3/","posts/6ab96d9d/","posts/fb1f3a84/","posts/fd830caf/","posts/1d43c0e5/","posts/9364d192/","posts/7f568f00/","posts/e0d78514/","posts/5c25bf34/","posts/75521d8e/","posts/8d6b8da8/","posts/2c01ed8b/","posts/4449c636/","posts/672ba085/","posts/28d53052/","posts/2b373355/","posts/2b373354/","posts/52d95125/","posts/aba3bc4e/","posts/16cc73c/","posts/569080df/","posts/ffffffff/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

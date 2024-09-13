@@ -1,0 +1,433 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>两种图算法：PageRank &amp; EigenFactor | MarioBlog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://download.mariozzj.cn/img/static/icon256.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.12"><!-- inject head--><meta name="google-site-verification" content="google-site-verification=ATi1JuhDx8tMQDtqhsnoa90uIXlU2vjn6wRkMJMmNOw"><link rel="canonical" href="https://blog.mariozzj.cn/posts/1d43c0e5/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"><!-- Open Graph--><meta name="description" content="本文将介绍两种图数据的算法，PageRank 和 EigenFactor，都可以用于图数据的链接分析，是无监督算法。首先将介绍 PageRank，这将有助于理解 EigenFactor。 PageRank PageRank 算法于 1998 年由 Google 公司的 Larry Page 等提出，"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="MarioBlog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://download.mariozzj.cn/img/static/icon256.jpg"><link rel="apple-touch-icon" href="https://download.mariozzj.cn/img/static/icon256.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.12' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2020-05-17 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。"}},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: ["You'll make it.","You're gonna make it.","Good luck, stranger."],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false,
+    color: false,
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><div id="loading-box" onclick="preloader.endLoading();" style="zoom:1"><div class="loading-bg"><img class="loading-img nolazyload" src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="loading image"></div></div><script>const preloader = {
+    isLoaded: false,
+    endLoading: () => {
+        if (!preloader.isLoaded) {
+            document.getElementById('loading-box').classList.add('loaded');
+            preloader.isLoaded = true;
+            preloader.togglePaceDone();
+        }
+    },
+    initLoading: () => {
+        document.getElementById('loading-box').classList.remove('loaded');
+        preloader.isLoaded = false;
+        preloader.togglePaceDone();
+    },
+    togglePaceDone: () => {
+        document.getElementById('body').className = preloader.isLoaded ? 'pace-done' : '';
+    }
+}
+
+window.addEventListener('load', () => {
+    preloader.endLoading();
+});
+
+window.addEventListener('pjax:send', () => {
+    preloader.initLoading();
+});
+
+document.addEventListener('pjax:complete', () => {
+    preloader.endLoading();
+});
+
+setTimeout(() => {
+    preloader.endLoading();
+}, 5000);</script><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/Hexo-js/">Hexo.js<sup>1</sup></a><a href="/tags/Github/">Github<sup>1</sup></a><a href="/tags/Jupyter/">Jupyter<sup>1</sup></a><a href="/tags/Python/">Python<sup>4</sup></a><a href="/tags/NoSQL/">NoSQL<sup>1</sup></a><a href="/tags/Neo4J/">Neo4J<sup>1</sup></a><a href="/tags/SNA/">SNA<sup>1</sup></a><a href="/tags/igraph/">igraph<sup>1</sup></a><a href="/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/">桌面游戏<sup>2</sup></a><a href="/tags/ML/">ML<sup>1</sup></a><a href="/tags/Regression/">Regression<sup>1</sup></a><a href="/tags/Linux/">Linux<sup>3</sup></a><a href="/tags/Shell/">Shell<sup>3</sup></a><a href="/tags/%E6%B8%B8%E6%88%8F%E3%80%8A%E9%A5%A5%E8%8D%92%E3%80%8B/">游戏《饥荒》<sup>1</sup></a><a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/">云服务器应用<sup>6</sup></a><a href="/tags/%E8%81%94%E6%9C%BA%E6%B8%B8%E6%88%8F/">联机游戏<sup>1</sup></a><a href="/tags/SSH/">SSH<sup>1</sup></a><a href="/tags/UFW/">UFW<sup>1</sup></a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发<sup>1</sup></a><a href="/tags/Nginx/">Nginx<sup>1</sup></a><a href="/tags/frp/">frp<sup>1</sup></a><a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">内网穿透<sup>1</sup></a><a href="/tags/PageRank/">PageRank<sup>1</sup></a><a href="/tags/EigenFactor/">EigenFactor<sup>1</sup></a><a href="/tags/Algorithm/">Algorithm<sup>1</sup></a><a href="/tags/Markdown/">Markdown<sup>1</sup></a><a href="/tags/OpenAlex/">OpenAlex<sup>1</sup></a><a href="/tags/Spark/">Spark<sup>1</sup></a><a href="/tags/bsub/">bsub<sup>1</sup></a><a href="/tags/HPC/">HPC<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">MarioBlog</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">两种图算法：PageRank &amp; EigenFactor</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="travellings_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html" title=""><i class="solitude fas fa-train"></i></a></div><div class="nav-button" id="foreverblog_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.foreverblog.cn/" title=""><i class="solitude fa-solid fa-blog"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="https://download.mariozzj.cn/img/picgo/202204191304070.png" alt="两种图算法：PageRank &amp; EigenFactor"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/%E6%95%B0%E7%A7%91%E7%9F%A5%E8%AF%86/">数科知识</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Python</span></a><a class="post-meta__tags" href="/tags/PageRank/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>PageRank</span></a><a class="post-meta__tags" href="/tags/EigenFactor/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>EigenFactor</span></a><a class="post-meta__tags" href="/tags/Algorithm/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Algorithm</span></a></div></div></div></div><h1 class="post-title">两种图算法：PageRank &amp; EigenFactor</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-wordcount"><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>本文将介绍两种图数据的算法，PageRank 和 EigenFactor，都可以用于图数据的链接分析，是无监督算法。首先将介绍 PageRank，这将有助于理解 EigenFactor。</p>
+<h1>PageRank</h1>
+<p>PageRank 算法于 1998 年由 Google 公司的 Larry Page 等提出，最初用于网页排序。</p>
+<p>我们都知道网页上可以存在指向其他网页的超链接，以网页本身为结点，构建基于超链接指向的连边，我们就得到了一个图，现在就可以基于这个图数据进行分析。</p>
+<h2 id="基本理解">基本理解</h2>
+<p>我们可以对结点（网页）进行重要性评价，除去网页质量本身，通过图的拓扑结构我们也能对结点进行评价，如<strong>基于中心性的评价</strong>认为，如果一个结点能被较多其他结点连接到（即入度较高），这个结点就处于较中心的位置，重要性较高。而这样一种方法的缺陷也很明显，就是它在计算影响力时，<strong>仅仅考虑了连边的数量，而没有考虑连接到结点本身的其他结点的影响力</strong>。这很容易理解，例如有两个网页各自都被三个其他网页链接到，但是前者是被三个不知名网站链接到，后者是被三个知名网站链接到，虽然我们都明白后者的影响力更高，但是在基于入度的评价中，二者影响力相同；或者再举一个社会网络中的例子，你和小明都被三个人认识，认识你的三个人是隔壁村的小学生，而认识小明的是三个国家的总统，虽然你们都仅被三个人认识，但是你们实际的影响力却是悬殊的。</p>
+<p>而 PageRank 就解决了这样的问题，在考虑连入结点的边对结点影响力贡献的同时，也考虑了和结点相连结点的影响力对该结点的影响力的贡献。不难理解，PageRank 是一种递归算法，通过在图中不断迭代，实现计算结点的影响力。</p>
+<h2 id="PageRank-基本定义">PageRank 基本定义</h2>
+<h3 id="基本定义">基本定义</h3>
+<p>给定一个包含 $n$ 个结点<strong>强连通且非周期性的有向图</strong>，在有向图上定义<strong>随机游走模型</strong>，即一阶马尔可夫链。其随机游走的特点是从一个结点到有有向边连出的所有结点的<strong>转移概率相等</strong>，转移矩阵为<br>
+$M$。这个马尔可夫链具有平稳分布 $R$<br>
+$$ MR=R $$<br>
+平稳分布 $R$ 称为这个有向图的 <strong>PageRank</strong>。$R$ 的各个分量称为各个结点的 PageRank 值。<br>
+$$ R= \left[\begin{matrix} PR(v_1) \ PR(v_2) \ \cdots \ PR(v_n) \end{matrix}\right] $$<br>
+其中 $PR(v_i)（i=1,2,\cdots,n）$ ，表示结点的的 PageRank 值。</p>
+<h3 id="有向图、强连通图、周期性图">有向图、强连通图、周期性图</h3>
+<p>有向图中，要求边是有方向的，有起点和终点。网页、超链接组成的图就可以理解为<strong>有向图</strong>。</p>
+<p>在有向图中，从一个结点出发到达另一个结点，所经过的边的一个序列称为一条路径，路径上边的个数称为路径的长度。如果一个有向图从其中任何一个结点出发可以到达其他任何一个结点，就称这个有向图是<strong>强连通图</strong>。</p>
+<p>假设 $k$ 是一个大于 1 的自然数，如果从有向图的一个结点出发返回到这个结点的路径的长度都是 $k$ 的倍数，那么称这个结点为周期性结点。如果一个有向图不含有周期性结点，则称这个有向图为<strong>非周期性图</strong>，否则为周期性图。<br>
+<img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/20220330210548.png" alt="有向图、强连通图、非周期性图"></p>
+<h3 id="随机游走模型、一阶马尔可夫链">随机游走模型、一阶马尔可夫链</h3>
+<p>在有向图上定义随机游走模型，此时结点表示状态，连边表示状态的转移，这样的随机游走形成一阶马尔可夫链，也就是说，<strong>随机游走者在 $(t+1)$ 时刻访问某结点的概率仅仅与 $t$ 时刻的状态有关</strong>，和之前的状态无关。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/20220331193211.png" alt="图(a)"></p>
+<p>我们又定义，其随机游走的特点是从一个结点到有有向边连出的所有结点的<strong>转移概率相等</strong>，转移矩阵为<br>
+$M$。也就是说，<strong>从一个结点移动到其所有指向的其他节点的概率相等</strong>，以强连通且非周期性的有向图(a)为例，假设当前时刻结点 $A$，那么下一时刻转移到结点 $B、C、D$ 的概率相等，即 $m_{AB}=m_{AC}=m_{AD}=\dfrac{1}{3}$，并以 $0$ 概率转移到 $A$，这一概率仅依赖于当前状态。以此类推我们可以算出其他转移概率，并得到转移矩阵 $M$：</p>
+<p>$$ M = [m_{ij}]_{n \times n} = \left[\begin{matrix} 0 &amp;\dfrac{1}{2} &amp;1 &amp;0 \ \dfrac{1}{3} &amp;0 &amp;0 &amp;\dfrac{1}{2} \ \dfrac{1}{3} &amp;0 &amp;0 &amp;\dfrac{1}{2} \ \dfrac{1}{3} &amp;\dfrac{1}{2} &amp;0 &amp;0  \end{matrix}\right] $$</p>
+<p>随机游走<strong>在某个时刻 $t$ 访问各个结点的概率分布</strong>就是马尔可夫链在时刻 $t$ 的状态分布，可以<strong>用一个 $n$ 维列向量 $R_t$ 表示</strong>，那么在 $(t+1)$ 时刻访问各个结点的概率分布 $R_{t+1}$ 满足<br>
+$$ R_{t+1} = MR_t $$</p>
+<h3 id="求解-PageRank">求解 PageRank</h3>
+<p>当图结构确定时，转移矩阵也是确定的。回到 PageRank 的基本定义，在初始状态下我们并未处于任何结点，此时访问各个结点的概率相等，即<br>
+$$ R_0 = \left[\begin{matrix} \dfrac{1}{n} \ \dfrac{1}{n} \ \cdots \ \dfrac{1}{n} \end{matrix}\right] $$<br>
+而之后状态下的概率分布则会与上一时刻的状态有关，分别为 $MR_0，M^2R_0，\cdots，M^tR_0，\cdots$</p>
+<p>根据马尔可夫链平稳分布定理，强连通且非周期的有向图上定义的随机游走模型（马尔可夫链） ，在图上的随机游走当时间趋于无穷时状态分布<strong>收敛于唯一的平稳分布</strong> $R$，即<br>
+$$ \lim\limits_{t \to \infty} M^tR_0 = R $$<br>
+且满足<br>
+$$ MR=R=\left[\begin{matrix} PR(v_1) \ PR(v_2) \ \cdots \ PR(v_n) \end{matrix}\right]  $$<br>
+不难得出<br>
+$$ PR(v_i) \ge 0，i=1,2,\cdots,n $$ $$ \sum\limits_{i=1}^n PR(v_i) = 1 $$ $$ PR(v_i) = \sum\limits_{v_j \in M(v_i)} \dfrac{PR(v_j)}{L(v_j)}，i=1,2,\cdots,n $$<br>
+这里 $M(v_i)$ 表示指向结点 $v_i$ 的结点集合， $L_(v_j)$ 表示结点 $v_j$ 连出有向边的个数。</p>
+<p>例如，我们可以以图(a)为例求解 PageRank。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/20220331193211.png" alt="图(a)"></p>
+<p>根据图(a)得出转移矩阵<br>
+$$ M = [m_{ij}]_{n \times n} = \left[\begin{matrix} 0 &amp;\dfrac{1}{2} &amp;1 &amp;0 \ \dfrac{1}{3} &amp;0 &amp;0 &amp;\dfrac{1}{2} \ \dfrac{1}{3} &amp;0 &amp;0 &amp;\dfrac{1}{2} \ \dfrac{1}{3} &amp;\dfrac{1}{2} &amp;0 &amp;0  \end{matrix}\right] $$<br>
+初始分布向量<br>
+$$ R_0 = \left[\begin{matrix} \dfrac{1}{4} \ \dfrac{1}{4} \ \dfrac{1}{4} \ \dfrac{1}{4} \end{matrix}\right] $$<br>
+以转移矩阵 $M$ 连乘初始向量 $R_0$ 得到向量序列<br>
+$$ \left[\begin{matrix} \dfrac{1}{4} \ \dfrac{1}{4} \ \dfrac{1}{4} \ \dfrac{1}{4} \end{matrix}\right]，<br>
+\left[\begin{matrix} \dfrac{9}{24} \ \dfrac{5}{24} \ \dfrac{5}{24} \ \dfrac{5}{24} \end{matrix}\right]，<br>
+\left[\begin{matrix} \dfrac{15}{48} \ \dfrac{11}{48} \ \dfrac{11}{48} \ \dfrac{11}{48} \end{matrix}\right]，<br>
+\left[\begin{matrix} \dfrac{11}{32} \ \dfrac{7}{32} \ \dfrac{7}{32} \ \dfrac{7}{32} \end{matrix}\right]，<br>
+\cdots，<br>
+\left[\begin{matrix} \dfrac{3}{9} \ \dfrac{2}{9} \ \dfrac{2}{9} \ \dfrac{2}{9} \end{matrix}\right]$$<br>
+最终得到平稳分布 $R$，即有向图的 PageRank 值<br>
+$$ R = \left[\begin{matrix} \dfrac{3}{9} \ \dfrac{2}{9} \ \dfrac{2}{9} \ \dfrac{2}{9} \end{matrix}\right] $$</p>
+<p>同时给出 Python 程序实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Simple_PageRank</span>(<span class="params">M, tol=<span class="number">0</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Calculates PageRank</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        M: an n*n numpy.matrix, the stochastic matrix of a strongly connected aperiodic graph.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        R: the PageRank Vector for the graph</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n = M.shape[<span class="number">0</span>]</span><br><span class="line">    R0 = np.mat(np.ones(n)).T/n</span><br><span class="line">    diff = np.mat(np.ones(n)).T</span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> np.square(diff).<span class="built_in">sum</span>() &gt; tol:</span><br><span class="line">        R = M * R0</span><br><span class="line">        diff = R - R0</span><br><span class="line">        R0 = R; i+=<span class="number">1</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\riter:&#123;&#125;&quot;</span>.<span class="built_in">format</span>(i),end=<span class="string">&quot;&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> R</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">M = np.mat([[ <span class="number">0</span> ,<span class="number">1</span>/<span class="number">2</span>, <span class="number">1</span> , <span class="number">0</span> ],</span><br><span class="line">            [<span class="number">1</span>/<span class="number">3</span>, <span class="number">0</span> , <span class="number">0</span> ,<span class="number">1</span>/<span class="number">2</span>],</span><br><span class="line">            [<span class="number">1</span>/<span class="number">3</span>, <span class="number">0</span> , <span class="number">0</span> ,<span class="number">1</span>/<span class="number">2</span>],</span><br><span class="line">            [<span class="number">1</span>/<span class="number">3</span>,<span class="number">1</span>/<span class="number">2</span>, <span class="number">0</span> , <span class="number">0</span> ]])</span><br><span class="line">Simple_PageRank(M)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">iter:53</span><br><span class="line">matrix([[0.33333333],</span><br><span class="line">        [0.22222222],</span><br><span class="line">        [0.22222222],</span><br><span class="line">        [0.22222222]])</span><br></pre></td></tr></table></figure>
+<h2 id="PageRank-一般定义">PageRank 一般定义</h2>
+<h3 id="基本定义不适用的情况">基本定义不适用的情况</h3>
+<p>一般的有向图<strong>未必满足强连通且非周期性的条件</strong>。比如，在互联网，大部分网页没有连接出去的超链接， 也就是说从这些网页无法跳转到其他网页。所以 PageRank 的基本定义不适用。<br>
+<img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/20220331211226.png" alt="图(a')"><br>
+如图(a’)，结点 $C$ 没有链出，如果写出转移矩阵并进行迭代计算，会发现最终极限为全 0 向量：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">M = np.mat([[ <span class="number">0</span> ,<span class="number">1</span>/<span class="number">2</span>, <span class="number">0</span> , <span class="number">0</span> ],</span><br><span class="line">            [<span class="number">1</span>/<span class="number">3</span>, <span class="number">0</span> , <span class="number">0</span> ,<span class="number">1</span>/<span class="number">2</span>],</span><br><span class="line">            [<span class="number">1</span>/<span class="number">3</span>, <span class="number">0</span> , <span class="number">0</span> ,<span class="number">1</span>/<span class="number">2</span>],</span><br><span class="line">            [<span class="number">1</span>/<span class="number">3</span>,<span class="number">1</span>/<span class="number">2</span>, <span class="number">0</span> , <span class="number">0</span> ]])</span><br><span class="line">Simple_PageRank(M, tol=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">iter:1171</span><br><span class="line">matrix([[2.15506015e-162],</span><br><span class="line">        [3.14084309e-162],</span><br><span class="line">        [3.14084309e-162],</span><br><span class="line">        [3.14084309e-162]])</span><br></pre></td></tr></table></figure>
+<p>而这与实际不符，因此需要介绍 PageRank 的一般定义。</p>
+<h3 id="一般定义：导入平滑项">一般定义：导入平滑项</h3>
+<p>PageRank 一般定义的想法是在基本定义的基础上导入平滑项。<br>
+给定一个含有 $n$ 个结点的<strong>任意有向图</strong>，在有向图上定义一个一般的随机游走模型，即一阶马尔可夫链。一般的随机游走模型的转移矩阵由两部分的线性组合组成，一部分是<strong>有向图的基本转移矩阵 $M$</strong>， 表示从一个结点到其连出的所有结点的转移概率相等，另一部分是<strong>完全随机的转移矩阵</strong>，表示从任意一个结点到任意一个结点的转移概率都是 $\dfrac{1}{n}$，线性组合系数为阻尼因子 $d$ （$0 \le d \le 1$）。 这个一般随机游走的马尔可夫链存在平稳分布，记作 $R$。定义平稳分布向量 $R$ 为这个有向图的一般 PageRank。$R$ 由公式<br>
+$$ R=dMR+\dfrac{1-d}{n}\boldsymbol{1} $$<br>
+决定，其中 $\boldsymbol{1}$ 是所有分量为 1 的 n 维向量。</p>
+<p>定义之中，转移矩阵由两部分组成，有向图的基本转移矩阵包含了有向图的结构，随机游走者依据有向图的边进行随机游走，而另一部分，即完全随机的转移矩阵，表示随机游走者有一定概率（概率为 $1-d$，一般根据经验参数取值 $d=0.85$）等几率跳到图上任意一个结点（跳转到任意一个结点的概率都为 $\dfrac{1}{n}$）</p>
+<p>在一般 PageRank 定义下，互联网浏览者能按照以下方法在网上随机游走：在任意一个网页上，浏览者<strong>以概率 $d$ 决定按照超链接随机跳转</strong>（以等概率从连接出去的超链接跳转到下一个网页），或者<strong>以概率 $(1-d)$ 决定完全随机跳转</strong>（以等概率 $\dfrac{1}{n}$ 跳转到任意一个网页）。<strong>第二个机制就保证了从没有连接出去的超链接网页也可以跳转出</strong>。这样可以保证平稳分布，即一般 PageRank 值（马尔科夫链的平稳分布）的存在，因而一般 PageRank 可以适用于任意有向图。</p>
+<h3 id="在一般有向图上求解-PageRank">在一般有向图上求解 PageRank</h3>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/20220331230233.png" alt="图(e)"><br>
+以图(e)为例，取 $d=0.8$，求解 PageRank：<br>
+由图可以写出转移矩阵<br>
+$$ M = [m_{ij}]<em>{n \times n} = \left[\begin{matrix} 0 &amp;\dfrac{1}{2} &amp;0 &amp;0 \ \dfrac{1}{3} &amp;0 &amp;0 &amp;\dfrac{1}{2} \ \dfrac{1}{3} &amp;0 &amp;1 &amp;\dfrac{1}{2} \ \dfrac{1}{3} &amp;\dfrac{1}{2} &amp;0 &amp;0  \end{matrix}\right] $$<br>
+计算出转移矩阵的两部分<br>
+$$ dM=\dfrac{4}{5} \times \left[\begin{matrix} 0 &amp;\dfrac{1}{2} &amp;0 &amp;0 \ \dfrac{1}{3} &amp;0 &amp;0 &amp;\dfrac{1}{2} \ \dfrac{1}{3} &amp;0 &amp;1 &amp;\dfrac{1}{2} \ \dfrac{1}{3} &amp;\dfrac{1}{2} &amp;0 &amp;0  \end{matrix}\right] = \left[\begin{matrix} 0 &amp;\dfrac{2}{5} &amp;0 &amp;0 \ \dfrac{4}{15} &amp;0 &amp;0 &amp;\dfrac{2}{5} \ \dfrac{4}{15} &amp;0 &amp;\dfrac{4}{5} &amp;\dfrac{2}{5} \ \dfrac{4}{15} &amp;\dfrac{2}{5} &amp;0 &amp;0  \end{matrix}\right] $$<br>
+$$ \dfrac{1-d}{n} \boldsymbol{1} = \left[\begin{matrix} \dfrac{1}{20} \ \dfrac{1}{20} \ \dfrac{1}{20} \ \dfrac{1}{20} \end{matrix}\right] $$<br>
+迭代公式为<br>
+$$ R</em>{t+1} = \left[\begin{matrix} 0 &amp;\dfrac{2}{5} &amp;0 &amp;0 \ \dfrac{4}{15} &amp;0 &amp;0 &amp;\dfrac{2}{5} \ \dfrac{4}{15} &amp;0 &amp;\dfrac{4}{5} &amp;\dfrac{2}{5} \ \dfrac{4}{15} &amp;\dfrac{2}{5} &amp;0 &amp;0  \end{matrix}\right] R_t + \left[\begin{matrix} \dfrac{1}{20} \ \dfrac{1}{20} \ \dfrac{1}{20} \ \dfrac{1}{20} \end{matrix}\right] $$<br>
+我们知道，初始分布向量<br>
+$$ R_0 = \left[\begin{matrix} \dfrac{1}{4} \ \dfrac{1}{4} \ \dfrac{1}{4} \ \dfrac{1}{4} \end{matrix}\right] $$<br>
+得到向量序列<br>
+$$ \left[\begin{matrix} \dfrac{1}{4} \ \dfrac{1}{4} \ \dfrac{1}{4} \ \dfrac{1}{4} \end{matrix}\right]，<br>
+\left[\begin{matrix} \dfrac{9}{60} \ \dfrac{13}{60} \ \dfrac{25}{60} \ \dfrac{13}{60} \end{matrix}\right]，<br>
+\left[\begin{matrix} \dfrac{41}{300} \ \dfrac{53}{300} \ \dfrac{153}{300} \ \dfrac{53}{300} \end{matrix}\right]，<br>
+\left[\begin{matrix} \dfrac{543}{4500} \ \dfrac{707}{4500} \ \dfrac{2543}{4500} \ \dfrac{707}{4500} \end{matrix}\right]，<br>
+\cdots，<br>
+\left[\begin{matrix} \dfrac{15}{148} \ \dfrac{19}{148} \ \dfrac{95}{148} \ \dfrac{19}{148} \end{matrix}\right]$$<br>
+最终得到平稳分布<br>
+$$ R = \left[\begin{matrix} \dfrac{15}{148} \ \dfrac{19}{148} \ \dfrac{95}{148} \ \dfrac{19}{148} \end{matrix}\right] $$<br>
+同时给出 Python 程序实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">PageRank</span>(<span class="params">M, d=<span class="number">0.85</span>, tol=<span class="number">0</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Calculates PageRank with smoothing</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        M: an n*n numpy.matrix, the stochastic matrix of a strongly connected aperiodic graph.</span></span><br><span class="line"><span class="string">        d: the probability of walking on the edges</span></span><br><span class="line"><span class="string">         </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        R: the PageRank Vector for the graph</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n = M.shape[<span class="number">0</span>]</span><br><span class="line">    R0 = np.mat(np.ones(n)).T/n</span><br><span class="line">    Ones = np.mat(np.ones(n)).T</span><br><span class="line">    diff = np.mat(np.ones(n)).T</span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> np.square(diff).<span class="built_in">sum</span>() &gt; tol:</span><br><span class="line">        R = d * M * R0 + ((<span class="number">1</span>-d)/n) * Ones</span><br><span class="line">        diff = R - R0</span><br><span class="line">        R0 = R; i+=<span class="number">1</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\riter:&#123;&#125;&quot;</span>.<span class="built_in">format</span>(i),end=<span class="string">&quot;&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> R</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">M = np.mat([[ <span class="number">0</span> ,<span class="number">1</span>/<span class="number">2</span>, <span class="number">0</span> , <span class="number">0</span> ],</span><br><span class="line">            [<span class="number">1</span>/<span class="number">3</span>, <span class="number">0</span> , <span class="number">0</span> ,<span class="number">1</span>/<span class="number">2</span>],</span><br><span class="line">            [<span class="number">1</span>/<span class="number">3</span>, <span class="number">0</span> , <span class="number">1</span> ,<span class="number">1</span>/<span class="number">2</span>],</span><br><span class="line">            [<span class="number">1</span>/<span class="number">3</span>,<span class="number">1</span>/<span class="number">2</span>, <span class="number">0</span> , <span class="number">0</span> ]])</span><br><span class="line">PageRank(M, d=<span class="number">0.8</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">iter:69</span><br><span class="line">matrix([[0.10135135],</span><br><span class="line">        [0.12837838],</span><br><span class="line">        [0.64189189],</span><br><span class="line">        [0.12837838]])</span><br></pre></td></tr></table></figure>
+<h1>EigenFactor</h1>
+<p>EigenFactor，一说译作“特征因子”[^3]，于 2006 年由  West Bergstorm 等提出，类似于 PageRank 在网页和超链接构成的有向图中计算网页影响力，EigenFactor 一般在期刊和引用关系构成的有向图中计算期刊影响力。理解 PageRank 原理有助于我们理解 EigenFactor 的计算原理。</p>
+<h2 id="基本理解-2">基本理解</h2>
+<p>在研读文献时，文献本身可能会对参考的文献进行引用，我们作为读者就有可能阅读文献的参考文献。而参考文献一般与当前文献不位于同一本期刊上，我们就需要去阅读另一本期刊。这样的一种从期刊到期刊的跳转就类似于 PageRank 中网页到网页的跳转，根据引用关系构成的拓扑结构，以及 EigenFactor 加入的期刊载文量信息，就可以迭代计算出期刊的影响力。</p>
+<h2 id="计算方法">计算方法</h2>
+<p>给定一个包含 $n$ 个期刊结点的有向图，在有向图上定义<strong>随机游走模型</strong>，即一阶马尔可夫链。该随机游走模型的转移矩阵由两部分的线性组合组成，一部分是<strong>修正引文量加权转移矩阵 $\boldsymbol{H’}$</strong>，表示从一个期刊结点到其连出的其他期刊结点的转移概率，另一部分是<strong>载文量加权转移矩阵 $A$</strong>，表示从任意一个期刊结点到任意一个期刊结点的转移概率（由载文量向量 $a$ 拓展而来），线性组合系数为阻尼因子 $\alpha$ （$0 \le \alpha \le 1$）。该随机游走的马尔可夫链存在平稳分布，记作 $\pi^\star$。$\pi^\star$ 由公式<br>
+$$ \pi^\star = \alpha \boldsymbol{H’}\pi^\star + (1-\alpha)a $$<br>
+决定。平稳分布向量 $\pi^\star$ 和引文量加权转移矩阵 $\boldsymbol{H}$ 可以计算得出期刊特征因子向量<br>
+$$ \boldsymbol{EF} = 100\dfrac{\boldsymbol{H}\pi^\star}{\sum\limits_{i=1}^n [\boldsymbol H \pi^\star]_i} $$<br>
+和各期刊的论文影响分值<br>
+$$AI_i = 0.01 \dfrac{\boldsymbol{EF}_i}{a_i}$$</p>
+<h3 id="载文量加权转移矩阵">载文量加权转移矩阵</h3>
+<p>载文量加权转移矩阵 $\boldsymbol{A}$ 由引文量向量 $a$ 乘以 全 1 行向量得来。<br>
+$$ \boldsymbol{A} = ae^{T} $$<br>
+其中引文量向量 $a$ 各行为归一化处理后的过去五年各期刊的载文量（$\sum\limits_{i=1}^na_i =1$）。</p>
+<p>所以，$\boldsymbol{A}$ 每列的每行都相等，为基于载文量的概率，这与 PageRank 的全 1 向量不同。</p>
+<h3 id="引文量加权转移矩阵">引文量加权转移矩阵</h3>
+<p>根据引文关系，我们可以先确定五年交叉引用矩阵 $\boldsymbol{Z}$，该矩阵是一个 $n$ 阶矩阵，第 $i$ 行第 $j$ 列元素 $z_{ij}$ 取值规则是：某年期刊 $j$ 发表的文章中，共计引用期刊 $i$ 在过去五年内发表的文章的次数。在构建该矩阵时，忽略所有的期刊自引，也就是说 $\boldsymbol{Z}$ 的对角值都为 0。随后，对每一列做归一化处理，此时每列就可以代表阅读期刊时跳转到其他期刊的概率，得到<strong>引文量加权转移矩阵</strong> $\boldsymbol{H}$：<br>
+$$ \boldsymbol{H}<em>{ij} = \dfrac{\boldsymbol{Z}</em>{ij}}{\sum\limits_{k=1}^n\boldsymbol{Z}<em>{kj}} $$<br>
+因为计算时忽略了所有的自引，就有可能存在窗口期内某期刊并未引用集合内期刊的情况，即该结点为悬挂结点，矩阵某一列都为 0，类似于之前图(a’)中结点 C 存在向外连边的情况。为了修正该问题，我们用载文量向量 $a$ 替换全 0 向量，得到<strong>修正引文量加权转移矩阵 $\boldsymbol{H’}$</strong>。其中，引文量向量 $a$ 的各行为归一化处理后的过去五年各期刊的载文量（$\sum\limits</em>{i=1}^na_i =1$）。</p>
+<h3 id="理解-EigenFactor">理解 EigenFactor</h3>
+<p>定义之中，转移矩阵由两部分组成，修正引文量加权转移矩阵包含了引文结构和引文量，读者<strong>有一定概率（概率为 $\alpha$）依据有向图的边及权重进行游走</strong>（边权重由引文量决定，如无引文量，由载文量决定），而另一部分，即载文量加权转移矩阵，表示读者<strong>有一定概率（概率为 $1-\alpha$）跳到图上任意一个结点</strong>（跳转到任意一个结点的概率和结点过去五年载文量成正比）。载文量加权矩阵保证了从没有引用的期刊也可以跳转出。</p>
+<p>相比于 PageRank 在计算基本转移矩阵和随机转移矩阵时，对所有的边和结点赋予相同的权重，<strong>EigenFactor 会考虑期刊的载文量和引文量，并赋予结点和边不同的概率权重</strong>，能够在一定程度上更合理评价期刊的影响力。</p>
+<h2 id="计算案例">计算案例</h2>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202204010155388.png" alt="图(e')"><br>
+以图(e)为例，边上的数字为当年引文量，圈内的数字为五年载文量，取 $\alpha=0.8$，求解 EigenFactor 和 Artical Influence Score：<br>
+由图可以写出载文量向量、引文量加权向量、修正引文量加权向量<br>
+$$ a=\left[\begin{matrix}\dfrac{4}{20} \ \dfrac{8}{20} \ \dfrac{2}{20} \ \dfrac{6}{20}\end{matrix}\right]，\boldsymbol{H}= \left[\begin{matrix} 0 &amp;\dfrac{5}{6} &amp;0 &amp;0 \ \dfrac{2}{6} &amp;0 &amp;0 &amp;\dfrac{2}{6} \ \dfrac{3}{6} &amp;0 &amp;0 &amp;\dfrac{4}{6} \ \dfrac{1}{6} &amp;\dfrac{1}{6} &amp;0 &amp;0  \end{matrix}\right]，\boldsymbol{H’}= \left[\begin{matrix} 0 &amp;\dfrac{5}{6} &amp;\dfrac{4}{20} &amp;0 \ \dfrac{2}{6} &amp;0 &amp;\dfrac{8}{20} &amp;\dfrac{2}{6} \ \dfrac{3}{6} &amp;0 &amp;\dfrac{2}{20} &amp;\dfrac{4}{6} \ \dfrac{1}{6} &amp;\dfrac{1}{6} &amp;\dfrac{6}{20} &amp;0  \end{matrix}\right] $$<br>
+迭代公式为<br>
+$$ \pi_{t+1} = \left[\begin{matrix} 0 &amp;\dfrac{2}{3} &amp;\dfrac{4}{25} &amp;0 \ \dfrac{4}{15} &amp;0 &amp;\dfrac{8}{25} &amp;\dfrac{4}{15} \ \dfrac{2}{5} &amp;0 &amp;\dfrac{2}{25} &amp;\dfrac{8}{15} \ \dfrac{2}{15} &amp;\dfrac{2}{15} &amp;\dfrac{6}{25} &amp;0  \end{matrix}\right] \pi_t + \left[\begin{matrix} \dfrac{1}{25} \ \dfrac{2}{25} \ \dfrac{1}{50} \ \dfrac{3}{50} \end{matrix}\right] $$<br>
+后续计算过程略。</p>
+<p>同时给出 Python 程序实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">EigenFactor</span>(<span class="params">H, article_vec,d=<span class="number">0.85</span>, tol=<span class="number">0</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Calculates EigenFactor</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        H: the stochastic matric, an n*n numpy.matrix</span></span><br><span class="line"><span class="string">        article_vec: the normalized article vector, list</span></span><br><span class="line"><span class="string">        d: the probability of walking on the edges</span></span><br><span class="line"><span class="string">         </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        EF: the EigenFactor Score of Journal list</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n = H.shape[<span class="number">0</span>]</span><br><span class="line">    Hs = ((<span class="number">1</span> - H.<span class="built_in">sum</span>(axis=<span class="number">0</span>).T) * article_vec).T + H</span><br><span class="line">    pi0 = np.mat(np.ones(n)).T/n</span><br><span class="line">    a = np.mat(article_vec).T</span><br><span class="line">    diff = np.mat(np.ones(n)).T</span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> np.square(diff).<span class="built_in">sum</span>() &gt; tol:</span><br><span class="line">        pi = d * Hs * pi0 + ((<span class="number">1</span>-d)) * a</span><br><span class="line">        diff = pi - pi0</span><br><span class="line">        pi0 = pi; i+=<span class="number">1</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;\riter:&#123;&#125;&quot;</span>.<span class="built_in">format</span>(i),end=<span class="string">&quot;&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    EF = (H*pi/(H*pi).<span class="built_in">sum</span>())*<span class="number">100</span></span><br><span class="line">    <span class="keyword">return</span> EF</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">ArticleInfluenceScore</span>(<span class="params">EF, article_vec</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Calculates Article Influence Score</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        EF: EigenFactor Vector, n*1 numpy.matrix</span></span><br><span class="line"><span class="string">        article_vec: the normalized article vector, list</span></span><br><span class="line"><span class="string">         </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        AIS: the Article Influence Score Score of Journal list</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    AIS = <span class="number">0.01</span> * np.multiply(EF,<span class="number">1</span>/np.mat(article_vec).T)</span><br><span class="line">    <span class="keyword">return</span> AIS</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">H =   np.mat([[ <span class="number">0</span> ,<span class="number">5</span>/<span class="number">6</span>, <span class="number">0</span>  , <span class="number">0</span>  ],</span><br><span class="line">              [<span class="number">1</span>/<span class="number">3</span>, <span class="number">0</span> , <span class="number">0</span>  ,<span class="number">1</span>/<span class="number">3</span> ],</span><br><span class="line">              [<span class="number">1</span>/<span class="number">2</span>, <span class="number">0</span> , <span class="number">0</span>  ,<span class="number">2</span>/<span class="number">3</span> ],</span><br><span class="line">              [<span class="number">1</span>/<span class="number">6</span>,<span class="number">1</span>/<span class="number">6</span>, <span class="number">0</span>  , <span class="number">0</span>  ]])</span><br><span class="line">article_vec = [<span class="number">1</span>/<span class="number">5</span>,<span class="number">2</span>/<span class="number">5</span>,<span class="number">1</span>/<span class="number">10</span>,<span class="number">3</span>/<span class="number">10</span>]</span><br><span class="line">EF = EigenFactor(H, article_vec,d=<span class="number">0.8</span>)</span><br><span class="line">display(EF)</span><br><span class="line">AIS = ArticleInfluenceScore(EF, article_vec)</span><br><span class="line">display(AIS)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">iter:38</span><br><span class="line">matrix([[31.65677392],</span><br><span class="line">        [20.67062376],</span><br><span class="line">        [35.33270853],</span><br><span class="line">        [12.33989378]]) # EigenFactor Score</span><br><span class="line">matrix([[1.5828387 ],</span><br><span class="line">        [0.51676559],</span><br><span class="line">        [3.53327085],</span><br><span class="line">        [0.41132979]])  # ArticleInfluence Score</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="https://download.mariozzj.cn/img/static/icon256.jpg"></a><div class="post-copyright__author_name">MarioBlog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div><div class="post-reward"><div class="reward-button" title="赞赏作者" onclick="AddRewardMask()"><i class="solitude fa-solid fa-heart"></i>赞赏作者</div><div class="reward-main"><ul class="reward-all"><span class="reward-title">感谢您的赞赏</span><ul class="reward-group"><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信" style="border-color: #07c160"></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝" style="border-color: #108ee9"></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/"><div class="reward-text">赞赏名单</div><div class="reward-dec">您的支持是对我实现写作价值的最大鼓励。</div></a></ul></div></div><script>function RemoveRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "none";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "none";
+    }
+}
+
+function AddRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "flex";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "flex";
+    }
+}</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">MarioBlog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Python<span class="tagsPageCount">4</span></span></a><a class="post-meta__tags" href="/tags/PageRank/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>PageRank<span class="tagsPageCount">1</span></span></a><a class="post-meta__tags" href="/tags/EigenFactor/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>EigenFactor<span class="tagsPageCount">1</span></span></a><a class="post-meta__tags" href="/tags/Algorithm/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Algorithm<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/fd830caf/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">让 Markdown 成为写作的起点</div></div></a></div><div class="next-post pull-right"><a href="/posts/9364d192/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">玩转服务器 | 使用 frp 实现内网穿透</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span><span class="count"> ()</span></div></div><div class="comment-wrap"><div id="giscus-wrap"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="https://download.mariozzj.cn/img/static/icon256.jpg"></div><div class="author-info__description_group"><div class="author-info__description"></div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">MarioZZJ</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">PageRank</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%90%86%E8%A7%A3"><span class="toc-text">基本理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PageRank-%E5%9F%BA%E6%9C%AC%E5%AE%9A%E4%B9%89"><span class="toc-text">PageRank 基本定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%AE%9A%E4%B9%89"><span class="toc-text">基本定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%90%91%E5%9B%BE%E3%80%81%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%9B%BE%E3%80%81%E5%91%A8%E6%9C%9F%E6%80%A7%E5%9B%BE"><span class="toc-text">有向图、强连通图、周期性图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%8F%E6%9C%BA%E6%B8%B8%E8%B5%B0%E6%A8%A1%E5%9E%8B%E3%80%81%E4%B8%80%E9%98%B6%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE"><span class="toc-text">随机游走模型、一阶马尔可夫链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E8%A7%A3-PageRank"><span class="toc-text">求解 PageRank</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PageRank-%E4%B8%80%E8%88%AC%E5%AE%9A%E4%B9%89"><span class="toc-text">PageRank 一般定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%AE%9A%E4%B9%89%E4%B8%8D%E9%80%82%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-text">基本定义不适用的情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E8%88%AC%E5%AE%9A%E4%B9%89%EF%BC%9A%E5%AF%BC%E5%85%A5%E5%B9%B3%E6%BB%91%E9%A1%B9"><span class="toc-text">一般定义：导入平滑项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E4%B8%80%E8%88%AC%E6%9C%89%E5%90%91%E5%9B%BE%E4%B8%8A%E6%B1%82%E8%A7%A3-PageRank"><span class="toc-text">在一般有向图上求解 PageRank</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">EigenFactor</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%90%86%E8%A7%A3-2"><span class="toc-text">基本理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95"><span class="toc-text">计算方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%BD%E6%96%87%E9%87%8F%E5%8A%A0%E6%9D%83%E8%BD%AC%E7%A7%BB%E7%9F%A9%E9%98%B5"><span class="toc-text">载文量加权转移矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E6%96%87%E9%87%8F%E5%8A%A0%E6%9D%83%E8%BD%AC%E7%A7%BB%E7%9F%A9%E9%98%B5"><span class="toc-text">引文量加权转移矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%90%86%E8%A7%A3-EigenFactor"><span class="toc-text">理解 EigenFactor</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%A1%88%E4%BE%8B"><span class="toc-text">计算案例</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务"><img alt="调用大模型 API 解决简单信息处理任务" src="https://download.mariozzj.cn/img/picgo/202409041617877.png"></a><div class="content"><span class="title" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务">调用大模型 API 解决简单信息处理任务</span><span class="article-recent_post_categories" href="/posts/573fc6c3/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img alt="NJUHPC 运行 Python 程序简明流程" src="https://download.mariozzj.cn/img/picgo/202311021615799.png"></a><div class="content"><span class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</span><span class="article-recent_post_categories" href="/posts/6ab96d9d/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录" src="https://download.mariozzj.cn/img/picgo/202210151013511.png"></a><div class="content"><span class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</span><span class="article-recent_post_categories" href="/posts/fb1f3a84/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img alt="让 Markdown 成为写作的起点" src="https://download.mariozzj.cn/img/picgo/202204191318445.png"></a><div class="content"><span class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</span><span class="article-recent_post_categories" href="/posts/fd830caf/">工具干货</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor"><img alt="两种图算法：PageRank &amp; EigenFactor" src="https://download.mariozzj.cn/img/picgo/202204191304070.png"></a><div class="content"><span class="title" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor">两种图算法：PageRank &amp; EigenFactor</span><span class="article-recent_post_categories" href="/posts/1d43c0e5/">数科知识</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:i@mariozzj.cn" title="Mail"><i class="solitude  fab fa-envelope"></i></a><div class="nolazyload footer_mini_logo" id="footer_mini_logo" title="返回顶部" onclick="sco.toTop()"><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="返回顶部"></div><a class="deal_link" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.linkedin.com/in/mariozzj/" title="LinkedIn"><i class="solitude  fab fa-linkedin"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2020 - 2024 By&nbsp;<a class="footer-bar-link" href="/">MarioZZJ</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" alt="赣ICP备20002056号-2">赣ICP备20002056号-2</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261" alt="鄂公网安备42010602004261号">鄂公网安备42010602004261号</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Solitude">Solitude</a><a class="footer-bar-link cc" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><i class="solitude fa-solid fa-copyright"></i><i class="solitude fa-brands fa-creative-commons-by"></i><i class="solitude fa-brands fa-creative-commons-nc"></i><i class="solitude fa-brands fa-creative-commons-nd"></i></a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.12"></script><script src="/js/main.js?v=2.0.12"></script><script src="/js/third_party/waterfall.min.js?v=2.0.12"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/copy-tex.min.js"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    utils.wrap(item, 'div', {class: 'katex-wrap'})
+  })
+})();
+</script></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"><script>(()=>{
+    const getGiscusTheme = theme => {
+        return theme === 'dark' ? 'dark' : 'light'
+    }
+
+    const loadGiscus = () => {
+        const config = Object.assign({
+            src: 'https://giscus.app/client.js',
+            'data-repo': 'MarioZZJ/giscus',
+            'data-repo-id': 'R_kgDOMwtu9A',
+            'data-category-id': 'DIC_kwDOMwtu9M4CiaaK',
+            'data-mapping': 'pathname',
+            'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+            'data-reactions-enabled': '1',
+            crossorigin: 'anonymous',
+            async: true
+        },null)
+
+        const ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').appendChild(ele)
+    }
+
+    const changeGiscusTheme = theme => {
+        const sendMessage = message => {
+            const iframe = document.querySelector('iframe.giscus-frame')
+            if (!iframe) return
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app')
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: getGiscusTheme(theme)
+            }
+        });
+    }
+
+    utils.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+    if ('Giscus' === 'Giscus' || !true) {
+        if (true) {
+            const giscusWrap = document.getElementById('giscus-wrap')
+            if (giscusWrap) {
+                utils.loadComment(giscusWrap, loadGiscus)
+            }
+        } else {
+            loadGiscus()
+        }
+    } else {
+        window.loadOtherComment = loadGiscus
+    }
+})()</script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fa-solid fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=2.0.12"></script><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["posts/573fc6c3/","posts/6ab96d9d/","posts/fb1f3a84/","posts/fd830caf/","posts/1d43c0e5/","posts/9364d192/","posts/7f568f00/","posts/e0d78514/","posts/5c25bf34/","posts/75521d8e/","posts/8d6b8da8/","posts/2c01ed8b/","posts/4449c636/","posts/672ba085/","posts/28d53052/","posts/2b373355/","posts/2b373354/","posts/52d95125/","posts/aba3bc4e/","posts/16cc73c/","posts/569080df/","posts/ffffffff/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

@@ -1,0 +1,370 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>NJUHPC 运行 Python 程序简明流程 | MarioBlog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://download.mariozzj.cn/img/static/icon256.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.12"><!-- inject head--><meta name="google-site-verification" content="google-site-verification=ATi1JuhDx8tMQDtqhsnoa90uIXlU2vjn6wRkMJMmNOw"><link rel="canonical" href="https://blog.mariozzj.cn/posts/6ab96d9d/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"><!-- Open Graph--><meta name="description" content="NJU HPC 指南京大学人工微结构科学与技术协同创新中心高性能计算中心，中心提供多种软硬件资源以供高性能运算服务，本文简单介绍在 NJU HPC 上运行 Python 程序的流程，更多详细使用方法可参见 使用手册。 账号注册与登录 申请账号 NJU HPC 的用户由用户组方式管理，如课题组已申请用"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="MarioBlog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://download.mariozzj.cn/img/static/icon256.jpg"><link rel="apple-touch-icon" href="https://download.mariozzj.cn/img/static/icon256.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.12' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2020-05-17 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。"}},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: ["You'll make it.","You're gonna make it.","Good luck, stranger."],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false,
+    color: false,
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><div id="loading-box" onclick="preloader.endLoading();" style="zoom:1"><div class="loading-bg"><img class="loading-img nolazyload" src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="loading image"></div></div><script>const preloader = {
+    isLoaded: false,
+    endLoading: () => {
+        if (!preloader.isLoaded) {
+            document.getElementById('loading-box').classList.add('loaded');
+            preloader.isLoaded = true;
+            preloader.togglePaceDone();
+        }
+    },
+    initLoading: () => {
+        document.getElementById('loading-box').classList.remove('loaded');
+        preloader.isLoaded = false;
+        preloader.togglePaceDone();
+    },
+    togglePaceDone: () => {
+        document.getElementById('body').className = preloader.isLoaded ? 'pace-done' : '';
+    }
+}
+
+window.addEventListener('load', () => {
+    preloader.endLoading();
+});
+
+window.addEventListener('pjax:send', () => {
+    preloader.initLoading();
+});
+
+document.addEventListener('pjax:complete', () => {
+    preloader.endLoading();
+});
+
+setTimeout(() => {
+    preloader.endLoading();
+}, 5000);</script><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/Hexo-js/">Hexo.js<sup>1</sup></a><a href="/tags/Github/">Github<sup>1</sup></a><a href="/tags/Jupyter/">Jupyter<sup>1</sup></a><a href="/tags/Python/">Python<sup>4</sup></a><a href="/tags/NoSQL/">NoSQL<sup>1</sup></a><a href="/tags/Neo4J/">Neo4J<sup>1</sup></a><a href="/tags/SNA/">SNA<sup>1</sup></a><a href="/tags/igraph/">igraph<sup>1</sup></a><a href="/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/">桌面游戏<sup>2</sup></a><a href="/tags/ML/">ML<sup>1</sup></a><a href="/tags/Regression/">Regression<sup>1</sup></a><a href="/tags/Linux/">Linux<sup>3</sup></a><a href="/tags/Shell/">Shell<sup>3</sup></a><a href="/tags/%E6%B8%B8%E6%88%8F%E3%80%8A%E9%A5%A5%E8%8D%92%E3%80%8B/">游戏《饥荒》<sup>1</sup></a><a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/">云服务器应用<sup>6</sup></a><a href="/tags/%E8%81%94%E6%9C%BA%E6%B8%B8%E6%88%8F/">联机游戏<sup>1</sup></a><a href="/tags/SSH/">SSH<sup>1</sup></a><a href="/tags/UFW/">UFW<sup>1</sup></a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发<sup>1</sup></a><a href="/tags/Nginx/">Nginx<sup>1</sup></a><a href="/tags/frp/">frp<sup>1</sup></a><a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">内网穿透<sup>1</sup></a><a href="/tags/PageRank/">PageRank<sup>1</sup></a><a href="/tags/EigenFactor/">EigenFactor<sup>1</sup></a><a href="/tags/Algorithm/">Algorithm<sup>1</sup></a><a href="/tags/Markdown/">Markdown<sup>1</sup></a><a href="/tags/OpenAlex/">OpenAlex<sup>1</sup></a><a href="/tags/Spark/">Spark<sup>1</sup></a><a href="/tags/bsub/">bsub<sup>1</sup></a><a href="/tags/HPC/">HPC<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">MarioBlog</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">NJUHPC 运行 Python 程序简明流程</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="travellings_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html" title=""><i class="solitude fas fa-train"></i></a></div><div class="nav-button" id="foreverblog_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.foreverblog.cn/" title=""><i class="solitude fa-solid fa-blog"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="https://download.mariozzj.cn/img/picgo/202311021615799.png" alt="NJUHPC 运行 Python 程序简明流程"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/">工程实践</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Python</span></a><a class="post-meta__tags" href="/tags/bsub/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>bsub</span></a><a class="post-meta__tags" href="/tags/HPC/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>HPC</span></a></div></div></div></div><h1 class="post-title">NJUHPC 运行 Python 程序简明流程</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-wordcount"><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><a target="_blank" rel="noopener" href="https://hpc.nju.edu.cn/">NJU HPC</a> 指南京大学人工微结构科学与技术协同创新中心高性能计算中心，中心提供多种软硬件资源以供高性能运算服务，本文简单介绍在 NJU HPC 上运行 Python 程序的流程，更多详细使用方法可参见 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/books/efe93">使用手册</a>。</p>
+<h1>账号注册与登录</h1>
+<h2 id="申请账号">申请账号</h2>
+<p>NJU HPC 的用户由用户组方式管理，如课题组已申请用户组，新用户可以在 <a target="_blank" rel="noopener" href="https://scc.nju.edu.cn/user/register">注册页面</a> 注册个人用户，其中用户组名称填写课题组的用户组。<br>
+提交表单后，用户组组长可以对新用户进行审核，审核通过后，系统会向注册时填写的邮箱发送新用户的账号、密码。<br>
+该密码即为后文中提到的登录密码。<br>
+随后，新用户即可在 <code>scc.nju.edu.cn</code> 登录。在后台页面可以对账户信息、密码等进行修改。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo20231102090035.png" alt="SCC 后台页面"></p>
+<p>在后台页面的【财务管理】功能中可以查看提交作业及其费用情况，一般每日 2:00 更新前一周期作业结果。</p>
+<h2 id="绑定二度认证">绑定二度认证</h2>
+<p>关于二度认证的详细信息可参见 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/books/18d80/page/escience-hap">eScience服务双重认证简明指南</a>，可供使用的二度认证客户端可参考 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/books/efe93/page/b1a59">远程登录文档</a>，下文以 Microsoft Authenticator 为例。</p>
+<p>获得账号用户可用账号密码登录 <code>access.nju.edu.cn</code> 连接资产。<br>
+首次登录时会要求绑定二度认证，打开 Microsoft Authenticator，点击右上角的 <code>+</code>，选择 <code>其他账户</code>，扫描二维码，即可完成绑定。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo20231102091332.png" alt="使用 Microsoft Authenticator 绑定二度认证"></p>
+<p>绑定后，点击列表中的 <code>access.nju.edu.cn</code>，即可查看二度认证的即时六位验证码，在浏览器中输入当前六位验证码即可完成绑定。</p>
+<h1>SSH 登录资产</h1>
+<p>HPC登陆节点为 Linux 系统，推荐用户与资产使用命令行进行交互，因此用户最好掌握基础的 Linux 命令行操作。<br>
+这里以 Windows Powershell 为例，介绍如何使用 SSH 登录资产。</p>
+<p>打开 Powershell，输入 <code>ssh &lt;user&gt;@access.nju.edu.cn</code>，其中 <code>&lt;user&gt;</code> 替换为自己的用户名，然后回车。<br>
+系统此时会要求输入密码，请注意，<strong>ssh 连接登录节点的密码为登陆密码与实时二度认证验证码的结合</strong>，使用空格分隔。<br>
+如登录密码为 <code>pswd888.nju</code>，当前二度认证验证码为 <code>876543</code>，则要求输入密码时输入 <code>pswd888.nju 876543</code>，然后回车即可。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202311021429079.png" alt="SSH 交互"></p>
+<p>在 HPC，登录节点和计算节点共享部分文件系统，因此可以使用 <code>scp</code> 命令传输文件到登录节点供使用，也可以 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/link/2#bkmrk-sftp%E7%99%BB%E5%BD%95%EF%BC%88%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%EF%BC%89">使用 XFtp 等工具传输文件</a>。<br>
+如果需要从非内网/教育网终端传输文件，则可以使用 <a target="_blank" rel="noopener" href="https://box.nju.edu.cn/">南大云盘</a>，将文件传输至云盘后，登录节点可以挂载云盘，从而访问云盘中的文件。</p>
+<p>详细的集成云盘教程可见 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/books/efe93/page/352fe">集成云盘教程</a>。</p>
+<h1>模块环境管理</h1>
+<p>集群（包括登录节点和计算节点）上安装了大量的软件，用户可以通过 <code>module</code> 命令加载需要的软件环境。<br>
+常用的模块管理命令见 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/books/efe93/page/e1e32">文档#环境变量</a>。<br>
+这里，我们使用 <code>module avail</code> 命令查看可用的模块：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">module avail</span></span><br><span class="line">------------------------------------ /fs00/software/modulefiles ------------------------------------</span><br><span class="line">abaqus/6.14-5                    gcc/7.4.0                   make/4.2.1</span><br><span class="line">anaconda/2                       gcc/7.5.0                   make/4.3</span><br><span class="line">anaconda/2-4.3.1                 gcc/8.2.0                   mathematica/11.0</span><br><span class="line">anaconda/2-5.0.1                 gcc/8.3.0                   mathematica/12.1.0</span><br><span class="line">anaconda/3                       gcc/8.5.0                   matlab/r2020a</span><br><span class="line">anaconda/3-4.3.1                 gcc/9.2.0                   nccl/2.16.2-cuda11.0</span><br><span class="line">anaconda/3-5.0.1                 gcc/9.5.0                   nccl/2.16.2-cuda11.8</span><br><span class="line">aocc/2.0.0                       gcc/10.2.0                  nccl/2.16.2-cuda12.0</span><br><span class="line">aocc/2.1.0                       gcc/10.4.0                  nccl/10.1-v2.4.8</span><br><span class="line">aocc/2.3.0                       gcc/11.2.0                  nccl/10.2-v2.5.6</span><br><span class="line">aocl/2.0                         gcc/11.3.0                  netcdf/c-4.7.0</span><br><span class="line">aocl/2.2                         gcc/12.1.0                  openfoam/v1806-ips2017u6</span><br><span class="line">aws-cli/2.9.6                    git/2.38.1                  openmpi/1.10.0-gcc-5.2.0</span><br><span class="line">:q</span><br></pre></td></tr></table></figure>
+<p>结果可以看出，同一个软件可能在集群安装了多个版本模块，这里我们选择 <code>anaconda/3-5.0.1</code> 模块，接下来使用 <code>module load</code> 命令加载该模块：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">module load anaconda/3-5.0.1</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">which</span> conda <span class="comment"># 查看 conda 命令的路径</span></span></span><br><span class="line">/fs00/software/anaconda/3-5.0.1/bin/conda</span><br></pre></td></tr></table></figure>
+<p>可以看到 <code>conda</code> 命令的路径已经被添加到环境变量中，接下来我们可以使用 <code>conda</code> 命令创建虚拟环境，安装 Python 包等。</p>
+<h1>创建 conda 创建虚拟环境并安装依赖</h1>
+<p><strong>推荐使用 conda 创建虚拟环境用于运行 Python 程序</strong>，因为一方面在虚拟环境中我们普通用户权限也可以方便安装 Python 包，另一方面可以根据不同项目需求创建不同的虚拟环境，避免不同项目间的依赖冲突。<br>
+我们使用 <code>conda create</code> 命令创建一个名为 <code>test</code> 的虚拟环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">conda create -n <span class="built_in">test</span> python=3.8</span></span><br></pre></td></tr></table></figure>
+<p>创建完成后，使用 <code>source activate</code> 命令即可激活该虚拟环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">source</span> activate <span class="built_in">test</span></span></span><br></pre></td></tr></table></figure>
+<p>激活后，命令行提示符前会出现 <code>(test)</code> 字样，表示当前虚拟环境已激活。激活环境后，我们就可以在环境中安装 Python 包了。由于 <a target="_blank" rel="noopener" href="https://nju-mirror-help.njuer.org/anaconda.html">南大 anaconda 源公告停止服务</a>，而 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/books/efe93/page/a1d0c">登录节点访问公网需要认证</a>，我们可以在环境中使用 <code>pip</code> 安装依赖，同时使用 <code>-i</code> 参数指定可访问的南大内网源，以安装安装包较大的 <code>torch</code> 为例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">pip install -i https://mirrors.nju.edu.cn/pypi/web/simple torch==2.0</span></span><br></pre></td></tr></table></figure>
+<p>在内网下的安装包下载速度可达千兆。安装完成后，运行的 Python 程序就可以引入 <code>torch</code> 包了。</p>
+<h1>提交作业</h1>
+<p>集群使用作业调度系统管理所有计算作业，该系统接受用户的作业请求，并将作业合理的分配到合适的节点上运行。<br>
+用户在登录节点使用 <code>bsub</code> 命令提交作业，该命令存在多个参数，这里列出几个重要参数：</p>
+<ul>
+<li><code>-J &lt;job_name&gt;</code>：指定作业名称，以供后续查看作业状态时使用；</li>
+<li><code>-m &lt;node&gt;</code>：指定作业运行的节点，在 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/books/efe93/page/d9640">计算资源</a> 页面可查看完整的运行队列，在登录节点也可使用 <code>bqueues</code>；</li>
+<li><code>-o &lt;output_file&gt;</code>：标准输出文件</li>
+<li><code>-e &lt;error_file&gt;</code>：错误输出文件</li>
+<li><code>-n &lt;num_cpu&gt;</code>：指定作业运行需要的 CPU 核心数，如 <code>-n 4</code> 表示需要 4 个 CPU 核心；</li>
+<li><code>-gpu &lt;opt_str&gt;</code>：指定作业运行的 GPU 参数，参数以 <code>:</code> 分隔选项，默认值为 <code>num=1:mode=shared:mps=no</code>，包含以下选项：
+<ul>
+<li><code>num=number</code>：每台主机需要 GPU 的数量，当指定 GPU 数量时，CPU 核心数会根据队列中的 GPU 资源自动分配；</li>
+<li><code>mode=shared|exclusive_process</code>：GPU运行模式，<code>shared</code>对应 Nvidia/AMD DEFAULT compute mode、<code>exclusive_process</code>对应 Nvidia EXCLUSIVE_PROCESS</li>
+<li><code>mps=yes|no</code>：开启或关闭Nvidia Multi-Process Service (MPS)。关闭MPS，多进程通过时间分片的方式共享GPU；开启MPS，多进程共享一个CUDA Context并发执行，增加了GPU利用率。</li>
+</ul>
+</li>
+</ul>
+<p>其他参数可查阅 <a target="_blank" rel="noopener" href="https://www.ibm.com/docs/en/spectrum-lsf/10.1.0?topic=bsub-options">IBM 手册</a> 或 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/books/efe93/page/4f4ad">提交作业教程</a>。例如，我们需要在 <code>734090ib</code> 队列提交一个 GPU 计算任务——运行 <code>train.py</code>，占用 1 张显卡，则输入以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">bsub -J train_model -m 734090ib -gpu num=1:mode=shared:mps=no python train.py</span></span><br><span class="line">Job &lt;********&gt; is submitted to queue &lt;734090ib&gt;.</span><br></pre></td></tr></table></figure>
+<p>提交作业后，系统会返回一个作业 ID，以供后续查看作业状态时使用。</p>
+<p>除了用命令行方式提交作业，也可使用脚本方式提交作业，形如 <code>bsub &lt; jobfile.sh</code>，其中 <code>jobfile.sh</code> 为脚本文件，在脚本文件中可以写多行命令，同时 <code>bsub</code> 命令的各个参数可以在脚本文件中定义，如以上命令等价于以下脚本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">BSUB -J train_model</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">BSUB -m 734090ib</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">BSUB -gpu num=1:mode=shared:mps=no</span></span><br><span class="line"></span><br><span class="line">python train.py</span><br></pre></td></tr></table></figure>
+<p>最后需要注意，作业最终是提交到计算节点上运行，因此需要在执行 <code>python</code> 命令前需要先激活虚拟环境，加载 anaconda，因此完整的脚本应该为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">BSUB -J train_model</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">BSUB -m 734090ib</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">BSUB -gpu num=1:mode=shared:mps=no</span></span><br><span class="line"></span><br><span class="line">module load anaconda/3-5.0.1</span><br><span class="line">source activate test</span><br><span class="line">python train.py</span><br></pre></td></tr></table></figure>
+<h1>作业管理</h1>
+<p>作业提交后会得到一个作业 ID，可以使用 <code>bjobs</code> 命令查看作业状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">bjobs ********</span></span><br><span class="line">JOBID    USER        STAT  QUEUE       JOB_NAME   SUBMIT_TIME  EXEC_HOST</span><br><span class="line">******** ********** RUN   734090ib    train_model  Nov  2 15:51 8*m006</span><br></pre></td></tr></table></figure>
+<p>可以看到，该作业已经在 <code>734090ib</code> 队列中运行，运行的节点为 <code>m006</code>，同时可以看到该作业的状态为 <code>RUN</code>，表示正在运行。<br>
+在作业运行的过程中，我们可以使用 <code>ssh</code> 命令连接计算节点查看状态，这里 <code>ssh m006</code> 即可。</p>
+<p>如果我们需要终止提交的作业，则可以使用 <code>bkill</code> 命令终止作业：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">bkill *******</span></span><br><span class="line">Job &lt;********&gt; is being terminated</span><br></pre></td></tr></table></figure>
+<p>以上就是一次利用 NJUHPC 运行 Python 脚本的简明流程。更多详细用法，可以查阅 <a target="_blank" rel="noopener" href="https://doc.nju.edu.cn/books/efe93">超级计算指引文档</a>。</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="https://download.mariozzj.cn/img/static/icon256.jpg"></a><div class="post-copyright__author_name">MarioBlog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div><div class="post-reward"><div class="reward-button" title="赞赏作者" onclick="AddRewardMask()"><i class="solitude fa-solid fa-heart"></i>赞赏作者</div><div class="reward-main"><ul class="reward-all"><span class="reward-title">感谢您的赞赏</span><ul class="reward-group"><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信" style="border-color: #07c160"></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝" style="border-color: #108ee9"></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/"><div class="reward-text">赞赏名单</div><div class="reward-dec">您的支持是对我实现写作价值的最大鼓励。</div></a></ul></div></div><script>function RemoveRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "none";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "none";
+    }
+}
+
+function AddRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "flex";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "flex";
+    }
+}</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">MarioBlog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Python<span class="tagsPageCount">4</span></span></a><a class="post-meta__tags" href="/tags/bsub/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>bsub<span class="tagsPageCount">1</span></span></a><a class="post-meta__tags" href="/tags/HPC/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>HPC<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/573fc6c3/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">调用大模型 API 解决简单信息处理任务</div></div></a></div><div class="next-post pull-right"><a href="/posts/fb1f3a84/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">下载 OpenAlex 数据集并配置 PySpark 的一次记录</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span><span class="count"> ()</span></div></div><div class="comment-wrap"><div id="giscus-wrap"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="https://download.mariozzj.cn/img/static/icon256.jpg"></div><div class="author-info__description_group"><div class="author-info__description"></div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">MarioZZJ</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">账号注册与登录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%B3%E8%AF%B7%E8%B4%A6%E5%8F%B7"><span class="toc-text">申请账号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%91%E5%AE%9A%E4%BA%8C%E5%BA%A6%E8%AE%A4%E8%AF%81"><span class="toc-text">绑定二度认证</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">SSH 登录资产</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">模块环境管理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">创建 conda 创建虚拟环境并安装依赖</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">提交作业</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">作业管理</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务"><img alt="调用大模型 API 解决简单信息处理任务" src="https://download.mariozzj.cn/img/picgo/202409041617877.png"></a><div class="content"><span class="title" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务">调用大模型 API 解决简单信息处理任务</span><span class="article-recent_post_categories" href="/posts/573fc6c3/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img alt="NJUHPC 运行 Python 程序简明流程" src="https://download.mariozzj.cn/img/picgo/202311021615799.png"></a><div class="content"><span class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</span><span class="article-recent_post_categories" href="/posts/6ab96d9d/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录" src="https://download.mariozzj.cn/img/picgo/202210151013511.png"></a><div class="content"><span class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</span><span class="article-recent_post_categories" href="/posts/fb1f3a84/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img alt="让 Markdown 成为写作的起点" src="https://download.mariozzj.cn/img/picgo/202204191318445.png"></a><div class="content"><span class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</span><span class="article-recent_post_categories" href="/posts/fd830caf/">工具干货</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor"><img alt="两种图算法：PageRank &amp; EigenFactor" src="https://download.mariozzj.cn/img/picgo/202204191304070.png"></a><div class="content"><span class="title" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor">两种图算法：PageRank &amp; EigenFactor</span><span class="article-recent_post_categories" href="/posts/1d43c0e5/">数科知识</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:i@mariozzj.cn" title="Mail"><i class="solitude  fab fa-envelope"></i></a><div class="nolazyload footer_mini_logo" id="footer_mini_logo" title="返回顶部" onclick="sco.toTop()"><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="返回顶部"></div><a class="deal_link" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.linkedin.com/in/mariozzj/" title="LinkedIn"><i class="solitude  fab fa-linkedin"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2020 - 2024 By&nbsp;<a class="footer-bar-link" href="/">MarioZZJ</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" alt="赣ICP备20002056号-2">赣ICP备20002056号-2</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261" alt="鄂公网安备42010602004261号">鄂公网安备42010602004261号</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Solitude">Solitude</a><a class="footer-bar-link cc" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><i class="solitude fa-solid fa-copyright"></i><i class="solitude fa-brands fa-creative-commons-by"></i><i class="solitude fa-brands fa-creative-commons-nc"></i><i class="solitude fa-brands fa-creative-commons-nd"></i></a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.12"></script><script src="/js/main.js?v=2.0.12"></script><script src="/js/third_party/waterfall.min.js?v=2.0.12"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"><script>(()=>{
+    const getGiscusTheme = theme => {
+        return theme === 'dark' ? 'dark' : 'light'
+    }
+
+    const loadGiscus = () => {
+        const config = Object.assign({
+            src: 'https://giscus.app/client.js',
+            'data-repo': 'MarioZZJ/giscus',
+            'data-repo-id': 'R_kgDOMwtu9A',
+            'data-category-id': 'DIC_kwDOMwtu9M4CiaaK',
+            'data-mapping': 'pathname',
+            'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+            'data-reactions-enabled': '1',
+            crossorigin: 'anonymous',
+            async: true
+        },null)
+
+        const ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').appendChild(ele)
+    }
+
+    const changeGiscusTheme = theme => {
+        const sendMessage = message => {
+            const iframe = document.querySelector('iframe.giscus-frame')
+            if (!iframe) return
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app')
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: getGiscusTheme(theme)
+            }
+        });
+    }
+
+    utils.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+    if ('Giscus' === 'Giscus' || !true) {
+        if (true) {
+            const giscusWrap = document.getElementById('giscus-wrap')
+            if (giscusWrap) {
+                utils.loadComment(giscusWrap, loadGiscus)
+            }
+        } else {
+            loadGiscus()
+        }
+    } else {
+        window.loadOtherComment = loadGiscus
+    }
+})()</script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fa-solid fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=2.0.12"></script><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["posts/573fc6c3/","posts/6ab96d9d/","posts/fb1f3a84/","posts/fd830caf/","posts/1d43c0e5/","posts/9364d192/","posts/7f568f00/","posts/e0d78514/","posts/5c25bf34/","posts/75521d8e/","posts/8d6b8da8/","posts/2c01ed8b/","posts/4449c636/","posts/672ba085/","posts/28d53052/","posts/2b373355/","posts/2b373354/","posts/52d95125/","posts/aba3bc4e/","posts/16cc73c/","posts/569080df/","posts/ffffffff/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

@@ -1,0 +1,384 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>让 Markdown 成为写作的起点 | MarioBlog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://download.mariozzj.cn/img/static/icon256.jpg"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.12"><!-- inject head--><meta name="google-site-verification" content="google-site-verification=ATi1JuhDx8tMQDtqhsnoa90uIXlU2vjn6wRkMJMmNOw"><link rel="canonical" href="https://blog.mariozzj.cn/posts/fd830caf/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><!-- swiper--><!-- fancybox ui--><!-- katex--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"><!-- Open Graph--><meta name="description" content="Markdown 是世上最好的写作语言 Markdown 是一种轻量级标记语言，由 John Gruber 于 2004 年初创，目前已成为世界上最流行的标记语言之一。它轻量小巧，简单易学，同时又具有无限潜能，近两年已成为我的主力写作语言。 说 Markdown 是“世界上最好的语言”，当然是在玩"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="MarioBlog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://download.mariozzj.cn/img/static/icon256.jpg"><link rel="apple-touch-icon" href="https://download.mariozzj.cn/img/static/icon256.jpg" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.12' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+
+                if (name && keyObj[name]) return
+
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+            addEventListenerPjax: (ele, event, fn, option = false) => {
+              ele.addEventListener(event, fn, option)
+              utils.addGlobalFn('pjax', () => {
+                  ele.removeEventListener(event, fn, option)
+              })
+          },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: {"preload":false,"path":"/search.xml"},
+    runtime: '2020-05-17 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: false,
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可","search":{"empty":"找不到你查询的内容：${query}","hit":"找到 ${hits} 条结果，用时 ${time} 毫秒","placeholder":"输入关键词快速查找","count":"共 <b>${count}</b> 条结果。"}},
+    aside: {
+        sayhello: {
+            morning: "✨ Good morning. It's a new day",
+            noon: "It's time for a midday break",
+            afternoon: "Tea time. 🍵",
+            night: "early bedtime",
+            goodnight: "Good night 😴",
+        },
+        sayhello2: ["You'll make it.","You're gonna make it.","Good luck, stranger."],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false,
+    color: false,
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body id="body"><!-- universe--><!-- background img--><!-- loading--><div id="loading-box" onclick="preloader.endLoading();" style="zoom:1"><div class="loading-bg"><img class="loading-img nolazyload" src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="loading image"></div></div><script>const preloader = {
+    isLoaded: false,
+    endLoading: () => {
+        if (!preloader.isLoaded) {
+            document.getElementById('loading-box').classList.add('loaded');
+            preloader.isLoaded = true;
+            preloader.togglePaceDone();
+        }
+    },
+    initLoading: () => {
+        document.getElementById('loading-box').classList.remove('loaded');
+        preloader.isLoaded = false;
+        preloader.togglePaceDone();
+    },
+    togglePaceDone: () => {
+        document.getElementById('body').className = preloader.isLoaded ? 'pace-done' : '';
+    }
+}
+
+window.addEventListener('load', () => {
+    preloader.endLoading();
+});
+
+window.addEventListener('pjax:send', () => {
+    preloader.initLoading();
+});
+
+document.addEventListener('pjax:complete', () => {
+    preloader.endLoading();
+});
+
+setTimeout(() => {
+    preloader.endLoading();
+}, 5000);</script><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/Hexo-js/">Hexo.js<sup>1</sup></a><a href="/tags/Github/">Github<sup>1</sup></a><a href="/tags/Jupyter/">Jupyter<sup>1</sup></a><a href="/tags/Python/">Python<sup>4</sup></a><a href="/tags/NoSQL/">NoSQL<sup>1</sup></a><a href="/tags/Neo4J/">Neo4J<sup>1</sup></a><a href="/tags/SNA/">SNA<sup>1</sup></a><a href="/tags/igraph/">igraph<sup>1</sup></a><a href="/tags/%E6%A1%8C%E9%9D%A2%E6%B8%B8%E6%88%8F/">桌面游戏<sup>2</sup></a><a href="/tags/ML/">ML<sup>1</sup></a><a href="/tags/Regression/">Regression<sup>1</sup></a><a href="/tags/Linux/">Linux<sup>3</sup></a><a href="/tags/Shell/">Shell<sup>3</sup></a><a href="/tags/%E6%B8%B8%E6%88%8F%E3%80%8A%E9%A5%A5%E8%8D%92%E3%80%8B/">游戏《饥荒》<sup>1</sup></a><a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BA%94%E7%94%A8/">云服务器应用<sup>6</sup></a><a href="/tags/%E8%81%94%E6%9C%BA%E6%B8%B8%E6%88%8F/">联机游戏<sup>1</sup></a><a href="/tags/SSH/">SSH<sup>1</sup></a><a href="/tags/UFW/">UFW<sup>1</sup></a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发<sup>1</sup></a><a href="/tags/Nginx/">Nginx<sup>1</sup></a><a href="/tags/frp/">frp<sup>1</sup></a><a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">内网穿透<sup>1</sup></a><a href="/tags/PageRank/">PageRank<sup>1</sup></a><a href="/tags/EigenFactor/">EigenFactor<sup>1</sup></a><a href="/tags/Algorithm/">Algorithm<sup>1</sup></a><a href="/tags/Markdown/">Markdown<sup>1</sup></a><a href="/tags/OpenAlex/">OpenAlex<sup>1</sup></a><a href="/tags/Spark/">Spark<sup>1</sup></a><a href="/tags/bsub/">bsub<sup>1</sup></a><a href="/tags/HPC/">HPC<sup>1</sup></a><a href="/tags/LLM/">LLM<sup>1</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">MarioBlog</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">让 Markdown 成为写作的起点</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>主页</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>文章</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>类别</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>链接</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>友情链接</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>关于</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="travellings_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html" title=""><i class="solitude fas fa-train"></i></a></div><div class="nav-button" id="foreverblog_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.foreverblog.cn/" title=""><i class="solitude fa-solid fa-blog"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索"><i class="solitude fa-solid fa-magnifying-glass"></i></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="https://download.mariozzj.cn/img/picgo/202204191318445.png" alt="让 Markdown 成为写作的起点"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><span class="post-meta-categories"><a class="post-meta-categories" href="/categories/%E5%B7%A5%E5%85%B7%E5%B9%B2%E8%B4%A7/">工具干货</a></span><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Markdown/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Markdown</span></a></div></div></div></div><h1 class="post-title">让 Markdown 成为写作的起点</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-wordcount"><span class="post-meta-separator"></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Markdown 是世上最好的写作语言</h1>
+<p>Markdown 是一种轻量级标记语言，由 John Gruber 于 2004 年初创，目前已成为世界上最流行的标记语言之一。它轻量小巧，简单易学，同时又具有无限潜能，近两年已成为我的主力写作语言。</p>
+<p>说 Markdown 是“世界上最好的语言”，当然是在玩 php 的梗，<strong>适合自己的写作方法才是最好的</strong>。随着我认知的深入，我接触到越来越多的奇淫技巧，发现它在提升我写作效率的同时也具有许多意想不到的应用场景。</p>
+<p>略知但不愿意使用 Markdown 来写作的人大概可以分两拨，一类是能够熟练使用 Word 等富文本编辑器，或者是 Latex 大神，认为 Markdown 的应用场景很局限，没法把文档玩出花，根本不够用；另一类是天然地对“编程语言”不感冒，觉得自己肯定学不会，Markdown 是一种语言，那肯定很难学吧？</p>
+<p>事实上这两类人群或许都对 Markdown 存在认知误区。对于前者，在写作前我们应该明确写作的目的，<strong>如果我们非常重视产出文本的格式，那我们自然就不会用 Markdown 来写</strong>，而是用更强力的富文本编辑器或写作语言来完成写作；对于后者，其实写 Markdown 根本不是“编程”，因为文档本身不涉及程序编译，只有渲染等过程需要（当然，渲染都是用现成工具，不需要学会），而且 <strong>Markdown 的语法极其简洁</strong>，如果你不需要格式定义，那这个文档里面除了你的内容文字什么都没有。</p>
+<h2 id="最好的语言：必须易学">最好的语言：必须易学</h2>
+<p>Markdown 的语法相当简单，内容还是原原本本的内容，如果需要<strong>格式定义</strong>仅仅需要利用一系列<strong>标点符号</strong>即可，且种类有限：如 <code>#</code> 用于定义标题，<code>*</code> 用于控制粗体、斜体、列表，<code>&gt;</code> 用于插入引用内容，<code>[]</code>、<code>()</code>、<code>!</code> 等用于插入图片和超链接，<code>$</code> 用于插入 $\LaTeX$ 公式……可以参考 <a target="_blank" rel="noopener" href="https://markdown.com.cn/">Markdown 教程</a> 进行简要学习。基础内容大约几分钟就可以学会，不需要任何前置知识。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202204191444092.png" alt="Markdown 语法：内容+符号"></p>
+<h2 id="最好的语言：必须够用">最好的语言：必须够用</h2>
+<p>Markdown 介于富文本和纯文本之间，它是纯文本的形式，却能够在渲染后呈现接近富文本的样式。Markdown 支持的基本格式已经基本足够用于<strong>做笔记、形成知识库、发布博文</strong>等，例如 Github Repo以及 Issue、Pull Request 等就支持 Markdown 样式，简书、知乎等平台也支持 Markdown 写文档、回答。而且得益于 Markdown 文档二进制文件特性，利用 Git 等可以进行<strong>版本管理</strong>，回溯每一版本的内容。</p>
+<p>实际上，Markdown 本身只包含两部分信息：内容和标记格式。但标记格式其实是一类内容，类似于 HTML 中的 <code>class</code>，但是这类内容最终如何呈现，取决于渲染器中的选项。因此，如果 Markdown 语法能满足最终需要定义的格式类型需求，完全可以<strong>通过调整模板/配置文件来实现更加细节的格式输出</strong>（如颜色、字号、间距、对齐等在 Markdown 中无法定义的细节）。不同于 Word、LaTeX 是基于页面的写作，Markdown 是基于网页的写作，所以大多数的渲染器都支持 HTML 嵌入，所以也可以通过<strong>插入 HTML 的方式来实现部分细节排版</strong>（不推荐大量使用，这有悖于使用 Markdown 写作的初衷）。所以可以说，Markdown 能实现的排版格式在不同程度上都是够用的，后文还会继续介绍一些方法。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202204191702600.jpg" alt="Markdown 流"></p>
+<h2 id="最好的语言：专注内容">最好的语言：专注内容</h2>
+<p>在未接触到 Markdown 前，我一般习惯用 Microsoft Word 等富文本编辑器用于大部分的文本编辑场景。但是用久了会发现，我在写作的过程中，<strong>很大一部分时间并不是在做知识的输入输出，而是在不断地调整格式</strong>。尽管在我大部分的工作流中，一般会在最后一步调整格式并校对，但是仍然避免不了写作中停止我的思考，并且开始玩编辑器控件；另外，在部分场景下，我最终的输出结果并不一定是页面形式（打印等），Word 等编辑器基于页面的文档编辑逻辑会分走我的部分精力。</p>
+<blockquote>
+<p>这个表格怎么错页了？</p>
+<p>这个图片怎么这么大？</p>
+<p>这个字体好难看啊！</p>
+<p>这里怎么换行了？？</p>
+</blockquote>
+<p>实际上，大部分的形式问题在我们产出完整的内容之前无关紧要，有时这些形式打断了我们的输出逻辑，对整体成文质量可能是致命的。而 Markdown 因其<strong>纯文本的编辑方式</strong>，在一定程度上可以<strong>减少我们对格式的关注，专注于内容本身</strong>。而相比于简单的纯文本，Markdown 的基础语法也能够保证我们的行文有基本逻辑（可以用标题控制大纲、有序列表展示条目等）。</p>
+<h2 id="小结">小结</h2>
+<p>到这里，我觉得可以用 <a target="_blank" rel="noopener" href="https://www.markdownguide.org/">Markdown Guide</a> 中的部分描述总结 Markdown 语言的优势。</p>
+<p><strong>Markdown can be used for everything./ Markdown is everywhere.</strong> 用途广泛，网站、知识库、笔记、技术文档等都可见 Markdown 的身影。</p>
+<p><strong>Markdown is portable. /Markdown is future proof.</strong> 二进制纯文本文件，不需要特定的编辑器或平台也可以打开，便于版本控制。</p>
+<p><strong>Markdown is platform independent.</strong></p>
+<p>另外，Markdown 简单易学，也能让我们回归写作初衷，提升效率。</p>
+<h1>工欲善其事，必先利其器</h1>
+<p>虽说 Markdown 用普通的文本编辑器就能打开，但是还是有很多编辑器表现优秀，可以提升我们的输入效率，值得推荐。</p>
+<h2 id="Typora">Typora</h2>
+<p><a target="_blank" rel="noopener" href="https://typora.io/">Typora</a> 应该是知名度最高的 Markdown 编辑器（没有之一），在很长一段的测试期内一直免费使用，广受好评，虽然最近推出正式版后开始收费，但实属可以理解，也可以继续免费用测试版本。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202204191908918.jpg" alt="Typora"></p>
+<p>Typora 的亮点是所见即所得以及<strong>快捷键支持</strong>，如果能够熟记 Typora 的快捷键操作，我们甚至不需要会 Markdown 语法也可以写 Markdown 文档。例如 <u><code>Ctrl</code> + 数字</u> 为设定标题，<u><code>Ctrl</code> + <code>b</code></u> 为加粗，<u><code>Ctrl</code> + <code>Shift</code> + <code>M</code></u> 为插入行间公式等。<strong>所见即所得</strong>是 Typora 会根据选定主题实时渲染 Markdown 文档，可以一边预览一边输入，且预览和输入在同一窗口。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/typora.gif" alt="Typora 所见即所得"></p>
+<p>另外，Typora 还集成了对 Pandoc 的支持，可以直接导出多种格式（包括我们常用的 PDF、docx 等），方便我们将文档发送给他人查看。后文还将具体介绍 Pandoc。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202204191911851.png" alt="Typora 丰富的格式导出"></p>
+<h2 id="Visual-Studio-Code">Visual Studio Code</h2>
+<p><a target="_blank" rel="noopener" href="https://code.visualstudio.com/">VSCode</a> 是微软推出的开源轻量级代码编辑器。VSCode 可以<strong>编辑所有的二进制文本文件</strong>，当然也包括 Markdown。这里推荐 VSCode 是因为 VSCode 可以同时编辑所有文本文件（包括文档、代码等）、多窗口支持等特性。VSCode 本身不支持 Markdown 渲染，但是 VSCode 强大就强大在它的<strong>扩展能力</strong>，可以通过插件实现多种功能，如 Markdown 渲染就可以用 <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one">Markdown All in One</a> 插件。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202204191444092.png" alt="Markdown All in One: 左栏编辑，右栏预览"></p>
+<h2 id="墨滴MDNice">墨滴MDNice</h2>
+<p>最后推荐一款在线 Markdown 编辑器——<a target="_blank" rel="noopener" href="https://editor.mdnice.com/">墨滴</a>，这个编辑器同样是左栏编辑，右栏预览，但是其亮点是<strong>生成可复制到微信公众平台/知乎等内容平台的 HTML</strong>，对于坚持写博客的我来说每次都<strong>免去</strong>了不同平台分发内容时的<strong>排版</strong>过程，节省了很多时间。另外它不用安装软件，使用浏览器即可使用，也可以在线导出 pdf。美中不足之处就是排版版式过少，可能需要更多的前端贡献。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202204191931464.png" alt="墨滴 在线编辑预览 Markdown"></p>
+<h2 id="图床">图床</h2>
+<p>在所有需要写入 Markdown 文档的内容中，图片应该是较难处理的。因为 Markdown 是纯文本，所以插入图片只能通过语法中的引用 <code>![图片标题](图片链接)</code> 填入地址。一般情况下，使用 Typora 等编辑器插入图片，会将图片放在本地计算机的某个地方并引用，但是如果我们想让文档分享给他人，就需要将图片一并上传并保证原本的相对文件结构，这样或许会比较麻烦。</p>
+<p>现在比较流行的一种做法是将图片全部都放在云上，Markdown 内填入网络地址，渲染时文档预览者实时获取预览图片。这种专门用于存放图片的方式叫做图床或对象存储，优势在于<strong>图片上传方便</strong>，永久保存，<strong>加载图片时仅占用图床服务资源</strong>，并不与博客内容其他资源冲突造成整体加载缓慢的情况。</p>
+<p>这里分享我的解决方案：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/cos">腾讯云对象存储</a> + <a target="_blank" rel="noopener" href="https://picgo.github.io/PicGo-Doc/zh/">PicGo</a>。其中前者提供图床服务，后者用于图片上传。腾讯云对象存储一般是按用量收费，作为个人用户，我们的用量其实相对较少，每个月的消费可以忽略不计，而且腾讯云的服务相对稳定，可以和绑定在腾讯云的其他资源（CDN、域名）形成配合。选择 PicGo 是因为 Typora 提供了接口支持，可以实现图片复制一键上传重命名；VSCode 也有对应插件提供服务。</p>
+<h1>运用 Pandoc 将文档转换为多种格式</h1>
+<p>Markdown 的缺点之一就是用的人还不够多，在分享协作方面可能存在困难，电脑里安装了 Markdown 阅读器的人一定比安装了 Word 或者 PDF 阅读器的人少非常多，这也是强大的 LaTeX 的缺点之一。但是 Pandoc 解决了这个问题，可以将我们编辑好的 Markdown 文档进行渲染、转换为其他人可以查看的常用格式。</p>
+<p><a target="_blank" rel="noopener" href="https://pandoc.org/">Pandoc</a> 由 John MacFarlane 开发，是一个强大的全局文档转换器，提供了 标记语言到几乎所有 <a target="_blank" rel="noopener" href="https://pandoc.org/diagram.svgz">常见文档格式的转换</a>（如 HTML、Word、PowerPoint、LaTeX、PDF 等）。这样我们就可以将写完的 Markdown 文档分享给他人阅读。Pandoc 导出时一般需要对样式/模板进行设定，如果确有稳定的文档编辑需求，可以设定好模板便于导出。</p>
+<h2 id="用-Markdown-写论文">用 Markdown 写论文</h2>
+<p>Markdown 可以导出为 docx 格式，并轻松处理引用问题。我的本科毕业论文就是使用 Markdown 完成的，按照导师和学校要求的格式导出为 docx。只需要通过下面一行命令：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandoc <span class="literal">--citeproc</span> <span class="literal">--number-sections</span> <span class="literal">--csl</span> ./assets/china<span class="literal">-national-standard-gb-t-7714-2015-numeric</span>.csl <span class="literal">--bibliography</span> ./assets/better_bibtex.bib <span class="literal">-M</span> reference<span class="literal">-section-title</span>=<span class="string">&quot;参考文献&quot;</span> <span class="literal">-M</span> link<span class="literal">-citations</span>=true <span class="literal">--reference-doc</span> ./assets/whu_bsc_dissertation_template_pandoc.docx ./main.md <span class="literal">-o</span> ./output/main.docx</span><br></pre></td></tr></table></figure>
+<p>这里涉及到的部分参数含义如下：</p>
+<ul>
+<li><code>--citeproc</code>：处理文献引用。</li>
+<li><code>--number-sections</code>：导出时对标题进行编号。</li>
+</ul>
+<p>这里涉及到五个文件：</p>
+<ul>
+<li><code>main.md</code>：即撰写的 Markdown 文件。</li>
+<li><code>main.docx</code>：即导出的 Docx 文件。</li>
+<li><code>whu_bsc_dissertation_template_pandoc.docx</code>：按照我校毕业论文标准修改的 Pandoc 模板。</li>
+<li><code>china-national-standard-gb-t-7714-2015-numeric.csl</code>：引用文献参考格式文件，使用 Zotero 的可以在 <a target="_blank" rel="noopener" href="https://www.zotero.org/styles">Zotero 样式仓库</a> 下载。</li>
+<li><code>better_bibtex.bib</code>：我参考的文献元信息，Zotero 导出。</li>
+</ul>
+<p>模板文件中，对各类内容预先进行了样式定义（见 <a target="_blank" rel="noopener" href="https://pandoc.org/MANUAL.html">Pandoc 手册</a> 中关于 reference-doc 的相关说明），如果没有模板文件可以通过 <code>pandoc -o custom-reference.docx --print-default-data-file reference.docx</code> 命令生成默认样式文件后修改。需注意所有的修改要在 Word 的样式库中进行，<a target="_blank" rel="noopener" href="https://github.com/jgm/pandoc/issues/8009">仅仅修改模板文档中的内容无效</a>。</p>
+<p>在源 Markdown 文件中，在 Front Matter 中定义好参考文献的存放位置：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line"><span class="section">bibliography: [/assets/better<span class="emphasis">_bibtex.bib]</span></span></span><br><span class="line"><span class="emphasis"><span class="section">---</span></span></span><br></pre></td></tr></table></figure>
+<p>随后就可以用 Pandoc 的引用模式插入引文，按照文献元信息中的 CiteKey 按如下形式引用即可（标注单一文献或同时标注多文献均可）</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">正文正文正文正文 @citekey1 正文正文正文 [ @citekey1; @citekey1 ]</span><br></pre></td></tr></table></figure>
+<p>随后就可以用最开始的那一行命令生成 docx 文件了。</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202204192045834.png" alt="Markdown 转换为 docx"></p>
+<h2 id="用-Markdown-做幻灯片">用 Markdown 做幻灯片</h2>
+<p>Markdown 也可以按照定义的格式转换为 Powerpoint 格式，在母版中进行调整，原理与转换为 docx 几乎相同，详见 Pandoc 手册。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandoc <span class="literal">--reference-doc</span> ./custom<span class="literal">-reference</span>.pptx ./test.md <span class="literal">-o</span> ./output/test.pptx</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/202204192101645.png" alt="Markdown 转换为 pptx"></p>
+<p>还有一种转换为幻灯片的方法——借助 <a target="_blank" rel="noopener" href="https://revealjs.com/">reveal.js</a> 转换为网页幻灯片。在主机安装 <code>reveal.js</code> 后，可以利用以下命令生成网页幻灯片的 HTML：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pandoc ./test.md <span class="literal">-o</span> ./slides.html <span class="literal">-t</span> revealjs <span class="literal">-s</span></span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/picgo/md-slidesgo.gif" alt="Markdown 转换为 SlidesGo"></p>
+<p>Reveal.js 自带控制控件，只需要浏览器就可以打开，因此几乎可以在任何一台电脑上都可以展示。可以查看 <a target="_blank" rel="noopener" href="https://revealjs.com/config/">Reveal.js 参数列表</a> 配置更多参数，进一步修改格式。</p>
+<hr>
+<p>虽然目前也涌现出越来越多的标记语言，如 RMarkdown、<br>
+CommonMark 等，增加了更多特性，但是 Markdown 自诞生之日起就因为其简约易学、专注内容、潜力无限的特性被不少人所接受。现在也可以看到许多富文本编辑器都能引入 Markdown 支持，一定程度上提升了写作效率，希望未来能够看到更多兼容 Markdown 的场景。</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src="https://download.mariozzj.cn/img/static/icon256.jpg"></a><div class="post-copyright__author_name">MarioBlog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div><div class="post-reward"><div class="reward-button" title="赞赏作者" onclick="AddRewardMask()"><i class="solitude fa-solid fa-heart"></i>赞赏作者</div><div class="reward-main"><ul class="reward-all"><span class="reward-title">感谢您的赞赏</span><ul class="reward-group"><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/wxpay.jpg" alt="微信" style="border-color: #07c160"></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/"><img class="post-qr-code-img nolazyload" src="https://download.mariozzj.cn/img/static/alipay.jpg" alt="支付宝" style="border-color: #108ee9"></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/"><div class="reward-text">赞赏名单</div><div class="reward-dec">您的支持是对我实现写作价值的最大鼓励。</div></a></ul></div></div><script>function RemoveRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "none";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "none";
+    }
+}
+
+function AddRewardMask() {
+    let rewardMainElements = document.querySelectorAll(".reward-main");
+    let quitBoxElement = document.querySelector("#quit-box");
+
+    rewardMainElements.forEach(element => {
+        element.style.display = "flex";
+    });
+
+    if (quitBoxElement) {
+        quitBoxElement.style.display = "flex";
+    }
+}</script></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">MarioBlog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Markdown/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Markdown<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/fb1f3a84/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">下载 OpenAlex 数据集并配置 PySpark 的一次记录</div></div></a></div><div class="next-post pull-right"><a href="/posts/1d43c0e5/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">两种图算法：PageRank &amp; EigenFactor</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span><span class="count"> ()</span></div></div><div class="comment-wrap"><div id="giscus-wrap"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src="https://download.mariozzj.cn/img/static/icon256.jpg"></div><div class="author-info__description_group"><div class="author-info__description"></div><div class="author-info__description2"></div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">MarioZZJ</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Markdown 是世上最好的写作语言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%A5%BD%E7%9A%84%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%BF%85%E9%A1%BB%E6%98%93%E5%AD%A6"><span class="toc-text">最好的语言：必须易学</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%A5%BD%E7%9A%84%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%BF%85%E9%A1%BB%E5%A4%9F%E7%94%A8"><span class="toc-text">最好的语言：必须够用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%A5%BD%E7%9A%84%E8%AF%AD%E8%A8%80%EF%BC%9A%E4%B8%93%E6%B3%A8%E5%86%85%E5%AE%B9"><span class="toc-text">最好的语言：专注内容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-text">小结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">工欲善其事，必先利其器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Typora"><span class="toc-text">Typora</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Visual-Studio-Code"><span class="toc-text">Visual Studio Code</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%A8%E6%BB%B4MDNice"><span class="toc-text">墨滴MDNice</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BE%E5%BA%8A"><span class="toc-text">图床</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">运用 Pandoc 将文档转换为多种格式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8-Markdown-%E5%86%99%E8%AE%BA%E6%96%87"><span class="toc-text">用 Markdown 写论文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8-Markdown-%E5%81%9A%E5%B9%BB%E7%81%AF%E7%89%87"><span class="toc-text">用 Markdown 做幻灯片</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务"><img alt="调用大模型 API 解决简单信息处理任务" src="https://download.mariozzj.cn/img/picgo/202409041617877.png"></a><div class="content"><span class="title" href="/posts/573fc6c3/" title="调用大模型 API 解决简单信息处理任务">调用大模型 API 解决简单信息处理任务</span><span class="article-recent_post_categories" href="/posts/573fc6c3/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程"><img alt="NJUHPC 运行 Python 程序简明流程" src="https://download.mariozzj.cn/img/picgo/202311021615799.png"></a><div class="content"><span class="title" href="/posts/6ab96d9d/" title="NJUHPC 运行 Python 程序简明流程">NJUHPC 运行 Python 程序简明流程</span><span class="article-recent_post_categories" href="/posts/6ab96d9d/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录"><img alt="下载 OpenAlex 数据集并配置 PySpark 的一次记录" src="https://download.mariozzj.cn/img/picgo/202210151013511.png"></a><div class="content"><span class="title" href="/posts/fb1f3a84/" title="下载 OpenAlex 数据集并配置 PySpark 的一次记录">下载 OpenAlex 数据集并配置 PySpark 的一次记录</span><span class="article-recent_post_categories" href="/posts/fb1f3a84/">工程实践</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点"><img alt="让 Markdown 成为写作的起点" src="https://download.mariozzj.cn/img/picgo/202204191318445.png"></a><div class="content"><span class="title" href="/posts/fd830caf/" title="让 Markdown 成为写作的起点">让 Markdown 成为写作的起点</span><span class="article-recent_post_categories" href="/posts/fd830caf/">工具干货</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor"><img alt="两种图算法：PageRank &amp; EigenFactor" src="https://download.mariozzj.cn/img/picgo/202204191304070.png"></a><div class="content"><span class="title" href="/posts/1d43c0e5/" title="两种图算法：PageRank &amp; EigenFactor">两种图算法：PageRank &amp; EigenFactor</span><span class="article-recent_post_categories" href="/posts/1d43c0e5/">数科知识</span></div></div></div></div></div></div></main><footer id="footer"><div id="footer_deal"><a class="deal_link" target="_blank" rel="noopener" href="https://github.com/MarioZZJ" title="Github"><i class="solitude  fab fa-github"></i></a><a class="deal_link" href="mailto:i@mariozzj.cn" title="Mail"><i class="solitude  fab fa-envelope"></i></a><div class="nolazyload footer_mini_logo" id="footer_mini_logo" title="返回顶部" onclick="sco.toTop()"><img src= "/img/loading.avif" data-lazy-src="https://download.mariozzj.cn/img/static/icon256.jpg" alt="返回顶部"></div><a class="deal_link" target="_blank" rel="noopener" href="https://www.researchgate.net/profile/Zhejun-Zheng" title="ResearchGate"><i class="solitude  fab fa-researchgate"></i></a><a class="deal_link" target="_blank" rel="noopener" href="https://www.linkedin.com/in/mariozzj/" title="LinkedIn"><i class="solitude  fab fa-linkedin"></i></a></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2020 - 2024 By&nbsp;<a class="footer-bar-link" href="/">MarioZZJ</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" alt="赣ICP备20002056号-2">赣ICP备20002056号-2</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42010602004261" alt="鄂公网安备42010602004261号">鄂公网安备42010602004261号</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Solitude">Solitude</a><a class="footer-bar-link cc" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><i class="solitude fa-solid fa-copyright"></i><i class="solitude fa-brands fa-creative-commons-by"></i><i class="solitude fa-brands fa-creative-commons-nc"></i><i class="solitude fa-brands fa-creative-commons-nd"></i></a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.12"></script><script src="/js/main.js?v=2.0.12"></script><script src="/js/third_party/waterfall.min.js?v=2.0.12"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/copy-tex.min.js"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    utils.wrap(item, 'div', {class: 'katex-wrap'})
+  })
+})();
+</script></script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"><script>(()=>{
+    const getGiscusTheme = theme => {
+        return theme === 'dark' ? 'dark' : 'light'
+    }
+
+    const loadGiscus = () => {
+        const config = Object.assign({
+            src: 'https://giscus.app/client.js',
+            'data-repo': 'MarioZZJ/giscus',
+            'data-repo-id': 'R_kgDOMwtu9A',
+            'data-category-id': 'DIC_kwDOMwtu9M4CiaaK',
+            'data-mapping': 'pathname',
+            'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+            'data-reactions-enabled': '1',
+            crossorigin: 'anonymous',
+            async: true
+        },null)
+
+        const ele = document.createElement('script')
+        for (let key in config) {
+            ele.setAttribute(key, config[key])
+        }
+        document.getElementById('giscus-wrap').appendChild(ele)
+    }
+
+    const changeGiscusTheme = theme => {
+        const sendMessage = message => {
+            const iframe = document.querySelector('iframe.giscus-frame')
+            if (!iframe) return
+            iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app')
+        }
+
+        sendMessage({
+            setConfig: {
+                theme: getGiscusTheme(theme)
+            }
+        });
+    }
+
+    utils.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+    if ('Giscus' === 'Giscus' || !true) {
+        if (true) {
+            const giscusWrap = document.getElementById('giscus-wrap')
+            if (giscusWrap) {
+                utils.loadComment(giscusWrap, loadGiscus)
+            }
+        } else {
+            loadGiscus()
+        }
+    } else {
+        window.loadOtherComment = loadGiscus
+    }
+})()</script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="solitude fa-solid fa-xmark"></i></button></nav><div class="search-wrap"><div class="search-box"><input class="search-box-input" id="search-input" type="text" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="输入关键词快速查找"></div><div id="search-results"><div id="search-hits"></div></div><div id="search-pagination"></div><div id="search-tips"></div></div></div><div id="search-mask"></div></div><script src="/js/search/local.js?v=2.0.12"></script><!-- Tianli-Talk--><!-- music--></body></html><script>const posts=["posts/573fc6c3/","posts/6ab96d9d/","posts/fb1f3a84/","posts/fd830caf/","posts/1d43c0e5/","posts/9364d192/","posts/7f568f00/","posts/e0d78514/","posts/5c25bf34/","posts/75521d8e/","posts/8d6b8da8/","posts/2c01ed8b/","posts/4449c636/","posts/672ba085/","posts/28d53052/","posts/2b373355/","posts/2b373354/","posts/52d95125/","posts/aba3bc4e/","posts/16cc73c/","posts/569080df/","posts/ffffffff/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>
