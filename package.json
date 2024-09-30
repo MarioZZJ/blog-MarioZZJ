@@ -25,7 +25,7 @@
     "hexo-renderer-stylus": "^3.0.1",
     "hexo-server": "^3.0.0",
     "hexo-theme-landscape": "^1.0.0",
-    "hexo-theme-solitude": "^2.0.12",
+    "hexo-theme-solitude": "^2.1.0",
     "hexo-util": "^3.3.0",
     "markdown-it-katex": "^2.0.3",
     "moment": "^2.30.1"
